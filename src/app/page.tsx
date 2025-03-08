@@ -4,6 +4,7 @@ import { useEffect } from 'react';
 import { gsap } from 'gsap';
 import Link from 'next/link';
 import { Montserrat } from 'next/font/google';
+import Image from "next/image";
 
 // 1. Import Montserrat from next/font/google
 const montserrat = Montserrat({
@@ -52,7 +53,7 @@ export default function Home() {
         }}
       >
         {/* Logo Section */}
-        <img
+        <Image
           className="animate"
           src="/ai-creditlab-logo.png" // Ensure this file exists in your /public folder
           alt="AI CreditLab logo"
