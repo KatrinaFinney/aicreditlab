@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 
+export const dynamic = "force-dynamic"; // 🚀 Prevent static caching
 export async function POST(request: Request) {
   try {
     // Parse the JSON body from the request

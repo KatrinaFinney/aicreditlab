@@ -6,7 +6,7 @@ import { ReactNode } from 'react';
 const ClerkProviderNoSSR = dynamic(
   () =>
     import('@clerk/nextjs').then(
-      (mod) => mod.ClerkProvider as React.ComponentType<any>
+      (mod) => mod.ClerkProvider as unknown as React.ComponentType<any>
     ),
   { ssr: false, loading: () => <div>Loading...</div> }
 );
