@@ -1,7 +1,7 @@
 
 import './globals.css';
 import { ReactNode } from 'react';
-import ClerkWrapper from '@/components/ClerkWrapper';
+import ClerkWrapper from '../components/ClerkWrapper';
 
 export const metadata = {
   title: 'AI CreditLab | DIY Credit Repair Powered by AI',

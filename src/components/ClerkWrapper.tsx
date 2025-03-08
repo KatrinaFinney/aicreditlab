@@ -1,16 +1,10 @@
-'use client';
-
-import dynamic from 'next/dynamic';
+import { ClerkProvider } from '@clerk/nextjs';
 import { ReactNode } from 'react';
 
-const ClerkProviderNoSSR = dynamic(
-  () =>
-    import('@clerk/nextjs').then(
-      (mod) => mod.ClerkProvider as unknown as React.ComponentType<any>
-    ),
-  { ssr: false, loading: () => <div>Loading...</div> }
-);
-
 export default function ClerkWrapper({ children }: { children: ReactNode }) {
-  return <ClerkProviderNoSSR>{children}</ClerkProviderNoSSR>;
+  return (
+    <ClerkProvider publishableKey={process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY}>
+      {children}
+    </ClerkProvider>
+  );
 }

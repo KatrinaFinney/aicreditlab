@@ -53,17 +53,20 @@ export default function Home() {
         }}
       >
         {/* Logo Section */}
-        <Image
-          className="animate"
-          src="/ai-creditlab-logo.png" // Ensure this file exists in your /public folder
-          alt="AI CreditLab logo"
-          style={{
-            maxWidth: '200px',
-            width: '50%',
-            height: 'auto',
-            margin: '0 auto',
-          }}
-        />
+
+<Image
+  className="animate"
+  src="/ai-creditlab-logo.png" // Ensure this file exists in your /public folder
+  alt="AI CreditLab logo"
+  width={200} // Set fixed width
+  height={100} // Set fixed height
+  style={{
+    maxWidth: '200px', // Keep this for responsiveness
+    width: '50%',
+    height: 'auto',
+    margin: '0 auto',
+  }}
+/>
 
         {/* Headline */}
         <h1
