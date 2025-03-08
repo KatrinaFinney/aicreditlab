@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import useSWR from "swr";
 import { supabase } from "@/lib/supabaseClient";
 import { gsap } from "gsap";
