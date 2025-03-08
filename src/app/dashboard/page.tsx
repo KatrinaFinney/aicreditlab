@@ -1,11 +1,9 @@
-// src/app/dashboard/page.tsx
-"use client";
+'use client';
 
 import { useEffect, useState } from "react";
 import useSWR from "swr";
-import supabase from "@/lib/supabaseClient";
+import { supabase } from "@/lib/supabaseClient";
 import { gsap } from "gsap";
-import dynamic from "next/dynamic";
 
 const fetchDisputes = async () => {
   const { data, error } = await supabase
@@ -19,16 +17,13 @@ const fetchDisputes = async () => {
 
 export default function Dashboard() {
   const { data: disputes, error } = useSWR("disputes", fetchDisputes);
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    requestAnimationFrame(() => {
-      gsap.fromTo(
-        ".dashboard-container",
-        { opacity: 0, y: 10 },
-        { opacity: 1, y: 0, duration: 0.6, ease: "power3.out" }
-      );
-    });
+    gsap.fromTo(
+      ".dashboard-container",
+      { opacity: 0, y: 10 },
+      { opacity: 1, y: 0, duration: 0.6, ease: "power3.out" }
+    );
   }, []);
 
   if (error) return <p style={{ color: "red" }}>Error loading disputes.</p>;
@@ -47,18 +42,20 @@ export default function Dashboard() {
         padding: "32px",
       }}
     >
-      <h1 style={{
-    fontSize: '2.5rem', // Adjust size as needed
-    fontWeight: 'bold',
-    color: '#00D9C0', // Updated to match your accent color
-    textShadow: '0px 0px 10px rgba(0, 217, 192, 0.8)', // Teal glow effect
-    background: 'linear-gradient(135deg, rgba(0, 217, 192, 0.2), rgba(0, 151, 167, 0.4))',
-    backdropFilter: 'blur(12px)', // Glassy blur effect
-    padding: '12px 24px',
-    borderRadius: '12px',
-    display: 'inline-block',
-    boxShadow: '0px 4px 15px rgba(0, 217, 192, 0.3)',
-  }}>
+      <h1
+        style={{
+          fontSize: "32px",
+          fontWeight: "bold",
+          color: "#00AEEF",
+          textShadow: "0px 0px 10px rgba(0, 174, 239, 0.8)",
+          background: "linear-gradient(135deg, rgba(0, 174, 239, 0.2), rgba(0, 217, 192, 0.4))",
+          backdropFilter: "blur(10px)",
+          padding: "10px 20px",
+          borderRadius: "10px",
+          display: "inline-block",
+          boxShadow: "0px 4px 15px rgba(0, 217, 192, 0.3)",
+        }}
+      >
         Your Disputes
       </h1>
       <p style={{ fontSize: "16px", color: "#B0B3B8", marginBottom: "20px" }}>
