@@ -13,16 +13,26 @@ const TEXT_MAIN = "#1E1E1E";   // Primary text color
 const CARD_BG = "#D6D9E0";     // Darker card background
 const TEAL_H1 = "#0097A7";     // H1 color (bright teal)
 const TEAL_BUTTON = "#0097A7"; // Teal for Sign In button
-const TEAL_HOVER = "#006F7A";  // Hover color for the teal buttons
-const SIGN_UP_BORDER = "#0097A7"; // Teal border for the Sign Up button
+const TEAL_HOVER = "#006F7A";  // Hover color for buttons
+const SIGN_UP_BORDER = "#0097A7"; // Teal border for Sign Up button
 const SIGN_UP_HOVER_BG = "#DAF5F5"; // Light teal hover background
+const FOOTER_BG = "#006F7A";   // Dark teal footer
+const FOOTER_TEXT = "#E0F7F9"; // Light text for footer
 
 export default function Home() {
   useEffect(() => {
+    // GSAP animations
     gsap.fromTo(
       ".animate",
       { opacity: 0, y: 20 },
       { opacity: 1, y: 0, duration: 1, stagger: 0.2, ease: "power3.out" }
+    );
+
+    // Animate cards with a stagger effect
+    gsap.fromTo(
+      ".card-animate",
+      { opacity: 0, scale: 0.9 },
+      { opacity: 1, scale: 1, duration: 0.8, stagger: 0.15, ease: "power3.out" }
     );
   }, []);
 
@@ -56,7 +66,6 @@ export default function Home() {
           style={{ marginBottom: "20px" }}
         />
 
-        {/* Updated H1 color -> Teal */}
         <h1
           className="animate"
           style={{
@@ -67,7 +76,7 @@ export default function Home() {
             marginBottom: "16px",
           }}
         >
-          AI CreditLab
+          Credit Repair, Reinvented.
         </h1>
 
         <p
@@ -79,11 +88,10 @@ export default function Home() {
             maxWidth: "600px",
           }}
         >
-          DIY Credit Repair, Powered by AI. Build your financial future with automated dispute letters and real-time credit insights.
+          Struggling with credit errors? AI CreditLab automates dispute letters, tracks your progress, and helps you improve your score—without the guesswork.
         </p>
 
         <div className="animate" style={{ display: "flex", gap: "1.5rem" }}>
-          {/* Sign In Button */}
           <Link
             href="/sign-in"
             style={{
@@ -101,7 +109,6 @@ export default function Home() {
             Sign In
           </Link>
 
-          {/* Sign Up Button -> Teal border/text */}
           <Link
             href="/sign-up"
             style={{
@@ -117,12 +124,12 @@ export default function Home() {
             onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = SIGN_UP_HOVER_BG)}
             onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "transparent")}
           >
-            Sign Up
+            Get Started for Free
           </Link>
         </div>
       </div>
 
-      {/* Section 1: How It Works */}
+      {/* Why AI CreditLab? (6 Animated Cards) */}
       <div
         className="animate"
         style={{
@@ -130,21 +137,13 @@ export default function Home() {
           textAlign: "center",
         }}
       >
-        <h2 
-          style={{ 
-            fontSize: "2rem", 
-            fontWeight: 700, 
-            color: "#007882", 
-            marginBottom: "20px" 
-          }}
-        >
-          How It Works
+        <h2 style={{ fontSize: "2rem", fontWeight: 700, color: "#007882", marginBottom: "20px" }}>
+          Why Choose AI CreditLab?
         </h2>
         <p style={{ maxWidth: "700px", margin: "0 auto", marginBottom: "32px", color: "#333" }}>
-          AI CreditLab automates your credit dispute process using advanced AI. Our
-          platform identifies errors, crafts powerful dispute letters, and monitors
-          your progress every step of the way.
+          Traditional credit repair is expensive, confusing, and slow. AI CreditLab eliminates hidden fees, automates dispute letters, and puts you in control.
         </p>
+
         <div
           style={{
             display: "grid",
@@ -154,176 +153,48 @@ export default function Home() {
             margin: "0 auto",
           }}
         >
-          {/* Step 1 */}
-          <div
-            style={{
-              backgroundColor: CARD_BG,
-              padding: "20px",
-              borderRadius: "12px",
-            }}
-          >
-            <h3 style={{ fontSize: "1.25rem", fontWeight: "bold", color: "#006F7A" }}>
-              1. Connect
-            </h3>
-            <p style={{ color: "#333" }}>
-              Link your credit data to AI CreditLab for real-time analysis.
-            </p>
-          </div>
-          {/* Step 2 */}
-          <div
-            style={{
-              backgroundColor: CARD_BG,
-              padding: "20px",
-              borderRadius: "12px",
-            }}
-          >
-            <h3 style={{ fontSize: "1.25rem", fontWeight: "bold", color: "#006F7A" }}>
-              2. Dispute
-            </h3>
-            <p style={{ color: "#333" }}>
-              Our AI identifies errors & generates dispute letters automatically.
-            </p>
-          </div>
-          {/* Step 3 */}
-          <div
-            style={{
-              backgroundColor: CARD_BG,
-              padding: "20px",
-              borderRadius: "12px",
-            }}
-          >
-            <h3 style={{ fontSize: "1.25rem", fontWeight: "bold", color: "#006F7A" }}>
-              3. Monitor
-            </h3>
-            <p style={{ color: "#333" }}>
-              Track credit changes and get real-time alerts as disputes progress.
-            </p>
-          </div>
+          {[
+            { title: "AI-Powered Dispute Letters", description: "Our AI drafts dispute letters tailored to your case—no templates, just precision." },
+            { title: "Real-Time Tracking", description: "Track dispute progress in one place with live updates and alerts." },
+            { title: "Fast & Automated", description: "No waiting—AI CreditLab moves as fast as the credit bureaus allow." },
+            { title: "No Expertise Needed", description: "AI guides you every step—no legal knowledge or credit expertise required." },
+            { title: "Score Improvement Insights", description: "Get AI-driven suggestions on improving your credit beyond disputes." },
+            { title: "Secure & Private", description: "Data encryption ensures your personal information stays safe and confidential." },
+          ].map((feature, index) => (
+            <div
+              key={index}
+              className="card-animate"
+              style={{
+                backgroundColor: CARD_BG,
+                padding: "20px",
+                borderRadius: "12px",
+                transition: "transform 0.3s ease",
+              }}
+              onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.05)")}
+              onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
+            >
+              <h3 style={{ fontSize: "1.25rem", fontWeight: "bold", color: "#006F7A" }}>{feature.title}</h3>
+              <p style={{ color: "#333" }}>{feature.description}</p>
+            </div>
+          ))}
         </div>
       </div>
 
-      {/* Section 2: Key Features */}
-      <div
-        className="animate"
+      {/* Footer */}
+      <footer
         style={{
-          backgroundColor: "#ffffff",
-          padding: "40px 32px",
+          backgroundColor: FOOTER_BG,
+          padding: "20px",
           textAlign: "center",
+          color: FOOTER_TEXT,
+          marginTop: "40px",
         }}
       >
-        <h2 
-          style={{ 
-            fontSize: "2rem", 
-            fontWeight: 700, 
-            color: "#007882", 
-            marginBottom: "20px" 
-          }}
-        >
-          Key Features
-        </h2>
-        <p style={{ maxWidth: "700px", margin: "0 auto", marginBottom: "32px", color: "#333" }}>
-          Explore our AI-driven solutions designed to simplify credit repair and empower you to achieve financial freedom.
-        </p>
-        <div
-          style={{
-            display: "grid",
-            gap: "24px",
-            gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))",
-            maxWidth: "900px",
-            margin: "0 auto",
-          }}
-        >
-          {/* Feature 1 */}
-          <div
-            style={{
-              backgroundColor: "#f8fafa",
-              padding: "20px",
-              borderRadius: "12px",
-              boxShadow: "0 4px 8px rgba(0, 120, 130, 0.1)",
-            }}
-          >
-            <h3 style={{ fontSize: "1.25rem", fontWeight: "bold", color: "#006F7A" }}>
-              Automated Letters
-            </h3>
-            <p style={{ color: "#333" }}>
-              Generate dispute letters tailored to your situation with just a click.
-            </p>
-          </div>
-          {/* Feature 2 */}
-          <div
-            style={{
-              backgroundColor: "#f8fafa",
-              padding: "20px",
-              borderRadius: "12px",
-              boxShadow: "0 4px 8px rgba(0, 120, 130, 0.1)",
-            }}
-          >
-            <h3 style={{ fontSize: "1.25rem", fontWeight: "bold", color: "#006F7A" }}>
-              Real-Time Alerts
-            </h3>
-            <p style={{ color: "#333" }}>
-              Stay updated on credit changes & disputes with instant notifications.
-            </p>
-          </div>
-          {/* Feature 3 */}
-          <div
-            style={{
-              backgroundColor: "#f8fafa",
-              padding: "20px",
-              borderRadius: "12px",
-              boxShadow: "0 4px 8px rgba(0, 120, 130, 0.1)",
-            }}
-          >
-            <h3 style={{ fontSize: "1.25rem", fontWeight: "bold", color: "#006F7A" }}>
-              Easy Dashboard
-            </h3>
-            <p style={{ color: "#333" }}>
-              All dispute statuses in one place for a clear overview of your progress.
-            </p>
-          </div>
-        </div>
-      </div>
-
-      {/* Section 3: CTA / Final Call-to-Action */}
-      <div
-        className="animate"
-        style={{
-          backgroundColor: "#f0fcfc",
-          padding: "40px",
-          textAlign: "center",
-        }}
-      >
-        <h2 
-          style={{ 
-            fontSize: "2rem", 
-            fontWeight: 700, 
-            color: "#007882" 
-          }}
-        >
-          Ready to Transform Your Credit?
-        </h2>
-        <p style={{ margin: "16px auto", maxWidth: "600px", color: "#333" }}>
-          Join AI CreditLab today and take control of your financial future. No more confusing paperwork or hidden fees—just smart, AI-driven credit repair at your fingertips.
-        </p>
-        <Link
-          href="/sign-in"
-          style={{
-            display: "inline-block",
-            marginTop: "20px",
-            padding: "0.75rem 1.5rem",
-            borderRadius: "0.5rem",
-            backgroundColor: TEAL_BUTTON,
-            color: "white",
-            fontWeight: 500,
-            textDecoration: "none",
-            transition: "background-color 0.3s ease",
-          }}
-          onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = TEAL_HOVER)}
-          onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = TEAL_BUTTON)}
-        >
-          Get Started
+        <p>© {new Date().getFullYear()} AI CreditLab. All rights reserved.</p>
+        <Link href="/privacy-policy" style={{ color: FOOTER_TEXT, textDecoration: "underline" }}>
+          Privacy Policy
         </Link>
-      </div>
+      </footer>
     </div>
   );
 }
