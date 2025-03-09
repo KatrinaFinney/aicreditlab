@@ -95,16 +95,20 @@ export default function Home() {
           Credit Repair, Reinvented.
         </h1>
 
+        {/* Example of escaping apostrophe: 
+            Suppose the text was "it's free to start." 
+            => Use it&apos;s 
+        */}
         <p
           className="animate"
           style={{
-            fontSize: "clamp(1rem, 3.5vw, 1.25rem)", // Responsive text for tagline
+            fontSize: "clamp(1rem, 3.5vw, 1.25rem)",
             color: "#006F7A",
             marginBottom: "24px",
             maxWidth: "600px",
           }}
         >
-          Struggling with credit report errors? AI CreditLab automates dispute letters, tracks your progress, and helps you improve your score—without the guesswork.
+          Struggling with credit report errors? AI CreditLab automates dispute letters, tracks your progress, and helps you improve your score&mdash;without the guesswork. It&apos;s a faster, simpler way to take control.
         </p>
 
         {/* Mobile-Friendly Buttons (stack in column on small screens) */}
@@ -226,7 +230,7 @@ export default function Home() {
           Take Charge of Your Credit Today
         </h2>
         <p style={{ margin: "16px auto", maxWidth: "600px", color: "#333" }}>
-          AI CreditLab gives you the tools to fix credit errors, boost your score, and take control of your financial future. Sign up today—it's free to start!
+          AI CreditLab gives you the tools to fix credit errors, boost your score, and take control of your financial future. Sign up today—it&apos;s free to start!
         </p>
         <Link
           href="/sign-up"
