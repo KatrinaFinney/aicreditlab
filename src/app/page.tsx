@@ -88,7 +88,7 @@ export default function Home() {
             maxWidth: "600px",
           }}
         >
-          Struggling with credit errors? AI CreditLab automates dispute letters, tracks your progress, and helps you improve your score—without the guesswork.
+          Struggling with credit report errors? AI CreditLab automates dispute letters, tracks your progress, and helps you improve your score—without the guesswork.
         </p>
 
         <div className="animate" style={{ display: "flex", gap: "1.5rem" }}>
