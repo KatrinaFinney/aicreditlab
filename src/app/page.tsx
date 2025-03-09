@@ -5,7 +5,9 @@ import Image from "next/image";
 import { useEffect } from "react";
 import { gsap } from "gsap";
 
+//
 // Color Variables
+//
 const BACKGROUND_GRADIENT = "linear-gradient(135deg, #d0f0f7 0%, #ecfbfc 100%)";
 const TEXT_MAIN = "#1E1E1E";
 const CARD_BG = "#D6D9E0";
@@ -17,9 +19,50 @@ const SIGN_UP_HOVER_BG = "#DAF5F5";
 const FOOTER_BG = "#004E5A";
 const FOOTER_TEXT = "#E0F7F9";
 
+// 6 features, each referencing icons in /public/icons/. 
+// Make sure they're black icons (solid black) for the filter to color them accurately.
+const features = [
+  {
+    icon: "/icons/fast.svg",
+    title: "Fast & Automated",
+    description:
+      "No waiting—AI CreditLab moves as fast as the credit bureaus allow.",
+  },
+  {
+    icon: "/icons/time.svg",
+    title: "Real-Time Tracking",
+    description:
+      "Track dispute progress in one place with live updates and alerts.",
+  },
+  {
+    icon: "/icons/robot.svg",
+    title: "AI-Powered Dispute Letters",
+    description:
+      "Our AI drafts dispute letters tailored to your case—no templates, just precision.",
+  },
+  {
+    icon: "/icons/legal.svg",
+    title: "No Expertise Needed",
+    description:
+      "AI guides you every step—no legal knowledge or credit expertise required.",
+  },
+  {
+    icon: "/icons/score.svg",
+    title: "Score Improvement Insights",
+    description:
+      "Get AI-driven suggestions on improving your credit beyond disputes.",
+  },
+  {
+    icon: "/icons/secure.svg",
+    title: "Secure & Private",
+    description:
+      "Data encryption ensures your personal information stays safe and confidential.",
+  }
+];
+
 export default function Home() {
   useEffect(() => {
-    // Background Position Animation
+    // Animate background position
     gsap.fromTo(
       ".hero-bg",
       { backgroundPosition: "0% 50%" },
@@ -69,7 +112,7 @@ export default function Home() {
           alignItems: "center",
           textAlign: "center",
           padding: "64px 32px",
-          paddingTop: "8vh", // Moves hero content a bit higher for mobile
+          paddingTop: "8vh", // Moves hero content a bit higher on mobile
         }}
       >
         <Image
@@ -84,7 +127,6 @@ export default function Home() {
         <h1
           className="animate"
           style={{
-            // clamp => min font-size: 2rem, fluid up to max: 3.75rem
             fontSize: "clamp(2rem, 7vw, 3.75rem)",
             fontWeight: 700,
             color: TEAL_H1,
@@ -95,10 +137,6 @@ export default function Home() {
           Credit Repair, Reinvented.
         </h1>
 
-        {/* Example of escaping apostrophe: 
-            Suppose the text was "it's free to start." 
-            => Use it&apos;s 
-        */}
         <p
           className="animate"
           style={{
@@ -108,10 +146,10 @@ export default function Home() {
             maxWidth: "600px",
           }}
         >
-          Struggling with credit report errors? AI CreditLab automates dispute letters, tracks your progress, and helps you improve your score&mdash;without the guesswork. It&apos;s a faster, simpler way to take control.
+          Struggling with credit report errors? AI CreditLab automates dispute letters, tracks your progress, and helps you improve your score—without the guesswork.
         </p>
 
-        {/* Mobile-Friendly Buttons (stack in column on small screens) */}
+        {/* Mobile-Responsive Buttons */}
         <div
           className="animate"
           style={{
@@ -133,7 +171,7 @@ export default function Home() {
               textDecoration: "none",
               transition: "background-color 0.3s ease",
               textAlign: "center",
-              width: "160px", // consistent width for both buttons
+              width: "160px",
             }}
             onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = TEAL_HOVER)}
             onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = TEAL_BUTTON)}
@@ -154,7 +192,7 @@ export default function Home() {
               backgroundColor: "transparent",
               transition: "all 0.3s ease",
               textAlign: "center",
-              width: "160px", // consistent width for both buttons
+              width: "160px",
             }}
             onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = SIGN_UP_HOVER_BG)}
             onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "transparent")}
@@ -188,14 +226,7 @@ export default function Home() {
             margin: "0 auto",
           }}
         >
-          {[
-            { title: "AI-Powered Dispute Letters", description: "Our AI drafts dispute letters tailored to your case—no templates, just precision." },
-            { title: "Real-Time Tracking", description: "Track dispute progress in one place with live updates and alerts." },
-            { title: "Fast & Automated", description: "No waiting—AI CreditLab moves as fast as the credit bureaus allow." },
-            { title: "No Expertise Needed", description: "AI guides you every step—no legal knowledge or credit expertise required." },
-            { title: "Score Improvement Insights", description: "Get AI-driven suggestions on improving your credit beyond disputes." },
-            { title: "Secure & Private", description: "Data encryption ensures your personal information stays safe and confidential." },
-          ].map((feature, index) => (
+          {features.map((feature, index) => (
             <div
               key={index}
               className="card-animate"
@@ -204,10 +235,26 @@ export default function Home() {
                 padding: "20px",
                 borderRadius: "12px",
                 transition: "transform 0.3s ease",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                textAlign: "center",
               }}
               onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.05)")}
               onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
             >
+              {/* Teal Filter for black icons */}
+              <Image
+                src={feature.icon}
+                alt={feature.title}
+                width={48}
+                height={48}
+                style={{
+                  marginBottom: "12px",
+                  filter:
+                    "invert(35%) sepia(82%) saturate(498%) hue-rotate(145deg) brightness(95%) contrast(94%)",
+                }}
+              />
               <h3 style={{ fontSize: "1.25rem", fontWeight: "bold", color: "#006F7A" }}>
                 {feature.title}
               </h3>
@@ -230,7 +277,7 @@ export default function Home() {
           Take Charge of Your Credit Today
         </h2>
         <p style={{ margin: "16px auto", maxWidth: "600px", color: "#333" }}>
-          AI CreditLab gives you the tools to fix credit errors, boost your score, and take control of your financial future. Sign up today—it&apos;s free to start!
+          AI CreditLab gives you the tools to fix credit errors, boost your score, and take control of your financial future. Sign up today&mdash;it&apos;s free to start!
         </p>
         <Link
           href="/sign-up"
