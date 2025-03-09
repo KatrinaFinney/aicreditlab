@@ -6,7 +6,7 @@ import { useEffect } from "react";
 import { gsap } from "gsap";
 
 // Color Variables
-const BACKGROUND_GRADIENT = "linear-gradient(135deg, #d0f0f7 0%, #ecfbfc 100%)"; 
+const BACKGROUND_GRADIENT = "linear-gradient(135deg, #d0f0f7 0%, #ecfbfc 100%)";
 const TEXT_MAIN = "#1E1E1E";
 const CARD_BG = "#D6D9E0";
 const TEAL_H1 = "#0097A7";
@@ -69,7 +69,7 @@ export default function Home() {
           alignItems: "center",
           textAlign: "center",
           padding: "64px 32px",
-          paddingTop: "8vh", // Moves H1 higher on mobile
+          paddingTop: "8vh", // Moves hero content a bit higher for mobile
         }}
       >
         <Image
@@ -84,7 +84,8 @@ export default function Home() {
         <h1
           className="animate"
           style={{
-            fontSize: "3.75rem",
+            // clamp => min font-size: 2rem, fluid up to max: 3.75rem
+            fontSize: "clamp(2rem, 7vw, 3.75rem)",
             fontWeight: 700,
             color: TEAL_H1,
             textShadow: `0px 0px 8px rgba(0, 151, 167, 0.4)`,
@@ -97,7 +98,7 @@ export default function Home() {
         <p
           className="animate"
           style={{
-            fontSize: "1.25rem",
+            fontSize: "clamp(1rem, 3.5vw, 1.25rem)", // Responsive text for tagline
             color: "#006F7A",
             marginBottom: "24px",
             maxWidth: "600px",
@@ -106,20 +107,20 @@ export default function Home() {
           Struggling with credit report errors? AI CreditLab automates dispute letters, tracks your progress, and helps you improve your score—without the guesswork.
         </p>
 
-        {/* Mobile-Responsive Buttons */}
+        {/* Mobile-Friendly Buttons (stack in column on small screens) */}
         <div
           className="animate"
           style={{
             display: "flex",
-            gap: "1rem",
             flexWrap: "wrap",
+            gap: "1rem",
             justifyContent: "center",
           }}
         >
           <Link
             href="/sign-in"
             style={{
-              padding: "0.65rem 1.2rem",
+              padding: "0.75rem 1.5rem",
               borderRadius: "0.5rem",
               backgroundColor: TEAL_BUTTON,
               color: "#FFF",
@@ -127,8 +128,8 @@ export default function Home() {
               fontSize: "1rem",
               textDecoration: "none",
               transition: "background-color 0.3s ease",
-              width: "160px",
               textAlign: "center",
+              width: "160px", // consistent width for both buttons
             }}
             onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = TEAL_HOVER)}
             onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = TEAL_BUTTON)}
@@ -139,7 +140,7 @@ export default function Home() {
           <Link
             href="/sign-up"
             style={{
-              padding: "0.65rem 1.2rem",
+              padding: "0.75rem 1.5rem",
               borderRadius: "0.5rem",
               border: `2px solid ${SIGN_UP_BORDER}`,
               color: SIGN_UP_BORDER,
@@ -148,8 +149,8 @@ export default function Home() {
               textDecoration: "none",
               backgroundColor: "transparent",
               transition: "all 0.3s ease",
-              width: "160px",
               textAlign: "center",
+              width: "160px", // consistent width for both buttons
             }}
             onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = SIGN_UP_HOVER_BG)}
             onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "transparent")}
