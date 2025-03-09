@@ -9,12 +9,13 @@ import { gsap } from "gsap";
 // Color Variables
 //
 const BACKGROUND_GRADIENT = "linear-gradient(135deg, #e0f7f9 0%, #f8fcfc 100%)"; // Main gradient
-const TEXT_MAIN = "#1E1E1E";         // Primary text color
-const CARD_BG = "#D6D9E0";          // Darker card background
-const TEAL_H1 = "#0097A7";          // New H1 color (bright teal)
-const PURPLE_BORDER = "#6D00CC";     // Purple for sign-up button border & text
-const TEAL_BUTTON = "#0097A7";       // Teal for 'Sign In' button
-const TEAL_HOVER = "#006F7A";        // Hover color for 'Sign In' button
+const TEXT_MAIN = "#1E1E1E";   // Primary text color
+const CARD_BG = "#D6D9E0";     // Darker card background
+const TEAL_H1 = "#0097A7";     // H1 color (bright teal)
+const TEAL_BUTTON = "#0097A7"; // Teal for Sign In button
+const TEAL_HOVER = "#006F7A";  // Hover color for the teal buttons
+const SIGN_UP_BORDER = "#0097A7"; // Teal border for the Sign Up button
+const SIGN_UP_HOVER_BG = "#DAF5F5"; // Light teal hover background
 
 export default function Home() {
   useEffect(() => {
@@ -61,7 +62,7 @@ export default function Home() {
           style={{
             fontSize: "3.75rem",
             fontWeight: 700,
-            color: TEAL_H1, 
+            color: TEAL_H1,
             textShadow: `0px 0px 8px rgba(0, 151, 167, 0.4)`,
             marginBottom: "16px",
           }}
@@ -100,20 +101,20 @@ export default function Home() {
             Sign In
           </Link>
 
-          {/* Updated Sign Up Button -> Purple border/text */}
+          {/* Sign Up Button -> Teal border/text */}
           <Link
             href="/sign-up"
             style={{
               padding: "0.75rem 1.5rem",
               borderRadius: "0.5rem",
-              border: `2px solid ${PURPLE_BORDER}`,
-              color: PURPLE_BORDER,
+              border: `2px solid ${SIGN_UP_BORDER}`,
+              color: SIGN_UP_BORDER,
               fontWeight: 500,
               textDecoration: "none",
               backgroundColor: "transparent",
               transition: "all 0.3s ease",
             }}
-            onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#f3e6ff")}
+            onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = SIGN_UP_HOVER_BG)}
             onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "transparent")}
           >
             Sign Up
