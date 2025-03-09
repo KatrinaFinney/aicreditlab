@@ -1,22 +1,30 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { supabase } from "@/lib/supabaseClient";
 import { gsap } from "gsap";
 import useSWR from "swr";
 import { useAuth } from "@clerk/nextjs";
 
-// Color & Font Choices (matching homepage)
-const DASHBOARD_BG = "linear-gradient(135deg, #e0f7f9 0%, #f8fcfc 100%)"; // Teal gradient
-const TEXT_MAIN = "#1E1E1E";
-const TEAL_H1 = "#0097A7";              // Same teal as homepage H1
-const CARD_BG = "#D6D9E0";              // Darker card background
-const TEAL_ACCENT = "#006F7A";          // For headings inside cards
-const HEADING_FONT = '"Nunito", sans-serif';
+// Color & Font Choices (Matching Homepage)
+const DASHBOARD_BG = "linear-gradient(135deg, #1B0036 0%, #3C1F52 100%)"; // Deep Indigo Gradient
+const TEXT_SECONDARY = "#A6A6A6";
+const CARD_BG = "#2A1B3C"; // Darker card background
+const TEAL_H1 = "#0097A7"; // Teal used for primary headings
+const PURPLE_ACCENT = "#A855F7"; // Purple Accent for highlights
+const HEADING_FONT = '"Orbitron", sans-serif';
 const BODY_FONT = '"Inter", sans-serif';
 
-// Example fetcher function
-async function fetchDisputes() {
+// Define TypeScript Interface for Disputes
+interface Dispute {
+  id: string;
+  creditor: string;
+  agency: string;
+  status: "Pending" | "Resolved" | "Denied";
+}
+
+// Fetch disputes function
+async function fetchDisputes(): Promise<Dispute[]> {
   const { data, error } = await supabase
     .from("disputes")
     .select("*")
@@ -27,23 +35,20 @@ async function fetchDisputes() {
     console.error("Supabase fetch error:", error);
     throw new Error(error.message);
   }
-  return data;
+  return data || [];
 }
 
 export default function Dashboard() {
   const { isSignedIn } = useAuth();
   const { data: disputes, error } = useSWR("disputes", fetchDisputes);
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // GSAP animation for fade-in
-    requestAnimationFrame(() => {
-      gsap.fromTo(
-        ".dashboard-container",
-        { opacity: 0, y: 20 },
-        { opacity: 1, y: 0, duration: 0.6, ease: "power3.out" }
-      );
-    });
+    // GSAP animation for fade-in effect
+    gsap.fromTo(
+      ".dashboard-container",
+      { opacity: 0, y: 20 },
+      { opacity: 1, y: 0, duration: 0.6, ease: "power3.out" }
+    );
   }, []);
 
   if (!isSignedIn) {
@@ -64,7 +69,7 @@ export default function Dashboard() {
 
   if (!disputes) {
     return (
-      <p style={{ color: TEAL_ACCENT, textAlign: "center", marginTop: "2rem" }}>
+      <p style={{ color: PURPLE_ACCENT, textAlign: "center", marginTop: "2rem" }}>
         Loading...
       </p>
     );
@@ -99,7 +104,7 @@ export default function Dashboard() {
       <p
         style={{
           fontSize: "1.125rem",
-          color: "#333",
+          color: TEXT_SECONDARY,
           margin: "0 auto 32px",
           maxWidth: "600px",
           textAlign: "center",
@@ -119,14 +124,14 @@ export default function Dashboard() {
         }}
       >
         {disputes.length > 0 ? (
-          disputes.map((dispute: any) => (
+          disputes.map((dispute) => (
             <div
               key={dispute.id}
               style={{
                 backgroundColor: CARD_BG,
                 padding: "20px",
                 borderRadius: "12px",
-                boxShadow: "0 4px 8px rgba(0, 120, 130, 0.1)",
+                boxShadow: `0 4px 12px rgba(168, 85, 247, 0.3)`, // Subtle Purple Glow
                 transition: "transform 0.3s ease",
               }}
               onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.02)")}
@@ -136,14 +141,14 @@ export default function Dashboard() {
                 style={{
                   fontSize: "1.25rem",
                   fontWeight: "bold",
-                  color: TEAL_ACCENT,
+                  color: PURPLE_ACCENT,
                   fontFamily: HEADING_FONT,
                   marginBottom: "8px",
                 }}
               >
                 {dispute.creditor}
               </h3>
-              <p style={{ fontSize: "0.95rem", color: "#333", marginBottom: "4px" }}>
+              <p style={{ fontSize: "0.95rem", color: TEXT_SECONDARY, marginBottom: "4px" }}>
                 Agency: {dispute.agency}
               </p>
               <p
@@ -158,7 +163,7 @@ export default function Dashboard() {
             </div>
           ))
         ) : (
-          <p style={{ color: "#333", textAlign: "center", gridColumn: "1 / -1" }}>
+          <p style={{ color: TEXT_SECONDARY, textAlign: "center", gridColumn: "1 / -1" }}>
             No disputes found.
           </p>
         )}
