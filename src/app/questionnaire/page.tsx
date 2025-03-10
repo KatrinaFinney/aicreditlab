@@ -1,21 +1,52 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation"; // ✅ FIXED: Use next/navigation in App Router
+import { useRouter } from "next/navigation";
 
 const questions = [
   {
     question: "What’s your main credit goal?",
-    options: ["Remove errors", "Increase score", "Get approved for a loan"],
+    options: [
+      "Remove inaccurate items",
+      "Improve credit score",
+      "Get approved for a loan",
+      "Lower interest rates",
+      "Stop creditor harassment",
+    ],
   },
   {
-    question: "Which of these applies to you?",
-    options: ["Late payments", "Collections", "High credit utilization"],
+    question: "What are your biggest credit challenges?",
+    options: [
+      "Late payments",
+      "Collections or charge-offs",
+      "High credit utilization",
+      "No credit history",
+      "Too many hard inquiries",
+    ],
+  },
+  {
+    question: "Which habits describe your credit behavior?",
+    options: [
+      "Pay at least the minimum on time",
+      "Use over 30% of my credit limit",
+      "Apply for new credit often",
+      "Monitor my credit score",
+      "Have unpaid accounts in collections",
+    ],
+  },
+  {
+    question: "How prepared are you to dispute items?",
+    options: [
+      "I have copies of my credit reports",
+      "I’ve sent dispute letters before",
+      "I need help understanding my credit reports",
+    ],
   },
 ];
 
 export default function Questionnaire() {
   const router = useRouter();
+  const [step, setStep] = useState(0);
   const [answers, setAnswers] = useState<string[]>([]);
 
   const handleSelect = (option: string) => {
@@ -26,9 +57,13 @@ export default function Questionnaire() {
     }
   };
 
-  const handleSubmit = () => {
-    console.log("User's selected answers:", answers);
-    router.push("/dashboard"); // Redirect to dashboard after completion
+  const handleNext = () => {
+    if (step < questions.length - 1) {
+      setStep(step + 1);
+    } else {
+      console.log("User's selected answers:", answers);
+      router.push("/dashboard"); // Redirect to dashboard
+    }
   };
 
   return (
@@ -42,37 +77,34 @@ export default function Questionnaire() {
     >
       <h1 style={{ color: "#0097A7", marginBottom: "20px" }}>Credit Assessment</h1>
       <p style={{ marginBottom: "24px", color: "#333" }}>
-        Answer a few quick questions so we can build your personalized Credit Blueprint.
+        {`Step ${step + 1} of ${questions.length}`} – Answer a few quick questions to build your personalized Credit Plan.
       </p>
 
-      {questions.map((q, index) => (
-        <div key={index} style={{ marginBottom: "20px", textAlign: "left" }}>
-          <h3 style={{ color: "#006F7A", marginBottom: "10px" }}>{q.question}</h3>
-          {q.options.map((option) => (
-            <button
-              key={option}
-              onClick={() => handleSelect(option)}
-              style={{
-                display: "block",
-                width: "100%",
-                padding: "10px",
-                margin: "5px 0",
-                backgroundColor: answers.includes(option) ? "#0097A7" : "#f0f0f0",
-                color: answers.includes(option) ? "white" : "#333",
-                border: "1px solid #0097A7",
-                borderRadius: "6px",
-                cursor: "pointer",
-                transition: "all 0.3s ease",
-              }}
-            >
-              {option}
-            </button>
-          ))}
-        </div>
+      <h3 style={{ color: "#006F7A", marginBottom: "10px" }}>{questions[step].question}</h3>
+
+      {questions[step].options.map((option) => (
+        <button
+          key={option}
+          onClick={() => handleSelect(option)}
+          style={{
+            display: "block",
+            width: "100%",
+            padding: "10px",
+            margin: "5px 0",
+            backgroundColor: answers.includes(option) ? "#0097A7" : "#f0f0f0",
+            color: answers.includes(option) ? "white" : "#333",
+            border: "1px solid #0097A7",
+            borderRadius: "6px",
+            cursor: "pointer",
+            transition: "all 0.3s ease",
+          }}
+        >
+          {option}
+        </button>
       ))}
 
       <button
-        onClick={handleSubmit}
+        onClick={handleNext}
         style={{
           marginTop: "20px",
           padding: "12px 24px",
@@ -87,7 +119,7 @@ export default function Questionnaire() {
         onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#006F7A")}
         onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#0097A7")}
       >
-        Get My Credit Plan
+        {step === questions.length - 1 ? "Get My Credit Plan" : "Next"}
       </button>
     </div>
   );
