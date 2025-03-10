@@ -5,9 +5,7 @@ import Image from "next/image";
 import { useEffect } from "react";
 import { gsap } from "gsap";
 
-//
 // Color Variables
-//
 const BACKGROUND_GRADIENT = "linear-gradient(135deg, #d0f0f7 0%, #ecfbfc 100%)";
 const TEXT_MAIN = "#1E1E1E";
 const CARD_BG = "#D6D9E0";
@@ -24,7 +22,8 @@ const features = [
   {
     icon: "/icons/robot.svg",
     title: "AI-Powered Dispute Letters",
-    description: "Our AI drafts dispute letters tailored to your case—no templates, just precision.",
+    description:
+      "Our AI drafts dispute letters tailored to your case—no templates, just precision.",
   },
   {
     icon: "/icons/time.svg",
@@ -59,28 +58,50 @@ export default function Home() {
     gsap.fromTo(
       ".hero-bg",
       { backgroundPosition: "0% 50%" },
-      { backgroundPosition: "100% 50%", duration: 6, repeat: -1, ease: "linear" }
+      {
+        backgroundPosition: "100% 50%",
+        duration: 6,
+        repeat: -1,
+        ease: "linear",
+      }
     );
 
     // Hero/Text/Buttons Animation
     gsap.fromTo(
       ".animate",
       { opacity: 0, y: 20 },
-      { opacity: 1, y: 0, duration: 1, stagger: 0.2, ease: "power3.out" }
+      {
+        opacity: 1,
+        y: 0,
+        duration: 1,
+        stagger: 0.2,
+        ease: "power3.out",
+      }
     );
 
     // Cards Animation
     gsap.fromTo(
       ".card-animate",
       { opacity: 0, scale: 0.9 },
-      { opacity: 1, scale: 1, duration: 0.8, stagger: 0.15, ease: "power3.out" }
+      {
+        opacity: 1,
+        scale: 1,
+        duration: 0.8,
+        stagger: 0.15,
+        ease: "power3.out",
+      }
     );
 
     // Footer Animation
     gsap.fromTo(
       ".footer",
       { opacity: 0, y: 30 },
-      { opacity: 1, y: 0, duration: 1, ease: "power3.out" }
+      {
+        opacity: 1,
+        y: 0,
+        duration: 1,
+        ease: "power3.out",
+      }
     );
   }, []);
 
@@ -116,20 +137,18 @@ export default function Home() {
           height={180}
           style={{ marginBottom: "20px" }}
         />
-
         <h1
           className="animate"
           style={{
             fontSize: "clamp(2rem, 7vw, 3.75rem)",
             fontWeight: 700,
             color: TEAL_H1,
-            textShadow: `0px 0px 8px rgba(0, 151, 167, 0.4)`,
+            textShadow: "0px 0px 8px rgba(0, 151, 167, 0.4)",
             marginBottom: "16px",
           }}
         >
           Credit Repair, Reinvented.
         </h1>
-
         <p
           className="animate"
           style={{
@@ -139,7 +158,8 @@ export default function Home() {
             maxWidth: "600px",
           }}
         >
-          Struggling with credit report errors? AI CreditLab automates dispute letters, tracks your progress, and helps you improve your score—without the guesswork.
+          Struggling with credit report errors? AI CreditLab automates dispute letters, tracks your
+          progress, and helps you improve your score—without the guesswork.
         </p>
 
         {/* Buttons */}
@@ -195,119 +215,32 @@ export default function Home() {
         </div>
       </div>
 
-      {/* 2. 3 SIMPLE STEPS */}
+      {/* 2. WHY CHOOSE AI CREDITLAB? (6 Feature Cards) */}
       <div
         className="animate"
         style={{
           padding: "40px 32px",
           textAlign: "center",
-          backgroundColor: "#f8fafa",
         }}
       >
-        <h2 style={{ fontSize: "2rem", fontWeight: 700, color: TEAL_H1, marginBottom: "20px" }}>
-          3 Simple Steps to Use AI CreditLab
-        </h2>
-        <p style={{ maxWidth: "700px", margin: "0 auto", marginBottom: "32px", color: "#333" }}>
-          Getting started is quick &amp; easy. Just follow these steps to begin transforming your credit.
-        </p>
-
-        <div
+        <h2
           style={{
-            display: "grid",
-            gap: "24px",
-            gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
-            maxWidth: "900px",
-            margin: "0 auto",
+            fontSize: "2rem",
+            fontWeight: 700,
+            color: "#007882",
+            marginBottom: "20px",
           }}
         >
-          {/* Step 1 */}
-          <div
-            className="card-animate"
-            style={{
-              backgroundColor: CARD_BG,
-              padding: "20px",
-              borderRadius: "12px",
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              textAlign: "center",
-            }}
-          >
-            <h3 style={{ fontSize: "1.25rem", fontWeight: "bold", color: "#006F7A", marginBottom: "8px" }}>
-              Step 1
-            </h3>
-            <p style={{ color: "#333" }}>
-              Pull your free credit report from{" "}
-              <a
-                href="https://www.annualcreditreport.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                style={{ textDecoration: "underline", color: "#006F7A" }}
-              >
-                AnnualCreditReport.com
-              </a>{" "}
-              or other providers. We’ll help identify what’s holding your score back.
-            </p>
-          </div>
-
-          {/* Step 2 */}
-          <div
-            className="card-animate"
-            style={{
-              backgroundColor: CARD_BG,
-              padding: "20px",
-              borderRadius: "12px",
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              textAlign: "center",
-            }}
-          >
-            <h3 style={{ fontSize: "1.25rem", fontWeight: "bold", color: "#006F7A", marginBottom: "8px" }}>
-              Step 2
-            </h3>
-            <p style={{ color: "#333" }}>
-              Sign up for AI CreditLab and upload your credit details. Our AI will craft a custom plan—
-              from quick wins to major improvements.
-            </p>
-          </div>
-
-          {/* Step 3 */}
-          <div
-            className="card-animate"
-            style={{
-              backgroundColor: CARD_BG,
-              padding: "20px",
-              borderRadius: "12px",
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              textAlign: "center",
-            }}
-          >
-            <h3 style={{ fontSize: "1.25rem", fontWeight: "bold", color: "#006F7A", marginBottom: "8px" }}>
-              Step 3
-            </h3>
-            <p style={{ color: "#333" }}>
-              Follow a free high-level overview, or unlock a paid plan with step-by-step guidance,
-              tracking, and daily tasks.
-            </p>
-          </div>
-        </div>
-      </div>
-
-      {/* 3. WHY CHOOSE AI CREDITLAB? (6 FEATURE CARDS) */}
-      <div
-        className="animate"
-        style={{
-          padding: "40px 32px",
-          textAlign: "center",
-        }}
-      >
-        <h2 style={{ fontSize: "2rem", fontWeight: 700, color: "#007882", marginBottom: "20px" }}>
           Why Choose AI CreditLab?
         </h2>
-        <p style={{ maxWidth: "700px", margin: "0 auto", marginBottom: "32px", color: "#333" }}>
+        <p
+          style={{
+            maxWidth: "700px",
+            margin: "0 auto",
+            marginBottom: "32px",
+            color: "#333",
+          }}
+        >
           Traditional credit repair is expensive, confusing, and slow. AI CreditLab eliminates hidden
           fees, automates dispute letters, and puts you in control.
         </p>
@@ -358,7 +291,144 @@ export default function Home() {
         </div>
       </div>
 
-      {/* 4. FREE VS. PAID (MORE BALANCED LAYOUT) */}
+      {/* 3. 3 SIMPLE STEPS (Moved Below Features) */}
+      <div
+        className="animate"
+        style={{
+          padding: "40px 32px",
+          textAlign: "center",
+          backgroundColor: "#f8fafa",
+        }}
+      >
+        <h2
+          style={{
+            fontSize: "2rem",
+            fontWeight: 700,
+            color: TEAL_H1,
+            marginBottom: "20px",
+          }}
+        >
+          3 Simple Steps to Use AI CreditLab
+        </h2>
+        <p
+          style={{
+            maxWidth: "700px",
+            margin: "0 auto",
+            marginBottom: "32px",
+            color: "#333",
+          }}
+        >
+          Getting started is quick &amp; easy. Just follow these steps to begin transforming your
+          credit.
+        </p>
+
+        <div
+          style={{
+            display: "grid",
+            gap: "24px",
+            gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
+            maxWidth: "900px",
+            margin: "0 auto",
+          }}
+        >
+          {/* Step 1 */}
+          <div
+            className="card-animate"
+            style={{
+              backgroundColor: CARD_BG,
+              padding: "20px",
+              borderRadius: "12px",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              textAlign: "center",
+            }}
+          >
+            <h3
+              style={{
+                fontSize: "1.25rem",
+                fontWeight: "bold",
+                color: "#006F7A",
+                marginBottom: "8px",
+              }}
+            >
+              Step 1
+            </h3>
+            <p style={{ color: "#333" }}>
+              Pull your free credit report from{" "}
+              <a
+                href="https://www.annualcreditreport.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ textDecoration: "underline", color: "#006F7A" }}
+              >
+                AnnualCreditReport.com
+              </a>{" "}
+              or other providers. We’ll help identify what’s holding your score back.
+            </p>
+          </div>
+
+          {/* Step 2 */}
+          <div
+            className="card-animate"
+            style={{
+              backgroundColor: CARD_BG,
+              padding: "20px",
+              borderRadius: "12px",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              textAlign: "center",
+            }}
+          >
+            <h3
+              style={{
+                fontSize: "1.25rem",
+                fontWeight: "bold",
+                color: "#006F7A",
+                marginBottom: "8px",
+              }}
+            >
+              Step 2
+            </h3>
+            <p style={{ color: "#333" }}>
+              Sign up for AI CreditLab and upload your credit details. Our AI will craft a custom
+              plan— from quick wins to major improvements.
+            </p>
+          </div>
+
+          {/* Step 3 */}
+          <div
+            className="card-animate"
+            style={{
+              backgroundColor: CARD_BG,
+              padding: "20px",
+              borderRadius: "12px",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              textAlign: "center",
+            }}
+          >
+            <h3
+              style={{
+                fontSize: "1.25rem",
+                fontWeight: "bold",
+                color: "#006F7A",
+                marginBottom: "8px",
+              }}
+            >
+              Step 3
+            </h3>
+            <p style={{ color: "#333" }}>
+              Follow a free high-level overview, or unlock a paid plan with step-by-step guidance,
+              tracking, and daily tasks.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* 4. FREE VS. PRO SECTION */}
       <div
         className="animate"
         style={{
@@ -385,7 +455,8 @@ export default function Home() {
             color: "#333",
           }}
         >
-          Whether you&apos;re just getting started or ready to take full control of your credit, we&apos;ve got a plan for you.
+          Whether you&apos;re just getting started or ready to take full control of your credit,
+          we&apos;ve got a plan for you.
         </p>
 
         <div
@@ -396,7 +467,7 @@ export default function Home() {
             flexWrap: "wrap",
           }}
         >
-          {/* Free Card */}
+          {/* Free Plan */}
           <div
             style={{
               backgroundColor: CARD_BG,
@@ -418,26 +489,26 @@ export default function Home() {
                 marginBottom: "12px",
               }}
             >
-              Free Plan
+              Smart Credit Starter Plan
             </h3>
             <ul
               style={{
                 color: "#333",
                 listStyleType: "disc",
-                listStylePosition: "inside",
-                padding: 0,
+                listStylePosition: "outside",
+                marginLeft: "1rem",
                 textAlign: "left",
                 margin: "0 auto",
                 maxWidth: "90%",
+                padding: 0,
               }}
             >
-              <li>Basic credit health overview</li>
-              <li>AI-generated dispute letters</li>
-              <li>Essential improvement insights</li>
+              <li>Essential credit health overview</li>
+              <li>AI-generated dispute letter templates</li>
+              <li>General improvement strategies</li>
+              <li>Step-by-step guides for common credit issues</li>
+              <li>No hidden fees—get started now!</li>
             </ul>
-            <p style={{ fontSize: "0.9rem", color: "#555", marginTop: "10px" }}>
-              Perfect for beginners who want to get started at no cost.
-            </p>
             <Link
               href="/sign-up"
               style={{
@@ -455,11 +526,11 @@ export default function Home() {
               onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = SIGN_UP_HOVER_BG)}
               onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "transparent")}
             >
-              Get Started for Free
+              Start for Free
             </Link>
           </div>
 
-          {/* Paid/Pro Card */}
+          {/* Pro Plan */}
           <div
             style={{
               backgroundColor: CARD_BG,
@@ -482,26 +553,26 @@ export default function Home() {
                 marginBottom: "12px",
               }}
             >
-              Pro Plan
+              Credit Mastery Roadmap
             </h3>
             <ul
               style={{
                 color: "#333",
                 listStyleType: "disc",
-                listStylePosition: "inside",
-                padding: 0,
+                listStylePosition: "outside",
+                marginLeft: "1rem",
                 textAlign: "left",
                 margin: "0 auto",
                 maxWidth: "90%",
+                padding: 0,
               }}
             >
               <li>All Free features + deep AI insights</li>
-              <li>Step-by-step progress tracking</li>
-              <li>Daily action plan for faster results</li>
+              <li>Step-by-step repair strategy</li>
+              <li>Daily tasks for faster results</li>
+              <li>Progress tracking &amp; reminders</li>
+              <li>Advanced tools to maximize growth</li>
             </ul>
-            <p style={{ fontSize: "0.9rem", fontWeight: "bold", color: "#007882", marginTop: "10px" }}>
-              Unlock AI-powered strategies to skyrocket your credit score!
-            </p>
             <Link
               href="/sign-up"
               style={{
@@ -518,7 +589,7 @@ export default function Home() {
               onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = TEAL_HOVER)}
               onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = TEAL_BUTTON)}
             >
-              Upgrade Now
+              Unlock Expert Guidance
             </Link>
           </div>
         </div>
@@ -533,10 +604,22 @@ export default function Home() {
           textAlign: "center",
         }}
       >
-        <h2 style={{ fontSize: "2rem", fontWeight: 700, color: "#007882" }}>
+        <h2
+          style={{
+            fontSize: "2rem",
+            fontWeight: 700,
+            color: "#007882",
+          }}
+        >
           Take Charge of Your Credit Today
         </h2>
-        <p style={{ margin: "16px auto", maxWidth: "600px", color: "#333" }}>
+        <p
+          style={{
+            margin: "16px auto",
+            maxWidth: "600px",
+            color: "#333",
+          }}
+        >
           AI CreditLab gives you the tools to fix credit errors, boost your score, and take control of
           your financial future. Sign up now—your journey to better credit starts here.
         </p>
