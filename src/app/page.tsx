@@ -215,219 +215,224 @@ export default function Home() {
         </div>
       </div>
 
-      {/* 2. WHY CHOOSE AI CREDITLAB? (6 Feature Cards) */}
-      <div
-        className="animate"
+ 
+
+{/* 3 EASY STEPS TO TRANSFORM YOUR CREDIT */}
+<div
+  className="animate"
+  style={{
+    padding: "40px 32px",
+    textAlign: "center",
+    backgroundColor: "#f8fafa",
+  }}
+>
+  <h2
+    style={{
+      fontSize: "2.25rem",
+      fontWeight: 700,
+      color: TEAL_H1,
+      marginBottom: "20px",
+    }}
+  >
+    Your Path to Better Credit Starts Here
+  </h2>
+  <p
+    style={{
+      maxWidth: "700px",
+      margin: "0 auto",
+      marginBottom: "32px",
+      color: "#333",
+      fontSize: "1.15rem",
+    }}
+  >
+    AI-powered insights. Zero guesswork. Follow these three simple steps to take control of your credit today.
+  </p>
+
+  <div
+    style={{
+      display: "grid",
+      gap: "24px",
+      gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
+      maxWidth: "900px",
+      margin: "0 auto",
+    }}
+  >
+    <div
+      className="card-animate"
+      style={{
+        backgroundColor: CARD_BG,
+        padding: "20px",
+        borderRadius: "12px",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        textAlign: "center",
+      }}
+    >
+      <h3
         style={{
-          padding: "40px 32px",
-          textAlign: "center",
+          fontSize: "1.3rem",
+          fontWeight: "bold",
+          color: "#006F7A",
+          marginBottom: "8px",
         }}
       >
-        <h2
-          style={{
-            fontSize: "2rem",
-            fontWeight: 700,
-            color: "#007882",
-            marginBottom: "20px",
-          }}
-        >
-          Why Choose AI CreditLab?
-        </h2>
-        <p
-          style={{
-            maxWidth: "700px",
-            margin: "0 auto",
-            marginBottom: "32px",
-            color: "#333",
-          }}
-        >
-          Traditional credit repair is expensive, confusing, and slow. AI CreditLab eliminates hidden
-          fees, automates dispute letters, and puts you in control.
-        </p>
+        Step 1: Unlock Your Credit Potential
+      </h3>
+      <p style={{ color: "#333" }}>
+        Sign up for free and answer a few simple questions. Our AI will assess your situation and identify your fastest path to success.
+      </p>
+    </div>
 
-        <div
-          style={{
-            display: "grid",
-            gap: "24px",
-            gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
-            maxWidth: "900px",
-            margin: "0 auto",
-          }}
-        >
-          {features.map((feature, index) => (
-            <div
-              key={index}
-              className="card-animate"
-              style={{
-                backgroundColor: CARD_BG,
-                padding: "20px",
-                borderRadius: "12px",
-                transition: "transform 0.3s ease",
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                textAlign: "center",
-              }}
-              onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.05)")}
-              onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
-            >
-              <Image
-                src={feature.icon}
-                alt={feature.title}
-                width={48}
-                height={48}
-                style={{
-                  marginBottom: "12px",
-                  filter:
-                    "invert(35%) sepia(82%) saturate(498%) hue-rotate(145deg) brightness(95%) contrast(94%)",
-                }}
-              />
-              <h3 style={{ fontSize: "1.25rem", fontWeight: "bold", color: "#006F7A" }}>
-                {feature.title}
-              </h3>
-              <p style={{ color: "#333" }}>{feature.description}</p>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* 3. 3 SIMPLE STEPS (Moved Below Features) */}
-      <div
-        className="animate"
+    <div
+      className="card-animate"
+      style={{
+        backgroundColor: CARD_BG,
+        padding: "20px",
+        borderRadius: "12px",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        textAlign: "center",
+      }}
+    >
+      <h3
         style={{
-          padding: "40px 32px",
-          textAlign: "center",
-          backgroundColor: "#f8fafa",
+          fontSize: "1.2rem",
+          fontWeight: "bold",
+          color: "#006F7A",
+          marginBottom: "8px",
         }}
       >
-        <h2
+        Step 2: Get Your Personalized Credit Plan
+      </h3>
+      <p style={{ color: "#333" }}>
+        Instantly receive a custom Credit Blueprint with targeted dispute letters, high-impact strategies, and expert insights.
+      </p>
+    </div>
+
+    <div
+      className="card-animate"
+      style={{
+        backgroundColor: CARD_BG,
+        padding: "20px",
+        borderRadius: "12px",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        textAlign: "center",
+      }}
+    >
+      <h3
+        style={{
+          fontSize: "1.3rem",
+          fontWeight: "bold",
+          color: "#006F7A",
+          marginBottom: "8px",
+        }}
+      >
+        Step 3: Follow Your AI-Powered Roadmap
+      </h3>
+      <p style={{ color: "#333" }}>
+        Take immediate action with our step-by-step AI guidance. Free users get essential tools, while Pro members unlock powerful tracking and automation.
+      </p>
+    </div>
+  </div>
+</div>
+
+ {/* 2. WHY CHOOSE AI CREDITLAB? (6 Feature Cards) */}
+ <div
+  className="animate"
+  style={{
+    padding: "40px 32px",
+    textAlign: "center",
+  }}
+>
+  <h2
+    style={{
+      fontSize: "2rem",
+      fontWeight: 700,
+      color: "#007882",
+      marginBottom: "20px",
+    }}
+  >
+    Why Choose AI CreditLab?
+  </h2>
+  <p
+    style={{
+      maxWidth: "700px",
+      margin: "0 auto",
+      marginBottom: "32px",
+      color: "#333",
+    }}
+  >
+    Traditional credit repair is expensive, confusing, and slow. AI CreditLab eliminates hidden
+    fees, automates dispute letters, and puts you in control.
+  </p>
+
+  <div
+    style={{
+      display: "grid",
+      gap: "24px",
+      gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))",
+      maxWidth: "1000px",
+      margin: "0 auto",
+    }}
+  >
+    {features.map((feature, index) => (
+      <div
+        key={index}
+        className="card-animate"
+        style={{
+          backgroundColor: CARD_BG,
+          padding: "24px",
+          borderRadius: "12px",
+          transition: "transform 0.3s ease",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          textAlign: "center",
+          minHeight: "260px",
+          justifyContent: "center", // Center content vertically
+        }}
+        onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.05)")}
+        onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
+      >
+        <Image
+          src={feature.icon}
+          alt={feature.title}
+          width={56} // Slightly larger, but not oversized
+          height={56}
           style={{
-            fontSize: "2rem",
-            fontWeight: 700,
-            color: TEAL_H1,
-            marginBottom: "20px",
+            marginBottom: "10px", // Reduced space between icon and title
+            filter:
+              "invert(35%) sepia(82%) saturate(498%) hue-rotate(145deg) brightness(95%) contrast(94%)",
+          }}
+        />
+        <h3
+          style={{
+            fontSize: "1.3rem",
+            fontWeight: "bold",
+            color: "#006F7A",
+            marginBottom: "6px", // Small but consistent spacing
           }}
         >
-          3 Simple Steps to Use AI CreditLab
-        </h2>
+          {feature.title}
+        </h3>
         <p
           style={{
-            maxWidth: "700px",
-            margin: "0 auto",
-            marginBottom: "32px",
             color: "#333",
+            fontSize: "1rem",
+            lineHeight: "1.4", // Slightly tighter line height for a cleaner look
+            maxWidth: "90%", // Prevents overly wide text for better readability
           }}
         >
-          Getting started is quick &amp; easy. Just follow these steps to begin transforming your
-          credit.
+          {feature.description}
         </p>
-
-        <div
-          style={{
-            display: "grid",
-            gap: "24px",
-            gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
-            maxWidth: "900px",
-            margin: "0 auto",
-          }}
-        >
-          {/* Step 1 */}
-          <div
-            className="card-animate"
-            style={{
-              backgroundColor: CARD_BG,
-              padding: "20px",
-              borderRadius: "12px",
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              textAlign: "center",
-            }}
-          >
-            <h3
-              style={{
-                fontSize: "1.25rem",
-                fontWeight: "bold",
-                color: "#006F7A",
-                marginBottom: "8px",
-              }}
-            >
-              Step 1
-            </h3>
-            <p style={{ color: "#333" }}>
-              Pull your free credit report from{" "}
-              <a
-                href="https://www.annualcreditreport.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                style={{ textDecoration: "underline", color: "#006F7A" }}
-              >
-                AnnualCreditReport.com
-              </a>{" "}
-              or other providers. We’ll help identify what’s holding your score back.
-            </p>
-          </div>
-
-          {/* Step 2 */}
-          <div
-            className="card-animate"
-            style={{
-              backgroundColor: CARD_BG,
-              padding: "20px",
-              borderRadius: "12px",
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              textAlign: "center",
-            }}
-          >
-            <h3
-              style={{
-                fontSize: "1.25rem",
-                fontWeight: "bold",
-                color: "#006F7A",
-                marginBottom: "8px",
-              }}
-            >
-              Step 2
-            </h3>
-            <p style={{ color: "#333" }}>
-              Sign up for AI CreditLab and upload your credit details. Our AI will craft a custom
-              plan— from quick wins to major improvements.
-            </p>
-          </div>
-
-          {/* Step 3 */}
-          <div
-            className="card-animate"
-            style={{
-              backgroundColor: CARD_BG,
-              padding: "20px",
-              borderRadius: "12px",
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              textAlign: "center",
-            }}
-          >
-            <h3
-              style={{
-                fontSize: "1.25rem",
-                fontWeight: "bold",
-                color: "#006F7A",
-                marginBottom: "8px",
-              }}
-            >
-              Step 3
-            </h3>
-            <p style={{ color: "#333" }}>
-              Follow a free high-level overview, or unlock a paid plan with step-by-step guidance,
-              tracking, and daily tasks.
-            </p>
-          </div>
-        </div>
       </div>
-
+    ))}
+  </div>
+</div>
       {/* 4. FREE VS. PRO SECTION */}
       <div
         className="animate"
@@ -642,6 +647,23 @@ export default function Home() {
           Get Started Now
         </Link>
       </div>
+{/* Disclaimer Section */}
+<div
+  className="animate"
+  style={{
+    padding: "30px",
+    textAlign: "center",
+    backgroundColor: "#f4f4f4",
+    color: "#666",
+    fontSize: "0.9rem",
+  }}
+>
+  <p>
+    <strong>Disclaimer:</strong> AI CreditLab provides AI-generated insights for educational purposes only. 
+    This is <strong>not legal or financial advice</strong>. Users should verify recommendations independently 
+    and consult professionals if needed.
+  </p>
+</div>
 
       {/* 6. FOOTER */}
       <footer
