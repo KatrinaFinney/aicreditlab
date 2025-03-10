@@ -10,10 +10,19 @@ const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 );
 
+// Define a type for the user's credit plan data
+interface UserData {
+  plan_type: "free" | "paid";
+  full_name?: string;
+  address?: string;
+  selected_disputes?: string[];
+  credit_plan?: string[];
+}
+
 export default function Dashboard() {
-  const { user } = useUser(); // Removed isSignedIn since it wasn't used
+  const { user } = useUser();
   const [planType, setPlanType] = useState<"free" | "paid" | null>(null);
-  const [creditPlan, setCreditPlan] = useState<string[]>([]);
+  const [userData, setUserData] = useState<UserData | null>(null);
 
   useEffect(() => {
     if (!user) return;
@@ -21,13 +30,13 @@ export default function Dashboard() {
     const fetchUserPlan = async () => {
       const { data, error } = await supabase
         .from("credit_plans")
-        .select("plan_type, credit_plan")
+        .select("plan_type, full_name, address, selected_disputes, credit_plan")
         .eq("user_id", user.id)
         .single();
 
       if (!error && data) {
         setPlanType(data.plan_type);
-        setCreditPlan(data.credit_plan || []);
+        setUserData(data);
       } else {
         setPlanType("free"); // Default to free if no plan found
       }
@@ -45,9 +54,21 @@ export default function Dashboard() {
         minHeight: "100vh",
       }}
     >
-      <h1 style={{ fontSize: "2.5rem", fontWeight: "700", color: "#0097A7", textAlign: "center" }}>
-        Welcome, {user?.firstName}!
+      {/* Welcome Section */}
+      <h1
+        style={{
+          fontSize: "2.5rem",
+          fontWeight: "700",
+          color: "#0097A7",
+          textAlign: "center",
+        }}
+      >
+        Welcome, {userData?.full_name || user?.firstName}!
       </h1>
+
+      <p style={{ textAlign: "center", fontSize: "1.2rem", color: "#333" }}>
+        {userData?.address ? `📍 Address: ${userData.address}` : "Please update your address in settings."}
+      </p>
 
       {/* Credit Plan Overview */}
       <div
@@ -59,18 +80,33 @@ export default function Dashboard() {
           marginTop: "24px",
         }}
       >
-        <h2 style={{ fontSize: "1.5rem", fontWeight: "bold", color: "#006F7A" }}>Your AI Credit Plan</h2>
-        {creditPlan.length > 0 ? (
+        <h2
+          style={{
+            fontSize: "1.5rem",
+            fontWeight: "bold",
+            color: "#006F7A",
+          }}
+        >
+          Your AI Credit Plan
+        </h2>
+
+        {userData?.credit_plan && userData.credit_plan.length > 0 ? (
           <ul style={{ paddingLeft: "20px", marginTop: "10px" }}>
-            {creditPlan.map((step, index) => (
-              <li key={index} style={{ fontSize: "1.1rem", color: "#333", marginBottom: "8px" }}>
+            {userData.credit_plan.map((step, index) => (
+              <li
+                key={index}
+                style={{ fontSize: "1.1rem", color: "#333", marginBottom: "8px" }}
+              >
                 {step}
               </li>
             ))}
           </ul>
         ) : (
-          <p style={{ fontSize: "1.1rem", color: "#666" }}>No credit plan found. Please complete the questionnaire.</p>
+          <p style={{ fontSize: "1.1rem", color: "#666" }}>
+            No credit plan found. Please complete the questionnaire.
+          </p>
         )}
+
         <Link
           href="/questionnaire"
           style={{
@@ -88,7 +124,7 @@ export default function Dashboard() {
         </Link>
       </div>
 
-      {/* Dispute Templates Section */}
+      {/* Selected Disputes Section */}
       <div
         style={{
           backgroundColor: "white",
@@ -98,10 +134,51 @@ export default function Dashboard() {
           marginTop: "24px",
         }}
       >
-        <h2 style={{ fontSize: "1.5rem", fontWeight: "bold", color: "#006F7A" }}>Dispute Center</h2>
+        <h2
+          style={{
+            fontSize: "1.5rem",
+            fontWeight: "bold",
+            color: "#006F7A",
+          }}
+        >
+          Your Selected Disputes
+        </h2>
+
+        {userData?.selected_disputes && userData.selected_disputes.length > 0 ? (
+          <ul style={{ paddingLeft: "20px", marginTop: "10px" }}>
+            {userData.selected_disputes.map((dispute, index) => (
+              <li
+                key={index}
+                style={{ fontSize: "1.1rem", color: "#333", marginBottom: "8px" }}
+              >
+                {dispute}
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p style={{ fontSize: "1.1rem", color: "#666" }}>
+            No disputes selected yet.
+          </p>
+        )}
+      </div>
+
+      {/* Dispute Center Section */}
+      <div
+        style={{
+          backgroundColor: "white",
+          padding: "20px",
+          borderRadius: "12px",
+          boxShadow: "0px 4px 12px rgba(0, 0, 0, 0.1)",
+          marginTop: "24px",
+        }}
+      >
+        <h2 style={{ fontSize: "1.5rem", fontWeight: "bold", color: "#006F7A" }}>
+          Dispute Center
+        </h2>
         <p style={{ fontSize: "1.1rem", color: "#333" }}>
           Generate AI-powered dispute templates and take control of your credit report.
         </p>
+
         <Link
           href="/dispute-center"
           style={{
@@ -130,10 +207,13 @@ export default function Dashboard() {
           opacity: planType === "paid" ? "1" : "0.5",
         }}
       >
-        <h2 style={{ fontSize: "1.5rem", fontWeight: "bold", color: "#006F7A" }}>Premium Tools</h2>
+        <h2 style={{ fontSize: "1.5rem", fontWeight: "bold", color: "#006F7A" }}>
+          Premium Tools
+        </h2>
         <p style={{ fontSize: "1.1rem", color: "#333" }}>
           AI-driven insights, step-by-step repair strategies, and real-time credit tracking.
         </p>
+
         {planType === "paid" ? (
           <Link
             href="/premium-tools"

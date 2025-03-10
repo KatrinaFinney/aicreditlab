@@ -2,6 +2,13 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useUser } from "@clerk/nextjs";
+import { createClient } from "@supabase/supabase-js";
+
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+);
 
 const questions = [
   {
@@ -41,18 +48,18 @@ const questions = [
 
 export default function Questionnaire() {
   const router = useRouter();
+  const { user } = useUser();
   const [answers, setAnswers] = useState<{ [key: number]: string[] }>({});
   const [error, setError] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const handleSelect = (questionId: number, option: string) => {
     setAnswers((prev) => {
       const currentAnswers = prev[questionId] || [];
 
       if (currentAnswers.includes(option)) {
-        // Deselect option if already selected
         return { ...prev, [questionId]: currentAnswers.filter((ans) => ans !== option) };
       } else if (currentAnswers.length < 3) {
-        // Allow up to 3 selections
         return { ...prev, [questionId]: [...currentAnswers, option] };
       }
       return prev;
@@ -61,15 +68,27 @@ export default function Questionnaire() {
     setError(false); // Remove error message when a valid selection is made
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     // Ensure all questions have at least one selection
     if (Object.keys(answers).length !== questions.length || Object.values(answers).some(ans => ans.length === 0)) {
       setError(true);
       return;
     }
 
-    // Simulate saving answers to the database
-    console.log("User responses:", answers);
+    setLoading(true);
+
+    // Save to Supabase
+    if (user) {
+      const { error } = await supabase
+        .from("credit_plans")
+        .update({ selected_disputes: answers })
+        .eq("user_id", user.id);
+
+      if (error) {
+        console.error("Error saving responses:", error);
+      }
+    }
+
     router.push("/dashboard");
   };
 
@@ -83,15 +102,13 @@ export default function Questionnaire() {
       {questions.map((q) => (
         <div key={q.id} style={{ marginBottom: "20px" }}>
           <h3 style={{ color: "#006F7A", fontWeight: "bold" }}>{q.question}</h3>
-          <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px", justifyContent: "center" }}>
             {q.options.map((option) => (
               <button
                 key={option}
                 onClick={() => handleSelect(q.id, option)}
                 style={{
                   padding: "10px 15px",
-                  margin: "5px",
-                  width: "300px",
                   backgroundColor: answers[q.id]?.includes(option) ? "#0097A7" : "#D6D9E0",
                   color: answers[q.id]?.includes(option) ? "white" : "#1E1E1E",
                   border: "none",
@@ -113,20 +130,21 @@ export default function Questionnaire() {
 
       <button
         onClick={handleSubmit}
+        disabled={loading}
         style={{
           marginTop: "20px",
           padding: "12px 20px",
-          backgroundColor: "#0097A7",
+          backgroundColor: loading ? "#A0A0A0" : "#0097A7",
           color: "white",
           border: "none",
           borderRadius: "8px",
           fontSize: "1.2rem",
           fontWeight: "bold",
-          cursor: "pointer",
+          cursor: loading ? "not-allowed" : "pointer",
           transition: "background-color 0.2s ease",
         }}
       >
-        Generate My Plan
+        {loading ? "Generating Plan..." : "Generate My Plan"}
       </button>
     </div>
   );
