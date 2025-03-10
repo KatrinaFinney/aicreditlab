@@ -1,11 +1,13 @@
 "use client";
 
+import "./globals.css"
 import { ClerkProvider } from "@clerk/nextjs";
 import Navbar from "../components/Navbar";
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useUser } from "@clerk/nextjs";
 import { createClient } from "@supabase/supabase-js";
+
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,

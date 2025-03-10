@@ -37,37 +37,37 @@ export default function Navbar() {
   }, [user]);
 
   return (
-    <nav style={{
-      display: "flex",
-      justifyContent: "space-between",
-      alignItems: "center",
-      padding: "16px 32px",
-      background: "#0097A7",
-      color: "white",
-      fontFamily: "'Nunito', 'Inter', sans-serif",
-    }}>
-      {/* Logo & Site Name */}
-      <Link href="/" style={{
-        textDecoration: "none",
-        fontSize: "1.5rem",
-        fontWeight: "bold",
-        color: "white"
-      }}>
+    <nav
+      style={{
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "center",
+        padding: "14px 48px",
+        background: "#0097A7",
+        color: "white",
+        fontFamily: "'Nunito', 'Inter', sans-serif",
+        boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+        position: "sticky",
+        top: 0,
+        zIndex: 1000,
+      }}
+    >
+      {/* AI CreditLab Logo → Links to Dashboard if signed in, otherwise to Homepage */}
+      <Link
+        href={isSignedIn ? "/dashboard" : "/"}
+        style={{
+          textDecoration: "none",
+          fontSize: "1.5rem",
+          fontWeight: "bold",
+          color: "white",
+        }}
+      >
         AI CreditLab
       </Link>
 
-      {/* Desktop Navigation */}
-      <div style={{ display: "flex", gap: "20px" }}>
-        <Link href="/" style={{ color: "white", textDecoration: "none" }}>Home</Link>
-        {isSignedIn && <Link href="/dashboard" style={{ color: "white", textDecoration: "none" }}>Dashboard</Link>}
-        {isSignedIn && planType === "paid" && (
-          <Link href="/premium-tools" style={{ color: "white", textDecoration: "none" }}>Premium Tools</Link>
-        )}
-      </div>
-
       {/* Account Menu */}
       <div style={{ position: "relative" }}>
-        <button 
+        <button
           onClick={() => setMenuOpen(!menuOpen)}
           style={{
             background: "transparent",
@@ -75,54 +75,99 @@ export default function Navbar() {
             color: "white",
             cursor: "pointer",
             fontSize: "1rem",
-            fontWeight: "bold"
+            fontWeight: "600",
+            padding: "6px 12px",
+            transition: "all 0.2s ease",
           }}
         >
           {isSignedIn ? "Account ▼" : "Sign In"}
         </button>
 
         {menuOpen && (
-          <div style={{
-            position: "absolute",
-            right: 0,
-            top: "100%",
-            background: "white",
-            boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.2)",
-            borderRadius: "6px",
-            overflow: "hidden",
-            width: "180px",
-            display: "flex",
-            flexDirection: "column"
-          }}>
+          <div
+            style={{
+              position: "absolute",
+              right: 0,
+              top: "100%",
+              background: "white",
+              boxShadow: "0px 4px 12px rgba(0, 0, 0, 0.15)",
+              borderRadius: "8px",
+              overflow: "hidden",
+              width: "180px",
+              display: "flex",
+              flexDirection: "column",
+              padding: "8px 0",
+            }}
+          >
             {isSignedIn ? (
               <>
-                <Link href="/dashboard" style={{ padding: "10px", color: "#0097A7", textDecoration: "none" }}>
+                <Link
+                  href="/dashboard"
+                  style={{
+                    padding: "10px 16px",
+                    color: "#0097A7",
+                    textDecoration: "none",
+                    fontSize: "0.95rem",
+                    fontWeight: "500",
+                  }}
+                >
                   Dashboard
                 </Link>
-                <Link href="/account" style={{ padding: "10px", color: "#0097A7", textDecoration: "none" }}>
+                <Link
+                  href="/account"
+                  style={{
+                    padding: "10px 16px",
+                    color: "#0097A7",
+                    textDecoration: "none",
+                    fontSize: "0.95rem",
+                    fontWeight: "500",
+                  }}
+                >
                   Account Settings
                 </Link>
                 {planType === "paid" && (
-                  <Link href="/billing" style={{ padding: "10px", color: "#0097A7", textDecoration: "none" }}>
+                  <Link
+                    href="/billing"
+                    style={{
+                      padding: "10px 16px",
+                      color: "#0097A7",
+                      textDecoration: "none",
+                      fontSize: "0.95rem",
+                      fontWeight: "500",
+                    }}
+                  >
                     Manage Billing
                   </Link>
                 )}
                 <SignOutButton>
-                  <button style={{
-                    padding: "10px",
-                    width: "100%",
-                    border: "none",
-                    background: "transparent",
-                    color: "red",
-                    textAlign: "left",
-                    cursor: "pointer"
-                  }}>
+                  <button
+                    style={{
+                      padding: "10px 16px",
+                      width: "100%",
+                      border: "none",
+                      background: "transparent",
+                      color: "red",
+                      textAlign: "left",
+                      fontSize: "0.95rem",
+                      fontWeight: "500",
+                      cursor: "pointer",
+                    }}
+                  >
                     Sign Out
                   </button>
                 </SignOutButton>
               </>
             ) : (
-              <Link href="/sign-in" style={{ padding: "10px", color: "#0097A7", textDecoration: "none" }}>
+              <Link
+                href="/sign-in"
+                style={{
+                  padding: "10px 16px",
+                  color: "#0097A7",
+                  textDecoration: "none",
+                  fontSize: "0.95rem",
+                  fontWeight: "500",
+                }}
+              >
                 Sign In
               </Link>
             )}

@@ -1,1 +1,28 @@
 
+/* Apply Nunito & Inter Fonts Globally */
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&family=Inter:wght@400;600&display=swap');
+
+:root {
+  --font-primary: 'Nunito', sans-serif;
+  --font-secondary: 'Inter', sans-serif;
+  --text-main: #1E1E1E;
+  --background-gradient: linear-gradient(135deg, #d0f0f7 0%, #ecfbfc 100%);
+}
+
+html, body {
+  font-family: var(--font-primary);
+  color: var(--text-main);
+  background: var(--background-gradient);
+  margin: 0;
+  padding: 0;
+}
+
+h1, h2, h3 {
+  font-family: var(--font-primary);
+  font-weight: 700;
+}
+
+p, span, button {
+  font-family: var(--font-secondary);
+  font-weight: 400;
+}
