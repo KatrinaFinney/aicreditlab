@@ -193,25 +193,28 @@ export default function Home() {
           </Link>
 
           <Link
-            href="/sign-up"
-            style={{
-              padding: "0.75rem 1.5rem",
-              borderRadius: "0.5rem",
-              border: `2px solid ${SIGN_UP_BORDER}`,
-              color: SIGN_UP_BORDER,
-              fontWeight: 500,
-              fontSize: "1rem",
-              textDecoration: "none",
-              backgroundColor: "transparent",
-              transition: "all 0.3s ease",
-              textAlign: "center",
-              width: "160px",
-            }}
-            onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = SIGN_UP_HOVER_BG)}
-            onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "transparent")}
-          >
-            Get Started for Free
-          </Link>
+          href="/questionnaire"
+          style={{
+            display: "inline-block",
+            padding: "0.75rem 1.5rem",
+            borderRadius: "0.5rem",
+            border: `2px solid ${SIGN_UP_BORDER}`,
+            color: SIGN_UP_BORDER,
+            fontWeight: 500,
+            fontSize: "1rem",
+            textDecoration: "none",
+            backgroundColor: "transparent",
+            transition: "all 0.3s ease",
+            textAlign: "center",
+            width: "160px",
+          }}
+          onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = SIGN_UP_HOVER_BG)}
+          onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "transparent")}
+        >
+          Get Started for Free
+        </Link>
+
+
         </div>
       </div>
 
@@ -514,8 +517,7 @@ export default function Home() {
               <li>Step-by-step guides for common credit issues</li>
               <li>No hidden fees—get started now!</li>
             </ul>
-            <Link
-              href="/sign-up"
+            <Link href="/questionnaire" passHref
               style={{
                 marginTop: "10px",
                 display: "inline-block",
@@ -532,7 +534,9 @@ export default function Home() {
               onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "transparent")}
             >
               Start for Free
-            </Link>
+            
+          </Link>
+
           </div>
 
           {/* Pro Plan */}
@@ -579,7 +583,7 @@ export default function Home() {
               <li>Advanced tools to maximize growth</li>
             </ul>
             <Link
-              href="/sign-up"
+              href="/questionnaire"
               style={{
                 marginTop: "10px",
                 display: "inline-block",
@@ -628,11 +632,10 @@ export default function Home() {
           AI CreditLab gives you the tools to fix credit errors, boost your score, and take control of
           your financial future. Sign up now—your journey to better credit starts here.
         </p>
-        <Link
-          href="/sign-up"
+        <Link href="/questionnaire" passHref
+        
           style={{
             display: "inline-block",
-            marginTop: "20px",
             padding: "0.75rem 1.5rem",
             borderRadius: "0.5rem",
             backgroundColor: TEAL_BUTTON,
@@ -644,8 +647,10 @@ export default function Home() {
           onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = TEAL_HOVER)}
           onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = TEAL_BUTTON)}
         >
-          Get Started Now
-        </Link>
+          Get Started for Free
+        
+      </Link>
+
       </div>
 {/* Disclaimer Section */}
 <div
