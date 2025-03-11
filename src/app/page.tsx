@@ -193,7 +193,7 @@ export default function Home() {
           </Link>
 
           <Link
-          href="/questionnaire"
+          href="/sign-up"
           style={{
             display: "inline-block",
             padding: "0.75rem 1.5rem",
@@ -517,7 +517,7 @@ export default function Home() {
               <li>Step-by-step guides for common credit issues</li>
               <li>No hidden fees—get started now!</li>
             </ul>
-            <Link href="/questionnaire" passHref
+            <Link href="/sign-up" passHref
               style={{
                 marginTop: "10px",
                 display: "inline-block",
@@ -583,7 +583,7 @@ export default function Home() {
               <li>Advanced tools to maximize growth</li>
             </ul>
             <Link
-              href="/questionnaire"
+              href="/sign-up"
               style={{
                 marginTop: "10px",
                 display: "inline-block",
@@ -632,7 +632,7 @@ export default function Home() {
           AI CreditLab gives you the tools to fix credit errors, boost your score, and take control of
           your financial future. Sign up now—your journey to better credit starts here.
         </p>
-        <Link href="/questionnaire" passHref
+        <Link href="/sign-up" passHref
         
           style={{
             display: "inline-block",
