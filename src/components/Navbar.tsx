@@ -42,7 +42,7 @@ export default function Navbar() {
         display: "flex",
         justifyContent: "space-between",
         alignItems: "center",
-        padding: "14px 24px", // Reduced padding for more edge alignment
+        padding: "14px 48px",
         background: "#0097A7",
         color: "white",
         fontFamily: "'Nunito', 'Inter', sans-serif",
@@ -50,10 +50,9 @@ export default function Navbar() {
         position: "sticky",
         top: 0,
         zIndex: 1000,
-        width: "100%",
       }}
     >
-      {/* AI CreditLab Logo (Pushed to Left) */}
+      {/* AI CreditLab Logo → Links to Dashboard if signed in, otherwise to Homepage */}
       <Link
         href={isSignedIn ? "/dashboard" : "/"}
         style={{
@@ -61,14 +60,13 @@ export default function Navbar() {
           fontSize: "1.5rem",
           fontWeight: "bold",
           color: "white",
-          marginLeft: "8px", // Moves it closer to the left edge
         }}
       >
         AI CreditLab
       </Link>
 
-      {/* Account Menu (Pushed to Right) */}
-      <div style={{ position: "relative", marginRight: "8px" }}> {/* Moves closer to the right edge */}
+      {/* Account Menu */}
+      <div style={{ position: "relative" }}>
         <button
           onClick={() => setMenuOpen(!menuOpen)}
           style={{
