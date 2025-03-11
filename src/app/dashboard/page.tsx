@@ -25,7 +25,10 @@ export default function Dashboard() {
   const [userData, setUserData] = useState<UserData | null>(null);
 
   useEffect(() => {
+    
     if (!user) return;
+
+    console.log("Clerk User Data:", user); // 👈 Log entire user object
 
     const fetchUserPlan = async () => {
       const { data, error } = await supabase
@@ -33,6 +36,9 @@ export default function Dashboard() {
         .select("plan_type, full_name, address, selected_disputes, credit_plan")
         .eq("user_id", user.id)
         .single();
+
+
+    console.log("Fetched user plan:", data); // 👈 Debug log
 
       if (!error && data) {
         setPlanType(data.plan_type);
@@ -63,7 +69,8 @@ export default function Dashboard() {
           textAlign: "center",
         }}
       >
-        Welcome, {userData?.full_name || user?.firstName}!
+       Welcome, {userData?.full_name || user?.fullName || user?.firstName}!
+
       </h1>
 
       <p style={{ textAlign: "center", fontSize: "1.2rem", color: "#333" }}>
