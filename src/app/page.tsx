@@ -436,222 +436,380 @@ export default function Home() {
     ))}
   </div>
 </div>
-      {/* 4. FREE VS. PRO SECTION */}
-      <div
-        className="animate"
+ {/* 4. FREE VS. PRO SECTION */}
+<div
+  className="animate"
+  style={{
+    padding: "40px 32px",
+    backgroundColor: "#f0fcfc",
+    textAlign: "center",
+  }}
+>
+  <h2
+    style={{
+      fontSize: "2rem",
+      fontWeight: 700,
+      color: "#007882",
+      marginBottom: "20px",
+    }}
+  >
+    Free vs. Pro: Choose Your Plan
+  </h2>
+  <p
+    style={{
+      maxWidth: "700px",
+      margin: "0 auto",
+      marginBottom: "32px",
+      color: "#333",
+    }}
+  >
+    Whether you&apos;re just getting started or ready to take full control of your credit, we&rsquo;ve got a plan for you.</p>
+
+
+
+  <div
+    style={{
+      display: "flex",
+      gap: "2rem",
+      justifyContent: "center",
+      flexWrap: "wrap",
+    }}
+  >
+    {/* Free Plan */}
+    <div
+      style={{
+        backgroundColor: CARD_BG,
+        padding: "24px",
+        borderRadius: "12px",
+        width: "300px",
+        minHeight: "350px",
+        textAlign: "center",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "space-between",
+      }}
+    >
+      <h3
         style={{
-          padding: "40px 32px",
-          backgroundColor: "#f0fcfc",
-          textAlign: "center",
+          fontSize: "1.25rem",
+          fontWeight: "bold",
+          color: "#006F7A",
+          marginBottom: "12px",
         }}
       >
-        <h2
-          style={{
-            fontSize: "2rem",
-            fontWeight: 700,
-            color: "#007882",
-            marginBottom: "20px",
-          }}
-        >
-          Free vs. Pro: Choose Your Plan
-        </h2>
-        <p
-          style={{
-            maxWidth: "700px",
-            margin: "0 auto",
-            marginBottom: "32px",
-            color: "#333",
-          }}
-        >
-          Whether you&apos;re just getting started or ready to take full control of your credit,
-          we&apos;ve got a plan for you.
-        </p>
-
-        <div
-          style={{
-            display: "flex",
-            gap: "2rem",
-            justifyContent: "center",
-            flexWrap: "wrap",
-          }}
-        >
-          {/* Free Plan */}
-          <div
-            style={{
-              backgroundColor: CARD_BG,
-              padding: "24px",
-              borderRadius: "12px",
-              width: "300px",
-              minHeight: "300px",
-              textAlign: "center",
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "space-between",
-            }}
-          >
-            <h3
-              style={{
-                fontSize: "1.25rem",
-                fontWeight: "bold",
-                color: "#006F7A",
-                marginBottom: "12px",
-              }}
-            >
-              Smart Credit Starter Plan
-            </h3>
-            <ul
-              style={{
-                color: "#333",
-                listStyleType: "disc",
-                listStylePosition: "outside",
-                marginLeft: "1rem",
-                textAlign: "left",
-                margin: "0 auto",
-                maxWidth: "90%",
-                padding: 0,
-              }}
-            >
-              <li>Essential credit health overview</li>
-              <li>AI-generated dispute letter templates</li>
-              <li>General improvement strategies</li>
-              <li>Step-by-step guides for common credit issues</li>
-              <li>No hidden fees—get started now!</li>
-            </ul>
-            <Link href="/sign-in" passHref
-              style={{
-                marginTop: "10px",
-                display: "inline-block",
-                padding: "0.75rem 1.5rem",
-                borderRadius: "0.5rem",
-                border: `2px solid ${SIGN_UP_BORDER}`,
-                color: SIGN_UP_BORDER,
-                fontWeight: 500,
-                textDecoration: "none",
-                backgroundColor: "transparent",
-                transition: "all 0.3s ease",
-              }}
-              onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = SIGN_UP_HOVER_BG)}
-              onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "transparent")}
-            >
-              Start for Free
-            
-          </Link>
-
-          </div>
-
-          {/* Pro Plan */}
-          <div
-            style={{
-              backgroundColor: CARD_BG,
-              padding: "24px",
-              borderRadius: "12px",
-              width: "300px",
-              minHeight: "300px",
-              textAlign: "center",
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "space-between",
-              border: "2px solid #0097A7",
-            }}
-          >
-            <h3
-              style={{
-                fontSize: "1.25rem",
-                fontWeight: "bold",
-                color: "#006F7A",
-                marginBottom: "12px",
-              }}
-            >
-              Credit Mastery Roadmap
-            </h3>
-            <ul
-              style={{
-                color: "#333",
-                listStyleType: "disc",
-                listStylePosition: "outside",
-                marginLeft: "1rem",
-                textAlign: "left",
-                margin: "0 auto",
-                maxWidth: "90%",
-                padding: 0,
-              }}
-            >
-              <li>All Free features + deep AI insights</li>
-              <li>Step-by-step repair strategy</li>
-              <li>Daily tasks for faster results</li>
-              <li>Progress tracking &amp; reminders</li>
-              <li>Advanced tools to maximize growth</li>
-            </ul>
-            <Link
-              href="/sign-in"
-              style={{
-                marginTop: "10px",
-                display: "inline-block",
-                padding: "0.75rem 1.5rem",
-                borderRadius: "0.5rem",
-                backgroundColor: TEAL_BUTTON,
-                color: "white",
-                fontWeight: 500,
-                textDecoration: "none",
-                transition: "background-color 0.3s ease",
-              }}
-              onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = TEAL_HOVER)}
-              onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = TEAL_BUTTON)}
-            >
-              Unlock Expert Guidance
-            </Link>
-          </div>
-        </div>
-      </div>
-
-      {/* 5. CTA SECTION */}
-      <div
-        className="animate"
+        Smart Credit Starter Plan
+      </h3>
+      <ul
         style={{
-          backgroundColor: "#f0fcfc",
-          padding: "40px",
-          textAlign: "center",
+          color: "#333",
+          listStyleType: "disc",
+          listStylePosition: "outside",
+          marginLeft: "1rem",
+          textAlign: "left",
+          margin: "0 auto",
+          maxWidth: "90%",
+          padding: 0,
         }}
       >
-        <h2
-          style={{
-            fontSize: "2rem",
-            fontWeight: 700,
-            color: "#007882",
-          }}
-        >
-          Take Charge of Your Credit Today
-        </h2>
-        <p
-          style={{
-            margin: "16px auto",
-            maxWidth: "600px",
-            color: "#333",
-          }}
-        >
-          AI CreditLab gives you the tools to fix credit errors, boost your score, and take control of
-          your financial future. Sign up now—your journey to better credit starts here.
-        </p>
-        <Link href="/sign-in" passHref
-        
-          style={{
-            display: "inline-block",
-            padding: "0.75rem 1.5rem",
-            borderRadius: "0.5rem",
-            backgroundColor: TEAL_BUTTON,
-            color: "white",
-            fontWeight: 500,
-            textDecoration: "none",
-            transition: "background-color 0.3s ease",
-          }}
-          onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = TEAL_HOVER)}
-          onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = TEAL_BUTTON)}
-        >
-          Get Started for Free
-        
+        <li>Free Credit Health Overview</li>
+        <li>AI-Powered Dispute Letter Templates for Common Issues</li>
+        <li>Personalized Credit Score Tips</li>
+        <li>Simple Step-by-Step Guides for Major Credit Issues</li>
+        <li>Weekly Credit Improvement Tips via Email</li>
+        <li>Access to Community for Support and Advice</li>
+        <li>No Hidden Fees—Get Started Now!</li>
+      </ul>
+      <Link href="/sign-in" passHref
+        style={{
+          marginTop: "10px",
+          display: "inline-block",
+          padding: "0.75rem 1.5rem",
+          borderRadius: "0.5rem",
+          border: `2px solid ${SIGN_UP_BORDER}`,
+          color: SIGN_UP_BORDER,
+          fontWeight: 500,
+          textDecoration: "none",
+          backgroundColor: "transparent",
+          transition: "all 0.3s ease",
+        }}
+        onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = SIGN_UP_HOVER_BG)}
+        onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "transparent")}
+      >
+        Start for Free
       </Link>
+    </div>
 
-      </div>
+    {/* Pro Plan */}
+    <div
+      style={{
+        backgroundColor: CARD_BG,
+        padding: "24px",
+        borderRadius: "12px",
+        width: "300px",
+        minHeight: "350px",
+        textAlign: "center",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "space-between",
+        border: "2px solid #0097A7",
+      }}
+    >
+      <h3
+        style={{
+          fontSize: "1.25rem",
+          fontWeight: "bold",
+          color: "#006F7A",
+          marginBottom: "12px",
+        }}
+      >
+        Credit Mastery Roadmap
+      </h3>
+      <ul
+        style={{
+          color: "#333",
+          listStyleType: "disc",
+          listStylePosition: "outside",
+          marginLeft: "1rem",
+          textAlign: "left",
+          margin: "0 auto",
+          maxWidth: "90%",
+          padding: 0,
+        }}
+      >
+        <li>Everything in Free Plan + Deep AI Insights</li>
+        <li>Interactive, Customized Step-by-Step Repair Strategy</li>
+        <li>Daily Actionable Tasks for Faster Results</li>
+        <li>Credit Progress Tracker & Reminders</li>
+        <li>Advanced Tools to Maximize Credit Growth</li>
+        <li>Customized AI-Generated Dispute Letters for All Credit Types</li>
+        <li>Access to Exclusive Expert Content and Webinars</li>
+        <li>Monthly Credit Health Checkups and Updates</li>
+      </ul>
+      <Link
+        href="/sign-in"
+        style={{
+          marginTop: "10px",
+          display: "inline-block",
+          padding: "0.75rem 1.5rem",
+          borderRadius: "0.5rem",
+          backgroundColor: TEAL_BUTTON,
+          color: "white",
+          fontWeight: 500,
+          textDecoration: "none",
+          transition: "background-color 0.3s ease",
+        }}
+        onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = TEAL_HOVER)}
+        onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = TEAL_BUTTON)}
+      >
+        Unlock My Credit Roadmap
+      </Link>
+    </div>
+
+    {/* Professional Plan */}
+    <div
+      style={{
+        backgroundColor: CARD_BG,
+        padding: "24px",
+        borderRadius: "12px",
+        width: "300px",
+        minHeight: "350px",
+        textAlign: "center",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "space-between",
+        border: "2px solid #5A5A5A",
+      }}
+    >
+      <h3
+        style={{
+          fontSize: "1.25rem",
+          fontWeight: "bold",
+          color: "#006F7A",
+          marginBottom: "12px",
+        }}
+      >
+        Credit Repair Professional Toolkit
+      </h3>
+      <ul
+        style={{
+          color: "#333",
+          listStyleType: "disc",
+          listStylePosition: "outside",
+          marginLeft: "1rem",
+          textAlign: "left",
+          margin: "0 auto",
+          maxWidth: "90%",
+          padding: 0,
+        }}
+      >
+        <li>Everything in Pro Plan + Tools for Business Scalability</li>
+        <li>Unlimited Customized AI Dispute Letters for Clients</li>
+        <li>Bulk Client Management & Tracking with Ease</li>
+        <li>Personalized Marketing Toolkit for Your Business</li>
+        <li>Exclusive Business Growth Resources</li>
+        <li>Priority Customer Support with Quick Responses</li>
+        <li>Automated Reminders & Follow-up Systems for Clients</li>
+        <li>Advanced Reporting and Client Progress Tracking</li>
+      </ul>
+      <Link
+        href="/sign-in"
+        style={{
+          marginTop: "10px",
+          display: "inline-block",
+          padding: "0.75rem 1.5rem",
+          borderRadius: "0.5rem",
+          backgroundColor: "#5A5A5A", // More appealing color for Professional Plan
+          color: "white",
+          fontWeight: 500,
+          textDecoration: "none",
+          transition: "background-color 0.3s ease",
+        }}
+        onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#444")}
+        onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#5A5A5A")}
+      >
+        Grow My Credit Repair Business
+      </Link>
+    </div>
+  </div>
+</div>
+
+{/* 5. CTA SECTION */}
+<div
+  className="animate"
+  style={{
+    backgroundColor: "#f0fcfc",
+    padding: "40px",
+    textAlign: "center",
+  }}
+>
+  <h2
+    style={{
+      fontSize: "2rem",
+      fontWeight: 700,
+      color: "#007882",
+    }}
+  >
+    Take Charge of Your Credit Today
+  </h2>
+  <p
+    style={{
+      margin: "16px auto",
+      maxWidth: "600px",
+      color: "#333",
+    }}
+  >
+    AI CreditLab gives you the tools to fix credit errors, boost your score, and take control of your financial future. Sign up now—your journey to better credit starts here.
+  </p>
+  <Link href="/sign-in" passHref
+    style={{
+      display: "inline-block",
+      padding: "0.75rem 1.5rem",
+      borderRadius: "0.5rem",
+      backgroundColor: TEAL_BUTTON,
+      color: "white",
+      fontWeight: 500,
+      textDecoration: "none",
+      transition: "background-color 0.3s ease",
+    }}
+    onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = TEAL_HOVER)}
+    onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = TEAL_BUTTON)}
+  >
+    Get Started for Free
+  </Link>
+</div>
+
+
+{/* 5. CTA SECTION */}
+<div
+  className="animate"
+  style={{
+    backgroundColor: "#f0fcfc",
+    padding: "40px",
+    textAlign: "center",
+  }}
+>
+  <h2
+    style={{
+      fontSize: "2rem",
+      fontWeight: 700,
+      color: "#007882",
+    }}
+  >
+    Take Charge of Your Credit Today
+  </h2>
+  <p
+    style={{
+      margin: "16px auto",
+      maxWidth: "600px",
+      color: "#333",
+    }}
+  >
+    AI CreditLab gives you the tools to fix credit errors, boost your score, and take control of your financial future. Sign up now—your journey to better credit starts here.
+  </p>
+  <Link href="/sign-in" passHref
+    style={{
+      display: "inline-block",
+      padding: "0.75rem 1.5rem",
+      borderRadius: "0.5rem",
+      backgroundColor: TEAL_BUTTON,
+      color: "white",
+      fontWeight: 500,
+      textDecoration: "none",
+      transition: "background-color 0.3s ease",
+    }}
+    onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = TEAL_HOVER)}
+    onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = TEAL_BUTTON)}
+  >
+    Get Started for Free
+  </Link>
+</div>
+
+
+{/* 5. CTA SECTION */}
+<div
+  className="animate"
+  style={{
+    backgroundColor: "#f0fcfc",
+    padding: "40px",
+    textAlign: "center",
+  }}
+>
+  <h2
+    style={{
+      fontSize: "2rem",
+      fontWeight: 700,
+      color: "#007882",
+    }}
+  >
+    Take Charge of Your Credit Today
+  </h2>
+  <p
+    style={{
+      margin: "16px auto",
+      maxWidth: "600px",
+      color: "#333",
+    }}
+  >
+    AI CreditLab gives you the tools to fix credit errors, boost your score, and take control of your financial future. Sign up now—your journey to better credit starts here.
+  </p>
+  <Link href="/sign-in" passHref
+    style={{
+      display: "inline-block",
+      padding: "0.75rem 1.5rem",
+      borderRadius: "0.5rem",
+      backgroundColor: TEAL_BUTTON,
+      color: "white",
+      fontWeight: 500,
+      textDecoration: "none",
+      transition: "background-color 0.3s ease",
+    }}
+    onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = TEAL_HOVER)}
+    onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = TEAL_BUTTON)}
+  >
+    Get Started for Free
+  </Link>
+</div>
+
 {/* Disclaimer Section */}
 <div
   className="animate"
