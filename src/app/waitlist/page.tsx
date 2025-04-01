@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import Link from "next/link";
 import { gsap } from "gsap";
 
 const TEAL = "#0097A7";
@@ -135,9 +136,9 @@ export default function WaitlistPage() {
         }}
       >
         We respect your inbox. No spam—ever. Unsubscribe anytime. <br />
-        <a href="/" style={{ color: TEAL_DARK, textDecoration: "underline" }}>
+        <Link href="/" style={{ color: TEAL_DARK, textDecoration: "underline" }}>
           Back to Home
-        </a>
+        </Link>
       </footer>
     </div>
   );
