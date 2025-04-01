@@ -6,10 +6,8 @@ import { gsap } from "gsap";
 
 const TEAL_H1 = "#0097A7";
 const TEAL_BUTTON = "#0097A7";
-const TEAL_HOVER = "#006F7A";
 const CARD_BG = "#D6D9E0";
-const FOOTER_TEXT = "#E0F7F9";
-const FOOTER_BG = "#004E5A";
+
 
 export default function WaitlistPage() {
   useEffect(() => {
