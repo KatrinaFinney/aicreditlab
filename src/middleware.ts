@@ -2,18 +2,17 @@ import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 
 const isPublicRoute = createRouteMatcher([
-  "/",        // Homepage (we'll intercept this)
+  "/",          // Homepage (temporarily redirected)
+  "/waitlist",  // Email collection page
   "/sign-in",
   "/sign-up",
-  "/waitlist",
 ]);
 
 export default clerkMiddleware(async (auth, req) => {
   const authData = await auth();
-
   const { pathname } = req.nextUrl;
 
-  // TEMPORARY: Redirect "/" to "/waitlist" only in production
+  // ✅ Temporary redirect from "/" to "/waitlist" (only in production)
   if (
     process.env.NODE_ENV === "production" &&
     pathname === "/"
@@ -23,7 +22,7 @@ export default clerkMiddleware(async (auth, req) => {
     return NextResponse.redirect(url);
   }
 
-  // Protect all other non-public routes
+  // 🔐 Protect all private routes (except public ones)
   if (!authData.userId && !isPublicRoute(req)) {
     return authData.redirectToSignIn({ returnBackUrl: req.url });
   }
@@ -32,5 +31,5 @@ export default clerkMiddleware(async (auth, req) => {
 });
 
 export const config = {
-  matcher: ["/((?!_next|favicon.ico|.*\\..*).*)"], // standard
+  matcher: ["/((?!_next|favicon.ico|.*\\..*).*)"],
 };

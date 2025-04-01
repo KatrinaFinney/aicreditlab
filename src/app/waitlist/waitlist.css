@@ -1,0 +1,29 @@
+.waitlist-input {
+    width: 100%;
+    padding: 14px 18px;
+    margin-bottom: 16px;
+    font-size: 1rem;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-family: 'Nunito', 'Inter', sans-serif;
+    box-sizing: border-box;
+  }
+  
+  .waitlist-button {
+    width: 100%;
+    padding: 14px 18px;
+    font-size: 1rem;
+    background-color: #0097A7;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-family: 'Nunito', 'Inter', sans-serif;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+  }
+  
+  .waitlist-button:hover {
+    background-color: #006F7A;
+  }
+  
