@@ -24,11 +24,11 @@ export default function WaitlistPage() {
         backgroundColor: BG,
         color: TEXT,
         fontFamily: FONT_STACK,
-        minHeight: "100vh",  // Ensures the content fills the entire viewport
+        minHeight: "85vh", // Adjusted the height to push content up
         padding: "64px 24px",
         display: "flex",
-        justifyContent: "center",  // Centers horizontally
-        alignItems: "center",      // Centers vertically
+        justifyContent: "flex-start", // Aligns items to the top
+        alignItems: "center",
         flexDirection: "column",
         textAlign: "center",
       }}
