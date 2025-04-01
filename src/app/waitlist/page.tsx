@@ -43,21 +43,35 @@ export default function WaitlistPage() {
       >
         Fix Your Credit Smarter—Not Harder
       </h1>
+
       <p
         className="fade-in"
         style={{
           fontSize: "clamp(1rem, 3vw, 1.25rem)",
           color: TEAL_DARK,
-          marginBottom: "32px",
-          maxWidth: "600px",
+          marginBottom: "8px",
+          maxWidth: "100%",
+          whiteSpace: "nowrap",
+          overflow: "hidden",
+          textOverflow: "ellipsis",
         }}
       >
-        Download the free AI Credit Checklist: 5 credit moves that actually matter.
-        <br />
-        <span style={{ fontSize: "0.9rem", color: "#444" }}>
-          Plus get early access to AI CreditLab before it launches.
-        </span>
+        <strong>
+          Join thousands of others using AI to finally take control of their credit.
+        </strong>
       </p>
+
+      <span
+        className="fade-in"
+        style={{
+          fontSize: "0.95rem",
+          color: "#444",
+          marginBottom: "32px",
+          maxWidth: "500px",
+        }}
+      >
+        Get your free <strong>AI Credit Checklist</strong> with 5 high-impact moves that actually work—plus early access to <strong>AI CreditLab</strong> before we launch.
+      </span>
 
       <form
         className="fade-in"
@@ -107,7 +121,7 @@ export default function WaitlistPage() {
             marginTop: "8px",
           }}
         >
-          Send Me the Checklist
+          Send Me the Free Checklist
         </button>
         <input type="hidden" name="anticsrf" value="true" />
       </form>
@@ -120,7 +134,7 @@ export default function WaitlistPage() {
           color: "#666",
         }}
       >
-        We’ll never spam you. Unsubscribe anytime. <br />
+        We respect your inbox. No spam—ever. Unsubscribe anytime. <br />
         <a href="/" style={{ color: TEAL_DARK, textDecoration: "underline" }}>
           Back to Home
         </a>
