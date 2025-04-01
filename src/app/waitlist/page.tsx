@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect } from "react";
-import Link from "next/link";
 import { gsap } from "gsap";
 
 const TEAL = "#0097A7";
@@ -25,11 +24,11 @@ export default function WaitlistPage() {
         backgroundColor: BG,
         color: TEXT,
         fontFamily: FONT_STACK,
-        minHeight: "100vh",
+        minHeight: "100vh",  // Ensures the content fills the entire viewport
         padding: "64px 24px",
         display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
+        justifyContent: "center",  // Centers horizontally
+        alignItems: "center",      // Centers vertically
         flexDirection: "column",
         textAlign: "center",
       }}
@@ -135,10 +134,7 @@ export default function WaitlistPage() {
           color: "#666",
         }}
       >
-        We respect your inbox. No spam—ever. Unsubscribe anytime. <br />
-        <Link href="/" style={{ color: TEAL_DARK, textDecoration: "underline" }}>
-          Back to Home
-        </Link>
+        We respect your inbox. No spam—ever. Unsubscribe anytime.
       </footer>
     </div>
   );
