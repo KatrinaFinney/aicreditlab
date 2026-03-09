@@ -13,7 +13,7 @@
     "@clerk/nextjs": "^6.12.4",
     "@supabase/supabase-js": "^2.49.1",
     "gsap": "^3.12.7",
-    "next": "15.2.1",
+    "next": "15.2.8",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "swr": "^2.3.3"
