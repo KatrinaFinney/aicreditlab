@@ -2,6 +2,9 @@
 
 import { useEffect, useState } from "react";
 import { useUser } from "@clerk/nextjs";
+import Link from "next/link";
+import DisputeTracker from "@/components/DisputeTracker";
+import { letterTemplates } from "@/lib/letterTemplates";
 
 // Define TypeScript interface for Dispute Templates
 interface DisputeTemplate {
@@ -57,6 +60,25 @@ export default function DisputeCenter() {
       >
         Dispute Center
       </h1>
+      <p style={{ textAlign: 'center', maxWidth: 680, margin: '12px auto 24px', color: '#333' }}>
+        Found a specific error on your report? Describe it, review a letter draft, and download it for your records.
+      </p>
+      <div style={{ textAlign: 'center', marginBottom: 28 }}>
+        <Link href="/dispute-generator" style={{ background: '#0097A7', color: 'white', padding: '12px 18px', borderRadius: 8 }}>
+          Draft a dispute letter
+        </Link>
+      </div>
+      <section style={{ maxWidth: 900, margin: '0 auto 36px' }}>
+        <h2 style={{ color: '#006F7A' }}>Free customizable letter library</h2>
+        <p style={{ color: '#333' }}>Choose the type of error, add your own facts, review the result, and download your draft.</p>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 16 }}>
+          {letterTemplates.map((template) => <article key={template.id} style={{ background: 'white', padding: 20, borderRadius: 12 }}>
+            <h3 style={{ color: '#006F7A' }}>{template.title}</h3>
+            <p style={{ color: '#333' }}>{template.guidance}</p>
+            <Link href={`/dispute-generator?template=${template.id}`}>Customize this letter →</Link>
+          </article>)}
+        </div>
+      </section>
 
       {/* Search Input */}
       <div style={{ textAlign: "center", marginBottom: "20px" }}>
@@ -166,6 +188,7 @@ export default function DisputeCenter() {
           </p>
         )}
       </div>
+      <DisputeTracker />
     </div>
   );
 }
