@@ -1,4 +1,4 @@
--- Apply after confirming the existing credit_plans table and its unique user_id.
+-- Apply after 20260928_00_baseline.sql.
 create table if not exists public.credit_plan_progress (
   user_id text primary key,
   completed_steps jsonb not null default '[]'::jsonb,
@@ -14,3 +14,5 @@ alter table public.credit_plan_progress add column if not exists session_minutes
 alter table public.credit_plan_progress enable row level security;
 -- The application accesses this table only through Clerk-authenticated server routes.
 -- No anon or authenticated browser policy is granted here.
+revoke all on public.credit_plan_progress from anon, authenticated;
+grant all on public.credit_plan_progress to service_role;

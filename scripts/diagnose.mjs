@@ -43,6 +43,15 @@ if (!process.argv.includes('--live')) {
       } catch { report(`Supabase ${table}`, false, 'network or project URL unreachable'); }
     }
     try {
+      const response = await fetch(`${url}/rest/v1/disputes?select=id&user_id=eq.user_diagnostic_no_record&limit=0`, {
+        headers: { apikey: key, Authorization: `Bearer ${key}` }, signal: AbortSignal.timeout(10000),
+      });
+      report('Clerk-compatible dispute IDs', response.ok,
+        response.ok ? 'disputes.user_id accepts text Clerk IDs' :
+          response.status === 400 ? 'disputes.user_id may still be UUID; apply the baseline migration' :
+          `request failed (HTTP ${response.status})`);
+    } catch { report('Clerk-compatible dispute IDs', false, 'network or project URL unreachable'); }
+    try {
       const response = await fetch(`${url}/rest/v1/rpc/reserve_letter_slot`, {
         method: 'POST', headers: { apikey: key, Authorization: `Bearer ${key}`, 'Content-Type': 'application/json' },
         body: JSON.stringify({ p_user_id: null, p_kind: 'invalid', p_limit: 0 }), signal: AbortSignal.timeout(10000),
