@@ -2,39 +2,11 @@
 
 import Link from "next/link";
 import { useUser, SignOutButton } from "@clerk/nextjs";
-import { useState, useEffect } from "react";
-import { createClient } from "@supabase/supabase-js";
-
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-);
+import { useState } from "react";
 
 export default function Navbar() {
-  const { isSignedIn, user } = useUser();
-  const [planType, setPlanType] = useState<"free" | "paid" | null>(null);
+  const { isSignedIn } = useUser();
   const [menuOpen, setMenuOpen] = useState(false);
-
-  // Fetch user's plan type from Supabase
-  useEffect(() => {
-    if (!user) return;
-
-    const fetchPlanType = async () => {
-      const { data, error } = await supabase
-        .from("credit_plans")
-        .select("plan_type")
-        .eq("user_id", user.id)
-        .single();
-
-      if (!error && data) {
-        setPlanType(data.plan_type);
-      } else {
-        setPlanType("free"); // Default to free if no plan found
-      }
-    };
-
-    fetchPlanType();
-  }, [user]);
 
   return (
     <nav
@@ -113,32 +85,6 @@ export default function Navbar() {
                 >
                   Dashboard
                 </Link>
-                <Link
-                  href="/account"
-                  style={{
-                    padding: "10px 16px",
-                    color: "#0097A7",
-                    textDecoration: "none",
-                    fontSize: "0.95rem",
-                    fontWeight: "500",
-                  }}
-                >
-                  Account Settings
-                </Link>
-                {planType === "paid" && (
-                  <Link
-                    href="/billing"
-                    style={{
-                      padding: "10px 16px",
-                      color: "#0097A7",
-                      textDecoration: "none",
-                      fontSize: "0.95rem",
-                      fontWeight: "500",
-                    }}
-                  >
-                    Manage Billing
-                  </Link>
-                )}
                 <SignOutButton>
                   <button
                     style={{

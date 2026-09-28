@@ -3,53 +3,9 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useUser } from "@clerk/nextjs";
-import { createClient } from "@supabase/supabase-js";
+import { creditQuestions } from "@/lib/creditPlan";
 
-// Initialize Supabase client
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-);
-
-// Questionnaire data
-const questions = [
-  {
-    id: 1,
-    question: "What is your biggest credit challenge?",
-    options: [
-      "Late payments",
-      "High credit utilization",
-      "Collections",
-      "No credit history",
-      "Errors on my report",
-      "Too many inquiries",
-    ],
-  },
-  {
-    id: 2,
-    question: "What is your primary goal?",
-    options: [
-      "Increase credit score",
-      "Remove negative items",
-      "Get approved for a loan",
-      "Improve financial habits",
-      "Lower interest rates",
-      "Build business credit",
-    ],
-  },
-  {
-    id: 3,
-    question: "Which best describes your current financial habits?",
-    options: [
-      "I budget carefully",
-      "I sometimes overspend",
-      "I live paycheck to paycheck",
-      "I have savings but struggle with credit",
-      "I don’t check my credit often",
-      "I make payments but carry high balances",
-    ],
-  },
-];
+const questions = creditQuestions;
 
 export default function Questionnaire() {
   const router = useRouter();
@@ -57,7 +13,7 @@ export default function Questionnaire() {
   const [answers, setAnswers] = useState<{ [key: number]: string[] }>({});
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [questionnaireCompleted, setQuestionnaireCompleted] = useState(false);
+  const [saveError, setSaveError] = useState("");
 
   // 🔹 Redirect to sign-up if not logged in
   useEffect(() => {
@@ -71,21 +27,10 @@ export default function Questionnaire() {
     if (!user) return;
 
     const fetchExistingData = async () => {
-      const { data, error } = await supabase
-        .from("credit_plans")
-        .select("selected_disputes, questionnaire_completed, credit_plan")
-        .eq("user_id", user.id)
-        .single();
-
-      if (!error && data) {
-        if (data.selected_disputes) {
-          setAnswers(data.selected_disputes);
-        }
-        if (data.questionnaire_completed) {
-          setQuestionnaireCompleted(true);
-          router.push("/dashboard");
-        }
-      }
+      const response = await fetch('/api/credit-plan');
+      if (!response.ok) return;
+      const { plan } = await response.json();
+      if (plan?.selected_disputes) setAnswers(plan.selected_disputes);
     };
 
     fetchExistingData();
@@ -109,15 +54,6 @@ export default function Questionnaire() {
     setError(false);
   };
 
-  // 🔹 Generate a personalized plan based on answers
-  const generatePlan = () => {
-    return [
-      "✅ Step 1: Improve payment history",
-      "✅ Step 2: Reduce credit utilization",
-      "✅ Step 3: Remove inaccuracies from your credit report",
-    ];
-  };
-
   // 🔹 Submit questionnaire and save responses
   const handleSubmit = async () => {
     if (
@@ -130,27 +66,23 @@ export default function Questionnaire() {
 
     setLoading(true);
     if (user) {
-      const generatedPlan = generatePlan();
-
-      const { error: supabaseError } = await supabase
-        .from("credit_plans")
-        .upsert([
-          {
-            user_id: user.id,
-            selected_disputes: answers,
-            questionnaire_completed: true,
-            plan_type: "free",
-            credit_plan: generatedPlan,
-          },
-        ]);
-
-      if (supabaseError) {
-        console.error("Error saving responses:", supabaseError);
-      } else {
-        setQuestionnaireCompleted(true);
-        router.push("/dashboard");
+      setSaveError("");
+      try {
+        const response = await fetch('/api/credit-plan', {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ answers }),
+        });
+        if (!response.ok) {
+          setSaveError("We couldn't save your plan. Please try again.");
+        } else {
+          router.push('/dashboard');
+        }
+      } catch {
+        setSaveError("We couldn't save your plan. Please try again.");
       }
     }
+    setLoading(false);
   };
 
   // 🔹 Show loading state while Clerk loads
@@ -233,10 +165,11 @@ export default function Questionnaire() {
             Please select at least one option per question.
           </p>
         )}
+        {saveError && <p role="alert" style={{ color: "#a12323" }}>{saveError}</p>}
 
         <button
           onClick={handleSubmit}
-          disabled={loading || questionnaireCompleted}
+          disabled={loading}
           style={{
             width: "100%",
             marginTop: "20px",
@@ -247,7 +180,7 @@ export default function Questionnaire() {
             borderRadius: "8px",
             fontSize: "1.2rem",
             fontWeight: "bold",
-            cursor: loading || questionnaireCompleted ? "not-allowed" : "pointer",
+            cursor: loading ? "not-allowed" : "pointer",
             transition: "background-color 0.2s ease",
           }}
         >
