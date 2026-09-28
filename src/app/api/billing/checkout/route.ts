@@ -1,0 +1,39 @@
+import { auth, currentUser } from '@clerk/nextjs/server';
+import { NextResponse } from 'next/server';
+import { appUrl, billingAccount, getOrCreateCustomer, stripeClient } from '@/lib/billing';
+import { getServerSupabase } from '@/lib/serverSupabase';
+
+export async function POST() {
+  const { userId } = await auth();
+  if (!userId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  if (!process.env.STRIPE_PRICE_ID || !process.env.STRIPE_SECRET_KEY)
+    return NextResponse.json({ error: 'Checkout is not available yet' }, { status: 503 });
+  try {
+    const db = getServerSupabase();
+    if (!db) throw new Error('Database unavailable');
+    const { data: plan, error } = await db.from('credit_plans').select('account_goal').eq('user_id', userId).maybeSingle();
+    if (error) throw error;
+    if (!plan) return NextResponse.json({ error: 'Complete your credit assessment first' }, { status: 409 });
+    if (plan.account_goal !== 'personal')
+      return NextResponse.json({ error: 'The paid letter plan is for personal credit only' }, { status: 403 });
+    const stripe = stripeClient();
+    const price = await stripe.prices.retrieve(process.env.STRIPE_PRICE_ID);
+    if (!price.active || price.type !== 'recurring' || price.recurring?.interval !== 'month')
+      throw new Error('Invalid monthly price');
+    const account = await billingAccount(userId);
+    const email = (await currentUser())?.primaryEmailAddress?.emailAddress;
+    const customerId = account?.stripe_customer_id ?? await getOrCreateCustomer(userId, email);
+    // Check Stripe directly to prevent another checkout while webhook delivery is pending.
+    const subscriptions = await stripe.subscriptions.list({ customer: customerId, status: 'all', limit: 100 });
+    if (subscriptions.data.some((item) => ['active', 'trialing', 'past_due', 'unpaid', 'paused', 'incomplete'].includes(item.status)))
+      return NextResponse.json({ error: 'A subscription already exists. Manage it from your dashboard.' }, { status: 409 });
+    const url = appUrl();
+    const session = await stripe.checkout.sessions.create({
+      mode: 'subscription', customer: customerId, line_items: [{ price: price.id, quantity: 1 }],
+      client_reference_id: userId, subscription_data: { metadata: { clerk_user_id: userId } },
+      success_url: `${url}/dashboard?billing=success`, cancel_url: `${url}/dashboard?billing=canceled`,
+    });
+    if (!session.url) throw new Error('Missing checkout URL');
+    return NextResponse.json({ url: session.url });
+  } catch { return NextResponse.json({ error: 'Could not start checkout' }, { status: 503 }); }
+}

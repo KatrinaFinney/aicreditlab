@@ -54,7 +54,7 @@ export default function Home() {
       <div className="plans-grid"><div className="feature-card plan-card plan-featured"><span className="plan-tag">AVAILABLE NOW</span><h3>Smart Credit Starter</h3><p>A practical place to start and a way to keep going.</p>
         <ul><li>Separate personal and business credit action plans</li><li>Saved progress, focus mode, and short work sessions</li><li>Personal credit: 30 customizable letter topics; three downloads per month</li><li>Manual dispute status tracking</li></ul>
         <Link className="action-button" href="/questionnaire">Get started free <span aria-hidden="true">↗</span></Link>
-      </div><div className="feature-card plan-card"><span className="plan-tag">IN DEVELOPMENT</span><h3>Guided roadmap</h3><p>For personal credit, paid accounts have unlimited template downloads and up to five AI letter generations per month. Billing and self-service upgrades are not available yet.</p></div></div>
+      </div><div className="feature-card plan-card"><span className="plan-tag">PERSONAL CREDIT</span><h3>Paid letter tools</h3><p>Paid personal accounts have unlimited template downloads and up to five AI letter generations per month. See your dashboard for the current subscription price and availability.</p></div></div>
     </section>
     <footer className="home-footer"><div className="home-container"><strong>AI CreditLab<span className="brand-mark">.</span></strong><p>Educational tools for your next credit move. Review your own information and seek qualified help when you need it.</p><small>© {new Date().getFullYear()} AI CreditLab</small></div></footer>
   </div>;

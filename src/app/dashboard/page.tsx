@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useUser } from "@clerk/nextjs";
 import Link from "next/link";
+import BillingCard from '@/components/BillingCard';
 
 // Define a type for the user's credit plan data
 interface UserData {
@@ -274,25 +275,7 @@ export default function Dashboard() {
         </Link>}
       </div>
 
-      {/* Paid features are planned; no checkout is available yet. */}
-      <div
-        style={{
-          backgroundColor: "var(--surface)",
-          padding: "20px",
-          borderRadius: "12px",
-          border: "1px solid var(--line)",
-          marginTop: "24px",
-        }}
-      >
-        <h2 style={{ fontSize: "1.5rem", fontWeight: "bold", color: "var(--accent)" }}>
-          Premium Tools
-        </h2>
-        <p style={{ fontSize: "1.1rem", color: "var(--text)" }}>
-          Paid accounts can use unlimited template downloads and five AI letter generations per month. Billing and self-service upgrades are in development.
-        </p>
-
-        <p style={{ color: "var(--accent)" }}>More guided tools are in development.</p>
-      </div>
+      <BillingCard />
     </div>
   );
 }

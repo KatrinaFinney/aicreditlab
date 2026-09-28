@@ -13,6 +13,10 @@ const required = [
   ['Supabase URL', 'NEXT_PUBLIC_SUPABASE_URL', 'Link the existing Supabase project.'],
   ['Supabase service role key', 'SUPABASE_SERVICE_ROLE_KEY', 'Add the server-only key; never prefix it NEXT_PUBLIC_.'],
   ['OpenAI API key', 'OPENAI_API_KEY', 'Add the server-only key to enable paid AI drafts.'],
+  ['Stripe secret key', 'STRIPE_SECRET_KEY', 'Add the server-only Stripe key to enable checkout.'],
+  ['Stripe monthly price', 'STRIPE_PRICE_ID', 'Add an active monthly recurring Stripe Price ID.'],
+  ['Stripe webhook secret', 'STRIPE_WEBHOOK_SECRET', 'Add the signing secret for /api/billing/webhook.'],
+  ['App URL', 'NEXT_PUBLIC_APP_URL', 'Set the canonical HTTPS origin for checkout return URLs.'],
 ];
 for (const [label, name, instruction] of required) {
   report(label, Boolean(env[name]), env[name] ? 'configured' : instruction);
@@ -29,6 +33,7 @@ if (!process.argv.includes('--live')) {
       ['credit_plan_progress', 'user_id,completed_steps,focus_mode,session_minutes'],
       ['disputes', 'id,user_id,creditor,agency,status'],
       ['letter_usage', 'id,user_id,kind,period_start,status'],
+      ['billing_accounts', 'user_id,stripe_customer_id,stripe_subscription_id,subscription_status'],
     ];
     for (const [table, columns] of tables) {
       try {
