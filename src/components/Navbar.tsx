@@ -7,119 +7,14 @@ import { useState } from "react";
 export default function Navbar() {
   const { isSignedIn } = useUser();
   const [menuOpen, setMenuOpen] = useState(false);
-
-  return (
-    <nav
-      style={{
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center",
-        padding: "14px 48px",
-        background: "#0097A7",
-        color: "white",
-        fontFamily: "'Nunito', 'Inter', sans-serif",
-        boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
-        position: "sticky",
-        top: 0,
-        zIndex: 1000,
-      }}
-    >
-      {/* AI CreditLab Logo → Links to Dashboard if signed in, otherwise to Homepage */}
-      <Link
-        href={isSignedIn ? "/dashboard" : "/"}
-        style={{
-          textDecoration: "none",
-          fontSize: "1.5rem",
-          fontWeight: "bold",
-          color: "white",
-        }}
-      >
-        AI CreditLab
-      </Link>
-
-      {/* Account Menu */}
-      <div style={{ position: "relative" }}>
-        <button
-          onClick={() => setMenuOpen(!menuOpen)}
-          style={{
-            background: "transparent",
-            border: "none",
-            color: "white",
-            cursor: "pointer",
-            fontSize: "1rem",
-            fontWeight: "600",
-            padding: "6px 12px",
-            transition: "all 0.2s ease",
-          }}
-        >
-          {isSignedIn ? "Account ▼" : "Sign In"}
-        </button>
-
-        {menuOpen && (
-          <div
-            style={{
-              position: "absolute",
-              right: 0,
-              top: "100%",
-              background: "white",
-              boxShadow: "0px 4px 12px rgba(0, 0, 0, 0.15)",
-              borderRadius: "8px",
-              overflow: "hidden",
-              width: "180px",
-              display: "flex",
-              flexDirection: "column",
-              padding: "8px 0",
-            }}
-          >
-            {isSignedIn ? (
-              <>
-                <Link
-                  href="/dashboard"
-                  style={{
-                    padding: "10px 16px",
-                    color: "#0097A7",
-                    textDecoration: "none",
-                    fontSize: "0.95rem",
-                    fontWeight: "500",
-                  }}
-                >
-                  Dashboard
-                </Link>
-                <SignOutButton>
-                  <button
-                    style={{
-                      padding: "10px 16px",
-                      width: "100%",
-                      border: "none",
-                      background: "transparent",
-                      color: "red",
-                      textAlign: "left",
-                      fontSize: "0.95rem",
-                      fontWeight: "500",
-                      cursor: "pointer",
-                    }}
-                  >
-                    Sign Out
-                  </button>
-                </SignOutButton>
-              </>
-            ) : (
-              <Link
-                href="/sign-in"
-                style={{
-                  padding: "10px 16px",
-                  color: "#0097A7",
-                  textDecoration: "none",
-                  fontSize: "0.95rem",
-                  fontWeight: "500",
-                }}
-              >
-                Sign In
-              </Link>
-            )}
-          </div>
-        )}
+  return <nav className="site-nav" aria-label="Main navigation">
+    <div className="nav-inner">
+      <Link className="site-brand" href={isSignedIn ? "/dashboard" : "/"}>AI CreditLab<span className="brand-mark">.</span></Link>
+      <div className="nav-links"><Link href="/dispute-center">Letter library</Link><Link href="/questionnaire">My plan</Link></div>
+      <div className="nav-account">
+        <button type="button" className="nav-account-button" aria-expanded={menuOpen} aria-label={isSignedIn ? "Account menu" : "Sign in menu"} onClick={() => setMenuOpen(!menuOpen)}>{isSignedIn ? "Account" : "Sign in"}<span aria-hidden="true">⌄</span></button>
+        {menuOpen && <div className="nav-dropdown">{isSignedIn ? <><Link href="/dashboard" onClick={() => setMenuOpen(false)}>Dashboard</Link><SignOutButton><button type="button">Sign out</button></SignOutButton></> : <Link href="/sign-in" onClick={() => setMenuOpen(false)}>Sign in</Link>}</div>}
       </div>
-    </nav>
-  );
+    </div>
+  </nav>;
 }

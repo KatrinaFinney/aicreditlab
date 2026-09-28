@@ -94,18 +94,18 @@ export default function Questionnaire() {
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
-        height: "100vh",
-        background: "linear-gradient(135deg, #d0f0f7 0%, #ecfbfc 100%)",
+        minHeight: "100vh",
+        background: "radial-gradient(circle at 85% 15%, #164b52, transparent 40%), var(--bg)",
         fontFamily: "'Nunito', sans-serif",
         padding: "1rem",
       }}
     >
       <div
         style={{
-          backgroundColor: "white",
+          backgroundColor: "var(--surface)",
+          border: "1px solid var(--line)",
           padding: "30px",
           borderRadius: "12px",
-          boxShadow: "0px 4px 12px rgba(0, 0, 0, 0.1)",
           maxWidth: "600px",
           width: "100%",
         }}
@@ -114,7 +114,7 @@ export default function Questionnaire() {
           style={{
             fontSize: "2rem",
             fontWeight: "bold",
-            color: "#0097A7",
+            color: "var(--accent)",
             textAlign: "center",
           }}
         >
@@ -122,7 +122,7 @@ export default function Questionnaire() {
         </h1>
         <p
           style={{
-            color: "#006F7A",
+            color: "var(--accent)",
             textAlign: "center",
             marginBottom: "20px",
           }}
@@ -132,8 +132,8 @@ export default function Questionnaire() {
 
         {questions.map((q) => (
           <div key={q.id} style={{ marginBottom: "20px" }}>
-            <h3 style={{ color: "#006F7A", fontWeight: "bold" }}>{q.question}</h3>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px" }}>
+            <h3 style={{ color: "var(--accent)", fontWeight: "bold" }}>{q.question}</h3>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 220px), 1fr))", gap: "10px" }}>
               {q.options.map((option) => {
                 const isSelected = answers[q.id]?.includes(option);
                 return (
@@ -142,8 +142,8 @@ export default function Questionnaire() {
                     onClick={() => handleSelect(q.id, option)}
                     style={{
                       padding: "10px 15px",
-                      backgroundColor: isSelected ? "#0097A7" : "#D6D9E0",
-                      color: isSelected ? "white" : "#1E1E1E",
+                      backgroundColor: isSelected ? "var(--accent-strong)" : "var(--surface-raised)",
+                      color: isSelected ? "white" : "var(--text)",
                       border: "none",
                       borderRadius: "8px",
                       cursor: "pointer",
@@ -161,11 +161,11 @@ export default function Questionnaire() {
         ))}
 
         {error && (
-          <p style={{ color: "red", fontWeight: "bold", textAlign: "center" }}>
+          <p style={{ color: "var(--danger)", fontWeight: "bold", textAlign: "center" }}>
             Please select at least one option per question.
           </p>
         )}
-        {saveError && <p role="alert" style={{ color: "#a12323" }}>{saveError}</p>}
+        {saveError && <p role="alert" style={{ color: "var(--danger)" }}>{saveError}</p>}
 
         <button
           onClick={handleSubmit}
@@ -174,8 +174,8 @@ export default function Questionnaire() {
             width: "100%",
             marginTop: "20px",
             padding: "12px 20px",
-            backgroundColor: loading ? "#A0A0A0" : "#0097A7",
-            color: "white",
+            backgroundColor: loading ? "#A0A0A0" : "var(--accent-strong)",
+            color: "#071d25",
             border: "none",
             borderRadius: "8px",
             fontSize: "1.2rem",

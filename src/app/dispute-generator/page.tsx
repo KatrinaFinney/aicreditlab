@@ -67,47 +67,47 @@ export default function LetterEditor() {
     finally { setBusy(false); }
   };
   const locked = !!allowance && !allowance.paid && allowance.remaining === 0;
-  const input = (field: Field, label: string, placeholder = '') => <label key={field} style={{ display: 'grid', gap: 6, marginBottom: 16, color: '#004E5A', fontWeight: 600 }}>
+  const input = (field: Field, label: string, placeholder = '') => <label key={field} style={{ display: 'grid', gap: 6, marginBottom: 16, color: 'var(--text)', fontWeight: 600 }}>
     {label}<input required={field !== 'accountReference'} maxLength={field === 'accountReference' ? 30 : 1000}
       value={values[field]} onChange={(event) => update(field, event.target.value)} placeholder={placeholder}
-      style={{ padding: 12, border: '1px solid #789', borderRadius: 8, color: '#1e1e1e' }} />
+      style={{ padding: 12, border: '1px solid #789', borderRadius: 8, color: 'var(--text)' }} />
   </label>;
-  return <main style={{ maxWidth: 720, margin: '2rem auto', padding: '1.5rem', color: '#1e1e1e' }}>
+  return <main style={{ maxWidth: 720, margin: '2rem auto', padding: '1.5rem', color: 'var(--text)' }}>
     <Link href="/dispute-center">← Letter library</Link>
-    <h1 style={{ color: '#006F7A', margin: '24px 0 12px' }}>Customize a credit report dispute letter</h1>
+    <h1 style={{ color: 'var(--accent)', margin: '24px 0 12px' }}>Customize a credit report dispute letter</h1>
     <p>Use this only for information you believe is inaccurate. Explain the specific error and attach copies of supporting records when you send your reviewed draft.</p>
-    {error && <p role="alert" style={{ color: '#a12323' }}>{error}</p>}
-    {allowance && <p role="status" style={{ color: '#006F7A', fontWeight: 700 }}>
+    {error && <p role="alert" style={{ color: 'var(--danger)' }}>{error}</p>}
+    {allowance && <p role="status" style={{ color: 'var(--accent)', fontWeight: 700 }}>
       {allowance.paid ? `Unlimited template downloads · ${allowance.remaining} of 5 AI generations left this month` :
         `${allowance.remaining} of 3 free downloads left this month`}
       {' · '}Resets {new Date(allowance.resetAt).toLocaleDateString('en-US', { month: 'long', day: 'numeric', timeZone: 'UTC' })} (UTC)
     </p>}
-    {locked ? <div style={{ background: '#ecfbfc', padding: 24, borderRadius: 12 }}>
+    {locked ? <div style={{ background: 'var(--surface)', padding: 24, borderRadius: 12 }}>
       <h2>The free letter library is locked for this month</h2>
       <p>Your three download requests have been used. The library unlocks at the start of the next UTC month.</p>
     </div> : !allowance ? <p>Checking letter access…</p> : <>
-      <form id="letter-form" onSubmit={preview} style={{ background: '#ecfbfc', padding: 24, borderRadius: 12, marginTop: 24 }}>
-        <label style={{ display: 'grid', gap: 6, marginBottom: 16, color: '#004E5A' }}>Letter topic
+      <form id="letter-form" onSubmit={preview} style={{ background: 'var(--surface)', padding: 24, borderRadius: 12, marginTop: 24 }}>
+        <label style={{ display: 'grid', gap: 6, marginBottom: 16, color: 'var(--text)' }}>Letter topic
           <select value={values.templateId} onChange={(event) => update('templateId', event.target.value)} style={{ padding: 12 }}>
             {letterTemplates.map((template) => <option key={template.id} value={template.id}>{template.title}</option>)}
           </select><small>{letterTemplateFor(values.templateId)?.guidance}</small>
         </label>
         {input('fullName', 'Your full name')}
         {input('address', 'Your mailing address', 'Street, city, state, ZIP')}
-        <label style={{ display: 'grid', gap: 6, marginBottom: 16, color: '#004E5A' }}>Credit bureau
+        <label style={{ display: 'grid', gap: 6, marginBottom: 16, color: 'var(--text)' }}>Credit bureau
           <select value={values.agency} onChange={(event) => update('agency', event.target.value)} style={{ padding: 12 }}>
             <option>Equifax</option><option>Experian</option><option>TransUnion</option>
           </select>
         </label>
         {input('creditor', letterTemplateFor(values.templateId)?.category === 'Identity' ? 'Report item or company name' : 'Company or account name')}
         {input('accountReference', 'Account reference (optional)', 'Only the last four digits if helpful')}
-        <label style={{ display: 'grid', gap: 6, marginBottom: 16, color: '#004E5A' }}>What exactly is wrong?
+        <label style={{ display: 'grid', gap: 6, marginBottom: 16, color: 'var(--text)' }}>What exactly is wrong?
           <textarea required maxLength={1000} rows={4} value={values.errorDescription}
             onChange={(event) => update('errorDescription', event.target.value)} style={{ padding: 12 }} />
         </label>
         {input('requestedCorrection', 'What correction are you requesting?', 'For example: correct the reported balance to $…')}
-        <button disabled={busy} style={{ padding: '12px 20px', background: '#0097A7', color: 'white', border: 0, borderRadius: 8 }}>Preview customized template</button>
-        {allowance.paid && <div style={{ marginTop: 20, borderTop: '1px solid #9cc', paddingTop: 18 }}>
+        <button disabled={busy} style={{ padding: '12px 20px', background: 'var(--accent-strong)', color: '#071d25', border: 0, borderRadius: 8 }}>Preview customized template</button>
+        {allowance.paid && <div style={{ marginTop: 20, borderTop: '1px solid var(--line)', paddingTop: 18 }}>
           <p><strong>Paid plan: AI draft ({allowance.remaining} remaining)</strong></p>
           <p>Your entered details will be sent to OpenAI. Use only an account reference of up to eight characters. Review every fact before sending.</p>
           <label style={{ display: 'flex', gap: 8, marginBottom: 12 }}>
@@ -117,13 +117,13 @@ export default function LetterEditor() {
           <button type="button" disabled={busy || !consent || allowance.remaining === 0} onClick={() => {
             const form = document.getElementById('letter-form') as HTMLFormElement;
             if (form.reportValidity()) aiDraft();
-          }} style={{ padding: '12px 20px', background: '#006F7A', color: 'white', border: 0, borderRadius: 8 }}>Generate AI draft</button>
+          }} style={{ padding: '12px 20px', background: 'var(--accent)', color: '#071d25', border: 0, borderRadius: 8 }}>Generate AI draft</button>
         </div>}
       </form>
       {letter && <section style={{ marginTop: 24 }}><h2>Review your draft</h2>
         <p>Check every fact. Add the bureau’s current mailing address, your report confirmation number if available, and copies of supporting documents before sending.</p>
-        <pre style={{ whiteSpace: 'pre-wrap', background: '#f2f8f8', padding: 20, borderRadius: 8, fontFamily: 'inherit' }}>{letter}</pre>
-        <button disabled={busy} onClick={download} style={{ padding: '12px 20px', background: '#006F7A', color: 'white', border: 0, borderRadius: 8 }}>Download letter</button>
+        <pre style={{ whiteSpace: 'pre-wrap', background: 'var(--surface-raised)', padding: 20, borderRadius: 8, fontFamily: 'inherit', color: 'var(--text)'  }}>{letter}</pre>
+        <button disabled={busy} onClick={download} style={{ padding: '12px 20px', background: 'var(--accent)', color: '#071d25', border: 0, borderRadius: 8 }}>Download letter</button>
       </section>}
     </>}
   </main>;
