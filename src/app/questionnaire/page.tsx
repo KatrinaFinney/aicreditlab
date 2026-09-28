@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useUser } from "@clerk/nextjs";
 import { createClient } from "@supabase/supabase-js";
+import { generateCreditPlan } from "@/lib/creditPlan";
 
 // Initialize Supabase client
 const supabase = createClient(
@@ -57,7 +58,7 @@ export default function Questionnaire() {
   const [answers, setAnswers] = useState<{ [key: number]: string[] }>({});
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [questionnaireCompleted, setQuestionnaireCompleted] = useState(false);
+  const [saveError, setSaveError] = useState("");
 
   // 🔹 Redirect to sign-up if not logged in
   useEffect(() => {
@@ -80,10 +81,6 @@ export default function Questionnaire() {
       if (!error && data) {
         if (data.selected_disputes) {
           setAnswers(data.selected_disputes);
-        }
-        if (data.questionnaire_completed) {
-          setQuestionnaireCompleted(true);
-          router.push("/dashboard");
         }
       }
     };
@@ -109,15 +106,6 @@ export default function Questionnaire() {
     setError(false);
   };
 
-  // 🔹 Generate a personalized plan based on answers
-  const generatePlan = () => {
-    return [
-      "✅ Step 1: Improve payment history",
-      "✅ Step 2: Reduce credit utilization",
-      "✅ Step 3: Remove inaccuracies from your credit report",
-    ];
-  };
-
   // 🔹 Submit questionnaire and save responses
   const handleSubmit = async () => {
     if (
@@ -130,7 +118,7 @@ export default function Questionnaire() {
 
     setLoading(true);
     if (user) {
-      const generatedPlan = generatePlan();
+      const generatedPlan = generateCreditPlan(answers);
 
       const { error: supabaseError } = await supabase
         .from("credit_plans")
@@ -145,12 +133,12 @@ export default function Questionnaire() {
         ]);
 
       if (supabaseError) {
-        console.error("Error saving responses:", supabaseError);
+        setSaveError("We couldn't save your plan. Please try again.");
       } else {
-        setQuestionnaireCompleted(true);
         router.push("/dashboard");
       }
     }
+    setLoading(false);
   };
 
   // 🔹 Show loading state while Clerk loads
@@ -233,10 +221,11 @@ export default function Questionnaire() {
             Please select at least one option per question.
           </p>
         )}
+        {saveError && <p role="alert" style={{ color: "#a12323" }}>{saveError}</p>}
 
         <button
           onClick={handleSubmit}
-          disabled={loading || questionnaireCompleted}
+          disabled={loading}
           style={{
             width: "100%",
             marginTop: "20px",
@@ -247,7 +236,7 @@ export default function Questionnaire() {
             borderRadius: "8px",
             fontSize: "1.2rem",
             fontWeight: "bold",
-            cursor: loading || questionnaireCompleted ? "not-allowed" : "pointer",
+            cursor: loading ? "not-allowed" : "pointer",
             transition: "background-color 0.2s ease",
           }}
         >

@@ -22,18 +22,17 @@ const features = [
   {
     icon: "/icons/robot.svg",
     title: "AI-Powered Dispute Letters",
-    description:
-      "Our AI drafts dispute letters tailored to your case—no templates, just precision.",
+    description: "Review dispute templates and prepare accurate details about an error on your report.",
   },
   {
     icon: "/icons/time.svg",
     title: "Real-Time Tracking",
-    description: "Track dispute progress in one place with live updates and alerts.",
+    description: "Keep your credit improvement steps together in one place.",
   },
   {
     icon: "/icons/fast.svg",
     title: "Fast & Automated",
-    description: "No waiting—AI CreditLab moves as fast as the credit bureaus allow.",
+    description: "Start with a short assessment and practical next steps.",
   },
   {
     icon: "/icons/legal.svg",
@@ -43,12 +42,12 @@ const features = [
   {
     icon: "/icons/score.svg",
     title: "Score Improvement Insights",
-    description: "Get AI-driven suggestions on improving your credit beyond disputes.",
+    description: "Get suggestions based on the credit challenges you select.",
   },
   {
     icon: "/icons/secure.svg",
     title: "Secure & Private",
-    description: "Data encryption ensures your personal information stays safe and confidential.",
+    description: "Sign in to access your credit assessment and plan.",
   },
 ];
 

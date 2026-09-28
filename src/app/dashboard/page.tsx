@@ -15,7 +15,7 @@ interface UserData {
   plan_type: "free" | "paid";
   full_name?: string;
   address?: string;
-  selected_disputes?: string[];
+  selected_disputes?: Record<string, string[]>;
   credit_plan?: string[];
 }
 
@@ -28,7 +28,6 @@ export default function Dashboard() {
     
     if (!user) return;
 
-    console.log("Clerk User Data:", user); // 👈 Log entire user object
 
     const fetchUserPlan = async () => {
       const { data, error } = await supabase
@@ -38,7 +37,6 @@ export default function Dashboard() {
         .single();
 
 
-    console.log("Fetched user plan:", data); // 👈 Debug log
 
       if (!error && data) {
         setPlanType(data.plan_type);
@@ -131,7 +129,7 @@ export default function Dashboard() {
         </Link>
       </div>
 
-      {/* Selected Disputes Section */}
+      {/* Assessment answers */}
       <div
         style={{
           backgroundColor: "white",
@@ -148,23 +146,23 @@ export default function Dashboard() {
             color: "#006F7A",
           }}
         >
-          Your Selected Disputes
+          Your Credit Assessment
         </h2>
 
-        {userData?.selected_disputes && userData.selected_disputes.length > 0 ? (
+        {userData?.selected_disputes && Object.values(userData.selected_disputes).flat().length > 0 ? (
           <ul style={{ paddingLeft: "20px", marginTop: "10px" }}>
-            {userData.selected_disputes.map((dispute, index) => (
+            {Object.values(userData.selected_disputes).flat().map((answer, index) => (
               <li
                 key={index}
                 style={{ fontSize: "1.1rem", color: "#333", marginBottom: "8px" }}
               >
-                {dispute}
+                {answer}
               </li>
             ))}
           </ul>
         ) : (
           <p style={{ fontSize: "1.1rem", color: "#666" }}>
-            No disputes selected yet.
+            Complete the assessment to see your answers here.
           </p>
         )}
       </div>
@@ -183,7 +181,7 @@ export default function Dashboard() {
           Dispute Center
         </h2>
         <p style={{ fontSize: "1.1rem", color: "#333" }}>
-          Generate AI-powered dispute templates and take control of your credit report.
+          Review dispute templates for information you believe is inaccurate on your credit report.
         </p>
 
         <Link
@@ -203,7 +201,7 @@ export default function Dashboard() {
         </Link>
       </div>
 
-      {/* Paid Features Section */}
+      {/* Paid features are planned; no checkout is available yet. */}
       <div
         style={{
           backgroundColor: "white",
@@ -221,39 +219,7 @@ export default function Dashboard() {
           AI-driven insights, step-by-step repair strategies, and real-time credit tracking.
         </p>
 
-        {planType === "paid" ? (
-          <Link
-            href="/premium-tools"
-            style={{
-              display: "inline-block",
-              marginTop: "12px",
-              padding: "10px 16px",
-              backgroundColor: "#0097A7",
-              color: "white",
-              fontWeight: "bold",
-              borderRadius: "8px",
-              textDecoration: "none",
-            }}
-          >
-            Explore Premium Features
-          </Link>
-        ) : (
-          <Link
-            href="/upgrade"
-            style={{
-              display: "inline-block",
-              marginTop: "12px",
-              padding: "10px 16px",
-              backgroundColor: "#006F7A",
-              color: "white",
-              fontWeight: "bold",
-              borderRadius: "8px",
-              textDecoration: "none",
-            }}
-          >
-            Upgrade to Pro
-          </Link>
-        )}
+        <p style={{ color: "#006F7A" }}>More guided tools are in development.</p>
       </div>
     </div>
   );

@@ -1,10 +1,8 @@
 "use client"; // This ensures the client-side rendering
 
-import React, { Suspense, useEffect } from "react";
+import React, { Suspense } from "react";
 import dynamic from "next/dynamic";
-import { useRouter, usePathname } from "next/navigation";
-import { useUser } from "@clerk/nextjs";
-import { createClient } from "@supabase/supabase-js";
+import { usePathname } from "next/navigation";
 
 // Dynamically import ClerkProvider using Next.js dynamic import
 const ClerkProvider = dynamic(
@@ -16,10 +14,6 @@ const ClerkProvider = dynamic(
 import Navbar from "../components/Navbar";
 
 // Supabase client setup
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-);
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -42,31 +36,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
 function LayoutContent({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();  // Correct hook for current path
-  const { isSignedIn, user } = useUser();
-  const router = useRouter();
 
   // Don't show Navbar for the waitlist page
   const isWaitlistPage = pathname === "/waitlist";
-
-  useEffect(() => {
-    if (!isSignedIn) return;
-
-    const checkQuestionnaireStatus = async () => {
-      const { data } = await supabase
-        .from("credit_plans")
-        .select("questionnaire_completed")
-        .eq("user_id", user?.id)
-        .single();
-
-      if (!data?.questionnaire_completed) {
-        router.push("/questionnaire");
-      } else {
-        router.push("/dashboard");
-      }
-    };
-
-    checkQuestionnaireStatus();
-  }, [isSignedIn, router, user]);
 
   return (
     <div>
