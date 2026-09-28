@@ -1,5 +1,33 @@
 export type CreditAnswers = Record<number, string[]>;
 
+export const creditQuestions = [
+  { id: 1, question: 'What is your biggest credit challenge?', options: [
+    'Late payments', 'High credit utilization', 'Collections', 'No credit history',
+    'Errors on my report', 'Too many inquiries',
+  ] },
+  { id: 2, question: 'What is your primary goal?', options: [
+    'Increase credit score', 'Remove negative items', 'Get approved for a loan',
+    'Improve financial habits', 'Lower interest rates', 'Build business credit',
+  ] },
+  { id: 3, question: 'Which best describes your current financial habits?', options: [
+    'I budget carefully', 'I sometimes overspend', 'I live paycheck to paycheck',
+    'I have savings but struggle with credit', 'I don’t check my credit often',
+    'I make payments but carry high balances',
+  ] },
+];
+
+export function isValidCreditAnswers(value: unknown): value is CreditAnswers {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return false;
+  const answers = value as Record<string, unknown>;
+  if (Object.keys(answers).length !== creditQuestions.length) return false;
+  return creditQuestions.every(({ id, options }) => {
+    const selected = answers[String(id)];
+    return Array.isArray(selected) && selected.length >= 1 && selected.length <= 3 &&
+      new Set(selected).size === selected.length &&
+      selected.every((item: unknown) => typeof item === 'string' && options.includes(item));
+  });
+}
+
 export function generateCreditPlan(answers: CreditAnswers): string[] {
   const choices = Object.values(answers).flat();
   const steps: string[] = [];

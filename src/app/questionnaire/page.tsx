@@ -3,54 +3,9 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useUser } from "@clerk/nextjs";
-import { createClient } from "@supabase/supabase-js";
-import { generateCreditPlan } from "@/lib/creditPlan";
+import { creditQuestions } from "@/lib/creditPlan";
 
-// Initialize Supabase client
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-);
-
-// Questionnaire data
-const questions = [
-  {
-    id: 1,
-    question: "What is your biggest credit challenge?",
-    options: [
-      "Late payments",
-      "High credit utilization",
-      "Collections",
-      "No credit history",
-      "Errors on my report",
-      "Too many inquiries",
-    ],
-  },
-  {
-    id: 2,
-    question: "What is your primary goal?",
-    options: [
-      "Increase credit score",
-      "Remove negative items",
-      "Get approved for a loan",
-      "Improve financial habits",
-      "Lower interest rates",
-      "Build business credit",
-    ],
-  },
-  {
-    id: 3,
-    question: "Which best describes your current financial habits?",
-    options: [
-      "I budget carefully",
-      "I sometimes overspend",
-      "I live paycheck to paycheck",
-      "I have savings but struggle with credit",
-      "I don’t check my credit often",
-      "I make payments but carry high balances",
-    ],
-  },
-];
+const questions = creditQuestions;
 
 export default function Questionnaire() {
   const router = useRouter();
@@ -72,17 +27,10 @@ export default function Questionnaire() {
     if (!user) return;
 
     const fetchExistingData = async () => {
-      const { data, error } = await supabase
-        .from("credit_plans")
-        .select("selected_disputes, questionnaire_completed, credit_plan")
-        .eq("user_id", user.id)
-        .single();
-
-      if (!error && data) {
-        if (data.selected_disputes) {
-          setAnswers(data.selected_disputes);
-        }
-      }
+      const response = await fetch('/api/credit-plan');
+      if (!response.ok) return;
+      const { plan } = await response.json();
+      if (plan?.selected_disputes) setAnswers(plan.selected_disputes);
     };
 
     fetchExistingData();
@@ -118,24 +66,20 @@ export default function Questionnaire() {
 
     setLoading(true);
     if (user) {
-      const generatedPlan = generateCreditPlan(answers);
-
-      const { error: supabaseError } = await supabase
-        .from("credit_plans")
-        .upsert([
-          {
-            user_id: user.id,
-            selected_disputes: answers,
-            questionnaire_completed: true,
-            plan_type: "free",
-            credit_plan: generatedPlan,
-          },
-        ]);
-
-      if (supabaseError) {
+      setSaveError("");
+      try {
+        const response = await fetch('/api/credit-plan', {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ answers }),
+        });
+        if (!response.ok) {
+          setSaveError("We couldn't save your plan. Please try again.");
+        } else {
+          router.push('/dashboard');
+        }
+      } catch {
         setSaveError("We couldn't save your plan. Please try again.");
-      } else {
-        router.push("/dashboard");
       }
     }
     setLoading(false);

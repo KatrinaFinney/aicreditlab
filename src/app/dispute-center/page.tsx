@@ -2,12 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { useUser } from "@clerk/nextjs";
-import { createClient } from "@supabase/supabase-js";
-
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-);
 
 // Define TypeScript interface for Dispute Templates
 interface DisputeTemplate {
@@ -27,28 +21,15 @@ export default function DisputeCenter() {
   useEffect(() => {
     if (!user) return;
 
-    const fetchPlanType = async () => {
-      const { data, error } = await supabase
-        .from("credit_plans")
-        .select("plan_type")
-        .eq("user_id", user.id)
-        .single();
-
-      if (!error && data) {
-        setPlanType(data.plan_type);
-      } else {
-        setPlanType("free"); // Default to free if no plan found
-      }
-    };
-
     const fetchTemplates = async () => {
-      const { data, error } = await supabase.from("dispute_templates").select("*");
-      if (!error && data) {
-        setTemplates(data);
+      const response = await fetch('/api/dispute-templates');
+      if (response.ok) {
+        const { templates, planType } = await response.json();
+        setTemplates(templates);
+        setPlanType(planType);
       }
     };
 
-    fetchPlanType();
     fetchTemplates();
   }, [user]);
 
@@ -156,7 +137,7 @@ export default function DisputeCenter() {
               </a>
 
               {/* Paid Users - Download Editable DOCX & AI Customization */}
-              {planType === "paid" && (
+              {planType === "paid" && template.download_docx_url && (
                 <>
                   <a
                     href={template.download_docx_url}
@@ -175,22 +156,6 @@ export default function DisputeCenter() {
                     Download DOCX
                   </a>
 
-                  <button
-                    onClick={() => alert("AI-Generated Letter Coming Soon!")}
-                    style={{
-                      display: "block",
-                      marginTop: "10px",
-                      padding: "10px",
-                      backgroundColor: "#004E5A",
-                      color: "white",
-                      fontWeight: "bold",
-                      borderRadius: "8px",
-                      border: "none",
-                      cursor: "pointer",
-                    }}
-                  >
-                    Generate AI Dispute Letter
-                  </button>
                 </>
               )}
             </div>

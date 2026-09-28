@@ -2,13 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useUser } from "@clerk/nextjs";
-import { createClient } from "@supabase/supabase-js";
 import Link from "next/link";
-
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-);
 
 // Define a type for the user's credit plan data
 interface UserData {
@@ -30,15 +24,13 @@ export default function Dashboard() {
 
 
     const fetchUserPlan = async () => {
-      const { data, error } = await supabase
-        .from("credit_plans")
-        .select("plan_type, full_name, address, selected_disputes, credit_plan")
-        .eq("user_id", user.id)
-        .single();
+      const response = await fetch('/api/credit-plan');
+      if (!response.ok) return;
+      const { plan: data } = await response.json();
 
 
 
-      if (!error && data) {
+      if (data) {
         setPlanType(data.plan_type);
         setUserData(data);
       } else {

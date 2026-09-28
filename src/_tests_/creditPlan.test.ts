@@ -1,4 +1,4 @@
-import { generateCreditPlan } from '../lib/creditPlan';
+import { generateCreditPlan, isValidCreditAnswers } from '../lib/creditPlan';
 
 describe('credit plan', () => {
   it('responds to selected challenges without promising removal of accurate information', () => {
@@ -10,5 +10,11 @@ describe('credit plan', () => {
 
   it('gives a usable next action for other answers', () => {
     expect(generateCreditPlan({ 1: ['No credit history'], 2: ['Build business credit'], 3: ['I budget carefully'] }).length).toBeGreaterThan(1);
+  });
+
+  it('rejects malformed or invented questionnaire choices', () => {
+    expect(isValidCreditAnswers({ 1: ['Collections'], 2: ['Increase credit score'], 3: ['I budget carefully'] })).toBe(true);
+    expect(isValidCreditAnswers({ 1: ['Anything'], 2: ['Increase credit score'], 3: ['I budget carefully'] })).toBe(false);
+    expect(isValidCreditAnswers({ 1: ['Collections', 'Collections'], 2: ['Increase credit score'], 3: ['I budget carefully'] })).toBe(false);
   });
 });

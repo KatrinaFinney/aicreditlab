@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { supabaseAdmin } from '@/lib/supabaseClient';
+import { getServerSupabase } from '@/lib/serverSupabase';
 import { auth } from '@clerk/nextjs/server';
 
 interface DisputeRequest {
@@ -14,7 +14,7 @@ export async function POST(req: Request) {
     const { creditor, agency }: DisputeRequest = await req.json();
     if (typeof creditor !== 'string' || !creditor.trim() || typeof agency !== 'string' || !agency.trim())
       return NextResponse.json({ error: 'Creditor and agency are required' }, { status: 400 });
-    const client = supabaseAdmin;
+    const client = getServerSupabase();
 
     if (!client) {
       return NextResponse.json({ error: 'Dispute service is unavailable' }, { status: 503 });
