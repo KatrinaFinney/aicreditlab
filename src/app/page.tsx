@@ -1,7 +1,7 @@
 import Link from 'next/link';
 
 const steps = [
-  ['01', 'Tell us what is going on', 'Choose the credit challenges, goals, and habits that fit your situation.'],
+  ['01', 'Tell us what is going on', 'Start with personal or business credit, then choose the answers that fit your situation.'],
   ['02', 'Get an action plan', 'See concrete steps based on your answers, with a clear next action.'],
   ['03', 'Work through it', 'Mark steps complete and return when you are ready for the next one.'],
 ];
@@ -13,7 +13,7 @@ export default function Home() {
         <div>
           <p className="eyebrow">A clearer way to work on your credit</p>
           <h1>Know your next <span>credit move.</span></h1>
-          <p className="hero-copy">Answer a few questions, get a practical action plan, and keep track of what you finish. If you find an error on your credit report, prepare a letter you can review and send yourself.</p>
+          <p className="hero-copy">Choose a personal or business credit path, answer a few questions, and get an action plan you can track. If you find an error on a personal credit report, prepare a letter you can review and send yourself.</p>
           <div className="home-actions">
             <Link className="action-button" href="/questionnaire">Build my free plan <span aria-hidden="true">↗</span></Link>
             <Link className="action-button action-button-outline" href="#how-it-works">See how it works</Link>
@@ -41,7 +41,7 @@ export default function Home() {
     <section className="home-band"><div className="home-container split-grid">
       <div><p className="eyebrow">When you spot an error</p>
         <h2 className="section-title">Get the facts down. <span>Make a clear request.</span></h2>
-        <p>Choose from 30 issue-specific letter topics. Describe the information you believe is inaccurate and the correction you are requesting. Review and download a draft, then add supporting documents before sending it.</p>
+        <p>For personal credit reports, choose from 30 issue-specific letter topics. Describe the information you believe is inaccurate and the correction you are requesting. Review and download a draft, then add supporting documents before sending it.</p>
         <Link className="action-button" href="/dispute-center">Explore the letter library <span aria-hidden="true">↗</span></Link>
       </div>
       <div className="feature-card checklist-card"><p className="eyebrow">Your draft, your decision</p><h3>What this tool does</h3>
@@ -52,9 +52,9 @@ export default function Home() {
     <section className="home-section home-container"><p className="eyebrow">Choose your pace</p>
       <h2 className="section-title">Start with the <span>free plan.</span></h2>
       <div className="plans-grid"><div className="feature-card plan-card plan-featured"><span className="plan-tag">AVAILABLE NOW</span><h3>Smart Credit Starter</h3><p>A practical place to start and a way to keep going.</p>
-        <ul><li>Short credit assessment and action plan</li><li>Saved progress, focus mode, and short work sessions</li><li>30 customizable letter topics; three downloads per month</li><li>Manual dispute status tracking</li></ul>
+        <ul><li>Separate personal and business credit action plans</li><li>Saved progress, focus mode, and short work sessions</li><li>Personal credit: 30 customizable letter topics; three downloads per month</li><li>Manual dispute status tracking</li></ul>
         <Link className="action-button" href="/questionnaire">Get started free <span aria-hidden="true">↗</span></Link>
-      </div><div className="feature-card plan-card"><span className="plan-tag">IN DEVELOPMENT</span><h3>Guided roadmap</h3><p>Paid accounts have unlimited template downloads and up to five AI letter generations per month. Billing and self-service upgrades are not available yet.</p></div></div>
+      </div><div className="feature-card plan-card"><span className="plan-tag">IN DEVELOPMENT</span><h3>Guided roadmap</h3><p>For personal credit, paid accounts have unlimited template downloads and up to five AI letter generations per month. Billing and self-service upgrades are not available yet.</p></div></div>
     </section>
     <footer className="home-footer"><div className="home-container"><strong>AI CreditLab<span className="brand-mark">.</span></strong><p>Educational tools for your next credit move. Review your own information and seek qualified help when you need it.</p><small>© {new Date().getFullYear()} AI CreditLab</small></div></footer>
   </div>;
