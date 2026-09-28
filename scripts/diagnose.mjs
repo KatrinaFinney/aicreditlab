@@ -25,7 +25,7 @@ if (!process.argv.includes('--live')) {
   const key = env.SUPABASE_SERVICE_ROLE_KEY;
   if (url && key) {
     const tables = [
-      ['credit_plans', 'user_id,plan_type,selected_disputes,credit_plan'],
+      ['credit_plans', 'user_id,plan_type,account_goal,selected_disputes,credit_plan'],
       ['credit_plan_progress', 'user_id,completed_steps,focus_mode,session_minutes'],
       ['disputes', 'id,user_id,creditor,agency,status'],
       ['letter_usage', 'id,user_id,kind,period_start,status'],

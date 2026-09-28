@@ -14,7 +14,7 @@ const details = { fullName: 'Alex Example', address: '123 Main St', agency: 'Equ
 const makeRequest = (body: unknown) => new Request('http://localhost/api/letter-download', {
   method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body),
 });
-const dbWithPlan = (plan_type: string) => ({ from: () => ({ select: () => ({ eq: () => ({ maybeSingle: async () => ({ data: { plan_type }, error: null }) }) }) }) });
+const dbWithPlan = (plan_type: string, account_goal = 'personal') => ({ from: () => ({ select: () => ({ eq: () => ({ maybeSingle: async () => ({ data: { plan_type, account_goal }, error: null }) }) }) }) });
 
 beforeEach(() => {
   jest.clearAllMocks();
@@ -79,4 +79,14 @@ it('releases an AI slot when the provider fails', async () => {
     global.fetch = previousFetch;
     if (previous) process.env.OPENAI_API_KEY = previous; else delete process.env.OPENAI_API_KEY;
   }
+});
+
+
+it('keeps consumer letter tools out of a business plan', async () => {
+  (getServerSupabase as jest.Mock).mockReturnValue(dbWithPlan('paid', 'business'));
+  const template = await download(makeRequest(details));
+  const generated = await generatePaid(makeRequest({ ...details, consent: true }));
+  expect(template.status).toBe(403);
+  expect(generated.status).toBe(403);
+  expect(reserveSlot).not.toHaveBeenCalled();
 });

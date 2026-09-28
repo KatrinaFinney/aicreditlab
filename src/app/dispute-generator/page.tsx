@@ -5,7 +5,7 @@ import { letterTemplateFor, letterTemplates } from '@/lib/letterTemplates';
 import { buildDisputeLetter } from '@/lib/disputeLetter';
 
 type Field = 'fullName' | 'address' | 'agency' | 'creditor' | 'accountReference' | 'errorDescription' | 'requestedCorrection' | 'templateId';
-type Allowance = { paid: boolean; used: number; limit: number; remaining: number; resetAt: string };
+type Allowance = { accountGoal: "personal" | "business"; paid: boolean; used: number; limit: number; remaining: number; resetAt: string };
 const initial = { fullName: '', address: '', agency: 'Equifax', creditor: '', accountReference: '', errorDescription: '', requestedCorrection: '', templateId: 'wrong-balance' };
 
 export default function LetterEditor() {
@@ -67,6 +67,7 @@ export default function LetterEditor() {
     finally { setBusy(false); }
   };
   const locked = !!allowance && !allowance.paid && allowance.remaining === 0;
+  if (allowance?.accountGoal === "business") return <main style={{ maxWidth: 720, margin: "2rem auto", padding: 24 }}><h1>Business report review</h1><p>This editor is for personal credit reports. Follow the reporting company’s process for a business report error.</p><Link href="/dashboard">Return to your business plan</Link></main>;
   const input = (field: Field, label: string, placeholder = '') => <label key={field} style={{ display: 'grid', gap: 6, marginBottom: 16, color: 'var(--text)', fontWeight: 600 }}>
     {label}<input required={field !== 'accountReference'} maxLength={field === 'accountReference' ? 30 : 1000}
       value={values[field]} onChange={(event) => update(field, event.target.value)} placeholder={placeholder}

@@ -5,7 +5,7 @@ import Link from 'next/link';
 import DisputeTracker from '@/components/DisputeTracker';
 import { letterTemplates } from '@/lib/letterTemplates';
 
-type Allowance = { paid: boolean; used: number; limit: number; remaining: number; resetAt: string };
+type Allowance = { accountGoal: "personal" | "business"; paid: boolean; used: number; limit: number; remaining: number; resetAt: string };
 
 export default function DisputeCenter() {
   const [allowance, setAllowance] = useState<Allowance | null>(null);
@@ -24,6 +24,7 @@ export default function DisputeCenter() {
   return <main style={{ padding: '40px 20px', background: 'var(--bg)', minHeight: '100vh', color: 'var(--text)' }}>
     <div style={{ maxWidth: 1000, margin: 'auto' }}>
       <h1 style={{ color: 'var(--accent)', fontSize: 'clamp(2rem, 5vw, 3rem)' }}>Dispute letter library</h1>
+      {allowance?.accountGoal === "business" ? <div style={{ background: "var(--surface)", padding: 24, borderRadius: 12 }}><h2>Business report review</h2><p>These letters and dispute cases are designed for personal consumer reports. For an error on a business report, get the report from the business reporting company and follow its dispute process with supporting records.</p><Link href="/dashboard">Return to your business plan</Link></div> : <>
       <p>Choose an issue that is genuinely inaccurate on your report. Customize the facts, review the draft, and keep copies of any supporting records you send.</p>
       <p style={{ background: 'var(--surface-raised)', padding: 16, borderRadius: 10 }}>
         <strong>Take a manageable approach:</strong> start with one or two well documented errors. This is an organizational suggestion, not a credit bureau rule. The CFPB recommends identifying each specific mistake, explaining why it is wrong, and including copies of supporting documents.
@@ -65,7 +66,8 @@ export default function DisputeCenter() {
           </article>)}
         </div>
       </>}
+      </>}
     </div>
-    <DisputeTracker />
+    {allowance?.accountGoal !== "business" && <DisputeTracker />}
   </main>;
 }
