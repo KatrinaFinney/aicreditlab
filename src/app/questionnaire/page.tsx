@@ -3,13 +3,15 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useUser } from "@clerk/nextjs";
-import { creditQuestions } from "@/lib/creditPlan";
+import { businessQuestions, creditQuestions, type CreditGoal } from "@/lib/creditPlan";
 
-const questions = creditQuestions;
+
 
 export default function Questionnaire() {
   const router = useRouter();
   const { user, isLoaded } = useUser();
+  const [goal, setGoal] = useState<CreditGoal | null>(null);
+  const questions = goal === "business" ? businessQuestions : creditQuestions;
   const [answers, setAnswers] = useState<{ [key: number]: string[] }>({});
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -31,6 +33,7 @@ export default function Questionnaire() {
       if (!response.ok) return;
       const { plan } = await response.json();
       if (plan?.selected_disputes) setAnswers(plan.selected_disputes);
+      if (plan?.account_goal === "business" || plan?.account_goal === "personal") setGoal(plan.account_goal);
     };
 
     fetchExistingData();
@@ -57,7 +60,7 @@ export default function Questionnaire() {
   // 🔹 Submit questionnaire and save responses
   const handleSubmit = async () => {
     if (
-      Object.keys(answers).length !== questions.length ||
+      !goal || Object.keys(answers).length !== questions.length ||
       Object.values(answers).some((ans) => ans.length === 0)
     ) {
       setError(true);
@@ -71,7 +74,7 @@ export default function Questionnaire() {
         const response = await fetch('/api/credit-plan', {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ answers }),
+          body: JSON.stringify({ answers, goal }),
         });
         if (!response.ok) {
           setSaveError("We couldn't save your plan. Please try again.");
@@ -118,7 +121,7 @@ export default function Questionnaire() {
             textAlign: "center",
           }}
         >
-          Credit Assessment
+          {goal === "business" ? "Business Credit Assessment" : "Credit Assessment"}
         </h1>
         <p
           style={{
@@ -127,10 +130,21 @@ export default function Questionnaire() {
             marginBottom: "20px",
           }}
         >
-          Select up to <strong>3</strong> options per question to receive your best-fit credit plan.
+          First, choose the credit you want to work on. Then select up to <strong>3</strong> options per question.
         </p>
 
-        {questions.map((q) => (
+        <fieldset style={{ border: "1px solid var(--line)", borderRadius: 10, marginBottom: 24, padding: 16 }}>
+          <legend style={{ color: "var(--accent)", fontWeight: 700 }}>Is this for your personal credit or to build business credit?</legend>
+          <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
+            {(["personal", "business"] as const).map((choice) => <button type="button" key={choice} aria-pressed={goal === choice}
+              onClick={() => { if (goal !== choice) { setGoal(choice); setAnswers({}); setError(false); } }}
+              style={{ padding: "12px 18px", borderRadius: 8, border: "1px solid var(--accent)", background: goal === choice ? "var(--accent-strong)" : "var(--surface-raised)", color: goal === choice ? "#071d25" : "var(--text)" }}>
+              {choice === "personal" ? "Personal credit" : "Business credit"}
+            </button>)}
+          </div>
+        </fieldset>
+        {goal === "business" && <p style={{ color: "var(--muted)" }}>Business credit has different reporting and dispute processes. Your plan will focus on your business setup, payment history, and financing needs.</p>}
+        {goal && questions.map((q) => (
           <div key={q.id} style={{ marginBottom: "20px" }}>
             <h3 style={{ color: "var(--accent)", fontWeight: "bold" }}>{q.question}</h3>
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 220px), 1fr))", gap: "10px" }}>
@@ -162,7 +176,7 @@ export default function Questionnaire() {
 
         {error && (
           <p style={{ color: "var(--danger)", fontWeight: "bold", textAlign: "center" }}>
-            Please select at least one option per question.
+            Choose a credit path and at least one option per question.
           </p>
         )}
         {saveError && <p role="alert" style={{ color: "var(--danger)" }}>{saveError}</p>}

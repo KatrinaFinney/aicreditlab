@@ -7,6 +7,7 @@ import Link from "next/link";
 // Define a type for the user's credit plan data
 interface UserData {
   plan_type: "free" | "paid";
+  account_goal?: "personal" | "business";
   full_name?: string;
   address?: string;
   selected_disputes?: Record<string, string[]>;
@@ -131,7 +132,7 @@ export default function Dashboard() {
             color: "var(--accent)",
           }}
         >
-          Your Credit Action Plan
+          Your {userData?.account_goal === "business" ? "Business" : "Personal"} Credit Action Plan
         </h2>
 
         {userData?.credit_plan && userData.credit_plan.length > 0 ? (
@@ -218,7 +219,7 @@ export default function Dashboard() {
             color: "var(--accent)",
           }}
         >
-          Your Credit Assessment
+          Your {userData?.account_goal === "business" ? "Business" : "Personal"} Credit Assessment
         </h2>
 
         {userData?.selected_disputes && Object.values(userData.selected_disputes).flat().length > 0 ? (
@@ -250,13 +251,13 @@ export default function Dashboard() {
         }}
       >
         <h2 style={{ fontSize: "1.5rem", fontWeight: "bold", color: "var(--accent)" }}>
-          Dispute Center
+          {userData?.account_goal === "business" ? "Business report review" : "Dispute Center"}
         </h2>
         <p style={{ fontSize: "1.1rem", color: "var(--text)" }}>
-          Review dispute templates for information you believe is inaccurate on your credit report.
+          {userData?.account_goal === "business" ? "Request your business report from the reporting company. If you find a specific error, follow that company’s business dispute process and keep copies of your supporting records. The letter library below is designed for personal consumer reports." : "Review dispute templates for information you believe is inaccurate on your credit report."}
         </p>
 
-        <Link
+        {userData?.account_goal !== "business" && <Link
           href="/dispute-center"
           style={{
             display: "inline-block",
@@ -270,7 +271,7 @@ export default function Dashboard() {
           }}
         >
           Access Dispute Templates
-        </Link>
+        </Link>}
       </div>
 
       {/* Paid features are planned; no checkout is available yet. */}
