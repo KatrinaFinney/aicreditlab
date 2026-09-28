@@ -3,6 +3,8 @@ import { NextResponse } from 'next/server';
 import { getServerSupabase } from '@/lib/serverSupabase';
 import { letterTemplateFor } from '@/lib/letterTemplates';
 import type { LetterDetails } from '@/lib/disputeLetter';
+import { validLetterDetails } from '@/lib/validateLetter';
+import { reserveSlot, finishSlot, releaseSlot } from '@/lib/letterQuota';
 
 export async function POST(request: Request) {
   const { userId } = await auth();
@@ -11,11 +13,7 @@ export async function POST(request: Request) {
   try { input = await request.json(); } catch {
     return NextResponse.json({ error: 'Invalid request' }, { status: 400 });
   }
-  const required = ['fullName', 'address', 'creditor', 'errorDescription', 'requestedCorrection'] as const;
-  if (!input || input.consent !== true || required.some((key) => typeof input[key] !== 'string' ||
-    !input[key].trim() || input[key].length > 1000) ||
-    !['Equifax', 'Experian', 'TransUnion'].includes(input.agency) ||
-    (input.templateId && !letterTemplateFor(input.templateId)) ||
+  if (!validLetterDetails(input) || input.consent !== true ||
     (input.accountReference && (typeof input.accountReference !== 'string' || !/^[A-Za-z0-9-]{1,8}$/.test(input.accountReference))))
     return NextResponse.json({ error: 'Complete the form and consent before generating a draft' }, { status: 400 });
   const db = getServerSupabase();
@@ -24,6 +22,11 @@ export async function POST(request: Request) {
   if (error) return NextResponse.json({ error: 'Could not verify plan access' }, { status: 500 });
   if (plan?.plan_type !== 'paid') return NextResponse.json({ error: 'Paid plan required' }, { status: 403 });
   if (!process.env.OPENAI_API_KEY) return NextResponse.json({ error: 'AI drafting is not configured yet' }, { status: 503 });
+  let reservation: string | null;
+  try { reservation = await reserveSlot(userId, 'paid_generation'); } catch {
+    return NextResponse.json({ error: 'Generation allowance unavailable' }, { status: 503 });
+  }
+  if (!reservation) return NextResponse.json({ error: 'Five AI drafts have been generated this month. Your allowance resets next month.' }, { status: 429 });
   try {
     const response = await fetch('https://api.openai.com/v1/responses', {
       method: 'POST', signal: AbortSignal.timeout(30000),
@@ -37,14 +40,16 @@ export async function POST(request: Request) {
           error: input.errorDescription.trim(), requestedCorrection: input.requestedCorrection.trim() }),
       }),
     });
-    if (!response.ok) return NextResponse.json({ error: 'Could not generate the letter right now' }, { status: 502 });
+    if (!response.ok) throw new Error('AI generation failed');
     const result = await response.json();
     const letter = result.output?.flatMap((item: { content?: Array<{ type?: string; text?: string }> }) => item.content ?? [])
       .filter((part: { type?: string }) => part.type === 'output_text')
       .map((part: { text?: string }) => part.text ?? '').join('\n').trim();
-    if (!letter) return NextResponse.json({ error: 'No draft was generated. Please retry.' }, { status: 502 });
+    if (!letter) throw new Error('Empty draft');
+    await finishSlot(userId, reservation);
     return NextResponse.json({ letter });
   } catch {
+    await releaseSlot(userId, reservation);
     return NextResponse.json({ error: 'Could not generate the letter right now' }, { status: 502 });
   }
 }

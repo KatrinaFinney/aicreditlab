@@ -47,7 +47,7 @@ export default function Home() {
       <div style={{ maxWidth: 1100, margin: 'auto', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(270px, 1fr))', gap: 32, alignItems: 'center' }}>
         <div><p style={{ color: teal, fontWeight: 800, letterSpacing: 2, textTransform: 'uppercase', fontSize: 13 }}>When you spot an error</p>
           <h2 style={{ fontSize: 'clamp(2rem, 4vw, 3rem)' }}>Prepare a dispute with the facts in front of you.</h2>
-          <p style={{ lineHeight: 1.7, color: '#47656a' }}>Choose from a free library of customizable letters. Describe the specific information you believe is inaccurate and the correction you are requesting. Review and download a draft, then add your supporting documents before sending it.</p>
+          <p style={{ lineHeight: 1.7, color: '#47656a' }}>Choose from 30 issue-specific letter topics. Describe the information you believe is inaccurate and the correction you are requesting. Review and download a draft, then add supporting documents before sending it.</p>
           <Link href="/dispute-generator" style={button}>Draft a letter</Link>
         </div>
         <div style={card}><h3 style={{ marginTop: 0 }}>What this tool does</h3>
@@ -60,11 +60,11 @@ export default function Home() {
       <h2 style={{ fontSize: 'clamp(2rem, 4vw, 3rem)' }}>Start with the free plan.</h2>
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(270px, 1fr))', gap: 20 }}>
         <div style={{ ...card, border: `2px solid ${teal}` }}><h3>Smart Credit Starter</h3><p>Available in the current product</p>
-          <ul style={{ lineHeight: 2, paddingLeft: 22 }}><li>Short credit assessment</li><li>Action plan based on your answers</li><li>Progress, focus mode, and short work sessions</li><li>Free customizable letter library</li><li>Manual dispute status tracking</li></ul>
+          <ul style={{ lineHeight: 2, paddingLeft: 22 }}><li>Short credit assessment</li><li>Action plan based on your answers</li><li>Progress, focus mode, and short work sessions</li><li>30 customizable letter topics; three downloads per month</li><li>Manual dispute status tracking</li></ul>
           <Link href="/questionnaire" style={button}>Get started free</Link>
         </div>
         <div style={card}><h3>Guided roadmap</h3><p style={{ color: teal, fontWeight: 700 }}>In development</p>
-          <p style={{ lineHeight: 1.7 }}>We are working toward deeper guidance, reminders, and more support for managing disputes. There is no paid checkout yet.</p>
+          <p style={{ lineHeight: 1.7 }}>Paid accounts have unlimited template downloads and up to five AI letter generations per month. Billing and self-service upgrades are not available yet.</p>
         </div>
       </div>
     </section>

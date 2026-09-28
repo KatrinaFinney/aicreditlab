@@ -12,7 +12,7 @@ it('uses the specific reported error and requested correction in a reviewable dr
 it('customizes the subject for a free library template', () => {
   const letter = buildDisputeLetter({ fullName: 'Alex Example', address: '123 Main St', agency: 'Equifax',
     creditor: 'Example Bank', accountReference: '', errorDescription: 'The payment was on time.',
-    requestedCorrection: 'correct the reported payment status', templateId: 'payment' }, 'September 28, 2026');
-  expect(letter).toContain('Subject: Dispute of Payment history');
+    requestedCorrection: 'correct the reported payment status', templateId: 'wrong-late-payment' }, 'September 28, 2026');
+  expect(letter).toContain('Subject: Dispute of Late payment status');
   expect(letter).toContain('The payment was on time.');
 });

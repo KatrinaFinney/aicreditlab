@@ -7,7 +7,10 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "test": "jest --passWithNoTests"
+    "test": "jest --passWithNoTests",
+    "diagnose": "node scripts/diagnose.mjs",
+    "diagnose:live": "node scripts/diagnose.mjs --live",
+    "verify": "npm test -- --runInBand && npm run build && npm run diagnose"
   },
   "dependencies": {
     "@clerk/nextjs": "^6.12.4",
