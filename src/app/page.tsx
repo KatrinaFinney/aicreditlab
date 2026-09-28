@@ -1,76 +1,61 @@
 import Link from 'next/link';
-import Image from 'next/image';
 
-const teal = '#007f8d';
-const dark = '#16383e';
-const card = { background: '#fff', border: '1px solid #d6e9e9', borderRadius: 18, padding: 28, boxShadow: '0 12px 32px rgba(9, 73, 78, .06)' };
-const button = { display: 'inline-block', background: teal, color: '#fff', padding: '14px 22px', borderRadius: 10, fontWeight: 700, textDecoration: 'none' };
+const steps = [
+  ['01', 'Tell us what is going on', 'Choose the credit challenges, goals, and habits that fit your situation.'],
+  ['02', 'Get an action plan', 'See concrete steps based on your answers, with a clear next action.'],
+  ['03', 'Work through it', 'Mark steps complete and return when you are ready for the next one.'],
+];
 
 export default function Home() {
-  return <div style={{ color: dark, background: '#f7fcfb', fontFamily: 'Arial, sans-serif' }}>
-    <section style={{ background: 'radial-gradient(circle at 80% 10%, #b9ebdf, transparent 38%), linear-gradient(140deg, #e4f8f5, #f9fdfd)', padding: '70px 24px 82px' }}>
-      <div style={{ maxWidth: 1100, margin: 'auto', display: 'flex', gap: 54, flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between' }}>
-        <div style={{ flex: '1 1 420px' }}>
-          <p style={{ letterSpacing: 2, textTransform: 'uppercase', color: teal, fontWeight: 800, fontSize: 13 }}>A clearer way to work on your credit</p>
-          <h1 style={{ fontSize: 'clamp(2.5rem, 6vw, 4.5rem)', lineHeight: 1.08, margin: '18px 0' }}>Know your next credit move.</h1>
-          <p style={{ fontSize: '1.2rem', lineHeight: 1.6, maxWidth: 590, color: '#36575c' }}>
-            Answer a few questions, get a practical action plan, and keep track of what you finish. If you find an error on your credit report, prepare a letter you can review and send yourself.
-          </p>
-          <div style={{ display: 'flex', gap: 14, flexWrap: 'wrap', marginTop: 30 }}>
-            <Link href="/questionnaire" style={button}>Build my free plan</Link>
-            <Link href="#how-it-works" style={{ ...button, background: 'transparent', border: `2px solid ${teal}`, color: teal }}>How it works</Link>
+  return <div className="home">
+    <section className="home-hero">
+      <div className="home-container home-hero-grid">
+        <div>
+          <p className="eyebrow">A clearer way to work on your credit</p>
+          <h1>Know your next <span>credit move.</span></h1>
+          <p className="hero-copy">Answer a few questions, get a practical action plan, and keep track of what you finish. If you find an error on your credit report, prepare a letter you can review and send yourself.</p>
+          <div className="home-actions">
+            <Link className="action-button" href="/questionnaire">Build my free plan <span aria-hidden="true">↗</span></Link>
+            <Link className="action-button action-button-outline" href="#how-it-works">See how it works</Link>
           </div>
-          <p style={{ fontSize: 14, color: '#53757a', marginTop: 18 }}>Free to start · No credit report upload required</p>
+          <p className="hero-note">Free to start <span aria-hidden="true">·</span> No credit report upload required</p>
         </div>
-        <div style={{ ...card, flex: '0 1 300px', textAlign: 'center', background: 'rgba(255,255,255,.88)' }}>
-          <Image src="/ai-creditlab-logo.png" width={130} height={130} alt="AI CreditLab" style={{ objectFit: 'contain' }} priority />
-          <h2 style={{ fontSize: 22, margin: '16px 0 10px' }}>Your plan, one step at a time</h2>
-          <p style={{ lineHeight: 1.6, color: '#42666a' }}>Understand your priorities. Mark actions complete. Come back when you are ready for the next one.</p>
-        </div>
+        <aside className="hero-panel" aria-label="Your next steps">
+          <div className="panel-top"><span className="panel-orbit" aria-hidden="true">✦</span><span>YOUR CREDIT WORKSPACE</span><span className="panel-dot" aria-hidden="true" /></div>
+          <p className="panel-label">A little progress counts.</p>
+          <h2>One clear step<br />at a time.</h2>
+          <div className="mini-step"><span>01</span><p>Find your next action</p><span aria-hidden="true">↗</span></div>
+          <div className="mini-step"><span>02</span><p>Make time for it</p><span aria-hidden="true">↗</span></div>
+          <div className="mini-step"><span>03</span><p>Track what you finish</p><span aria-hidden="true">↗</span></div>
+          <div className="panel-bottom">Built for real life, including busy days.</div>
+        </aside>
       </div>
     </section>
-    <section id="how-it-works" style={{ maxWidth: 1100, margin: 'auto', padding: '74px 24px' }}>
-      <p style={{ color: teal, fontWeight: 800, letterSpacing: 2, textTransform: 'uppercase', fontSize: 13 }}>The process</p>
-      <h2 style={{ fontSize: 'clamp(2rem, 4vw, 3rem)', margin: '12px 0 32px' }}>Three useful steps, without the overwhelm.</h2>
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: 18 }}>
-        {[
-          ['01', 'Tell us what is going on', 'Choose the credit challenges, goals, and habits that fit your situation.'],
-          ['02', 'Get an action plan', 'See concrete steps based on your answers, with a clear next action.'],
-          ['03', 'Work through it', 'Mark steps complete and return to your dashboard when you are ready.'],
-        ].map(([number, title, description]) => <article key={number} style={card}>
-          <span style={{ color: teal, fontWeight: 800, fontSize: 28 }}>{number}</span>
-          <h3 style={{ fontSize: 21, marginBottom: 10 }}>{title}</h3><p style={{ lineHeight: 1.6, color: '#47656a' }}>{description}</p>
-        </article>)}
-      </div>
+    <section id="how-it-works" className="home-section home-container">
+      <p className="eyebrow">The process</p>
+      <h2 className="section-title">Three useful steps, <span>without the overwhelm.</span></h2>
+      <div className="steps-grid">{steps.map(([number, title, description]) => <article className="feature-card" key={number}>
+        <span className="step-number">{number}</span><h3>{title}</h3><p>{description}</p>
+      </article>)}</div>
     </section>
-    <section style={{ background: '#eaf7f5', padding: '72px 24px' }}>
-      <div style={{ maxWidth: 1100, margin: 'auto', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(270px, 1fr))', gap: 32, alignItems: 'center' }}>
-        <div><p style={{ color: teal, fontWeight: 800, letterSpacing: 2, textTransform: 'uppercase', fontSize: 13 }}>When you spot an error</p>
-          <h2 style={{ fontSize: 'clamp(2rem, 4vw, 3rem)' }}>Prepare a dispute with the facts in front of you.</h2>
-          <p style={{ lineHeight: 1.7, color: '#47656a' }}>Choose from 30 issue-specific letter topics. Describe the information you believe is inaccurate and the correction you are requesting. Review and download a draft, then add supporting documents before sending it.</p>
-          <Link href="/dispute-generator" style={button}>Draft a letter</Link>
-        </div>
-        <div style={card}><h3 style={{ marginTop: 0 }}>What this tool does</h3>
-          <ul style={{ lineHeight: 2, paddingLeft: 22 }}><li>Organizes the error you describe</li><li>Creates an editable text draft</li><li>Reminds you to include supporting records</li></ul>
-          <p style={{ fontSize: 14, color: '#47656a' }}>You review and send the letter. We do not submit disputes for you or promise a particular result.</p>
-        </div>
+    <section className="home-band"><div className="home-container split-grid">
+      <div><p className="eyebrow">When you spot an error</p>
+        <h2 className="section-title">Get the facts down. <span>Make a clear request.</span></h2>
+        <p>Choose from 30 issue-specific letter topics. Describe the information you believe is inaccurate and the correction you are requesting. Review and download a draft, then add supporting documents before sending it.</p>
+        <Link className="action-button" href="/dispute-center">Explore the letter library <span aria-hidden="true">↗</span></Link>
       </div>
-    </section>
-    <section style={{ maxWidth: 1100, margin: 'auto', padding: '74px 24px' }}>
-      <h2 style={{ fontSize: 'clamp(2rem, 4vw, 3rem)' }}>Start with the free plan.</h2>
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(270px, 1fr))', gap: 20 }}>
-        <div style={{ ...card, border: `2px solid ${teal}` }}><h3>Smart Credit Starter</h3><p>Available in the current product</p>
-          <ul style={{ lineHeight: 2, paddingLeft: 22 }}><li>Short credit assessment</li><li>Action plan based on your answers</li><li>Progress, focus mode, and short work sessions</li><li>30 customizable letter topics; three downloads per month</li><li>Manual dispute status tracking</li></ul>
-          <Link href="/questionnaire" style={button}>Get started free</Link>
-        </div>
-        <div style={card}><h3>Guided roadmap</h3><p style={{ color: teal, fontWeight: 700 }}>In development</p>
-          <p style={{ lineHeight: 1.7 }}>Paid accounts have unlimited template downloads and up to five AI letter generations per month. Billing and self-service upgrades are not available yet.</p>
-        </div>
+      <div className="feature-card checklist-card"><p className="eyebrow">Your draft, your decision</p><h3>What this tool does</h3>
+        <ul><li>Organizes the error you describe</li><li>Creates an editable text draft</li><li>Reminds you to include supporting records</li></ul>
+        <p>You review and send the letter. We do not submit disputes for you or promise a particular result.</p>
       </div>
+    </div></section>
+    <section className="home-section home-container"><p className="eyebrow">Choose your pace</p>
+      <h2 className="section-title">Start with the <span>free plan.</span></h2>
+      <div className="plans-grid"><div className="feature-card plan-card plan-featured"><span className="plan-tag">AVAILABLE NOW</span><h3>Smart Credit Starter</h3><p>A practical place to start and a way to keep going.</p>
+        <ul><li>Short credit assessment and action plan</li><li>Saved progress, focus mode, and short work sessions</li><li>30 customizable letter topics; three downloads per month</li><li>Manual dispute status tracking</li></ul>
+        <Link className="action-button" href="/questionnaire">Get started free <span aria-hidden="true">↗</span></Link>
+      </div><div className="feature-card plan-card"><span className="plan-tag">IN DEVELOPMENT</span><h3>Guided roadmap</h3><p>Paid accounts have unlimited template downloads and up to five AI letter generations per month. Billing and self-service upgrades are not available yet.</p></div></div>
     </section>
-    <footer style={{ background: '#123e45', color: '#e8f6f5', padding: '32px 24px', textAlign: 'center', lineHeight: 1.7 }}>
-      <p>AI CreditLab offers educational tools. Review your own information and seek qualified help when you need it.</p>
-      <p>© {new Date().getFullYear()} AI CreditLab</p>
-    </footer>
+    <footer className="home-footer"><div className="home-container"><strong>AI CreditLab<span className="brand-mark">.</span></strong><p>Educational tools for your next credit move. Review your own information and seek qualified help when you need it.</p><small>© {new Date().getFullYear()} AI CreditLab</small></div></footer>
   </div>;
 }

@@ -15,7 +15,6 @@ interface UserData {
 
 export default function Dashboard() {
   const { user } = useUser();
-  const [planType, setPlanType] = useState<"free" | "paid" | null>(null);
   const [userData, setUserData] = useState<UserData | null>(null);
   const [completedSteps, setCompletedSteps] = useState<string[]>([]);
   const [progressError, setProgressError] = useState('');
@@ -37,10 +36,7 @@ export default function Dashboard() {
 
 
       if (data) {
-        setPlanType(data.plan_type);
         setUserData(data);
-      } else {
-        setPlanType("free"); // Default to free if no plan found
       }
     };
 
@@ -91,11 +87,13 @@ export default function Dashboard() {
   };
 
   return (
-    <div
+    <div className="app-dashboard"
       style={{
-        padding: "40px",
+        padding: "clamp(20px, 4vw, 48px)",
+        maxWidth: "1100px",
+        margin: "auto",
         fontFamily: "'Nunito', 'Inter', sans-serif",
-        backgroundColor: "#f8fafa",
+        backgroundColor: "var(--bg)",
         minHeight: "100vh",
       }}
     >
@@ -104,7 +102,7 @@ export default function Dashboard() {
         style={{
           fontSize: "2.5rem",
           fontWeight: "700",
-          color: "#0097A7",
+          color: "var(--accent)",
           textAlign: "center",
         }}
       >
@@ -112,17 +110,17 @@ export default function Dashboard() {
 
       </h1>
 
-      <p style={{ textAlign: "center", fontSize: "1.2rem", color: "#333" }}>
+      <p style={{ textAlign: "center", fontSize: "1.2rem", color: "var(--text)" }}>
         Pick one action to work on next. Your completed steps are saved here.
       </p>
 
       {/* Credit Plan Overview */}
       <div
         style={{
-          backgroundColor: "white",
+          backgroundColor: "var(--surface)",
           padding: "20px",
           borderRadius: "12px",
-          boxShadow: "0px 4px 12px rgba(0, 0, 0, 0.1)",
+          border: "1px solid var(--line)",
           marginTop: "24px",
         }}
       >
@@ -130,7 +128,7 @@ export default function Dashboard() {
           style={{
             fontSize: "1.5rem",
             fontWeight: "bold",
-            color: "#006F7A",
+            color: "var(--accent)",
           }}
         >
           Your Credit Action Plan
@@ -138,13 +136,13 @@ export default function Dashboard() {
 
         {userData?.credit_plan && userData.credit_plan.length > 0 ? (
           <div>
-            <p role="status" style={{ color: '#006F7A' }}>
+            <p role="status" style={{ color: 'var(--accent)' }}>
               Current progress: {completedSteps.filter((step) => userData.credit_plan?.includes(step)).length} of {userData.credit_plan.length} steps complete
             </p>
-            <p style={{ color: '#333', fontWeight: 600 }}>
+            <p style={{ color: 'var(--text)', fontWeight: 600 }}>
               Next best step: {userData.credit_plan.find((step) => !completedSteps.includes(step)) ?? 'You completed this plan. Review your credit situation and update your answers when needed.'}
             </p>
-            <div style={{ background: '#eaf7f5', padding: 16, borderRadius: 10, marginBottom: 16 }}>
+            <div style={{ background: 'var(--surface-raised)', padding: 16, borderRadius: 10, marginBottom: 16 }}>
               <label style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                 <input type="checkbox" checked={focusMode} onChange={(event) => savePreferences(event.target.checked, sessionMinutes)} />
                 Show one step at a time
@@ -153,7 +151,7 @@ export default function Dashboard() {
               <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
                 {[5, 10, 20].map((minutes) => <button key={minutes} type="button"
                   onClick={() => savePreferences(focusMode, minutes)} aria-pressed={sessionMinutes === minutes}
-                  style={{ padding: '8px 12px', borderRadius: 8, border: '1px solid #007f8d', background: sessionMinutes === minutes ? '#007f8d' : 'white', color: sessionMinutes === minutes ? 'white' : '#006F7A' }}>
+                  style={{ padding: '8px 12px', borderRadius: 8, border: '1px solid var(--accent-strong)', background: sessionMinutes === minutes ? 'var(--accent-strong)' : 'var(--surface)', color: sessionMinutes === minutes ? 'white' : 'var(--accent)' }}>
                   {minutes} min
                 </button>)}
               </div>
@@ -161,13 +159,13 @@ export default function Dashboard() {
               <button type="button" onClick={() => { if (secondsLeft === 0) setSecondsLeft(sessionMinutes * 60); setTimerRunning(!timerRunning); }}
                 style={{ padding: '8px 12px', marginRight: 8 }}>{timerRunning ? 'Pause' : 'Start'}</button>
               <button type="button" onClick={() => { setTimerRunning(false); setSecondsLeft(sessionMinutes * 60); }} style={{ padding: '8px 12px' }}>Reset</button>
-              <p style={{ fontSize: 14, color: '#47656a' }}>You can stop whenever you need to. Mark the step done when you have actually finished it.</p>
+              <p style={{ fontSize: 14, color: 'var(--muted)' }}>You can stop whenever you need to. Mark the step done when you have actually finished it.</p>
             </div>
           <ul style={{ paddingLeft: "20px", marginTop: "10px", listStyle: 'none' }}>
             {(focusMode ? userData.credit_plan.filter((step) => !completedSteps.includes(step)).slice(0, 1) : userData.credit_plan).map((step, index) => (
               <li
                 key={index}
-                style={{ fontSize: "1.1rem", color: "#333", marginBottom: "8px" }}
+                style={{ fontSize: "1.1rem", color: "var(--text)", marginBottom: "8px" }}
               >
                 <label style={{ display: 'flex', gap: '10px', alignItems: 'flex-start', cursor: 'pointer' }}>
                   <input type="checkbox" checked={completedSteps.includes(step)}
@@ -178,10 +176,10 @@ export default function Dashboard() {
               </li>
             ))}
           </ul>
-          {progressError && <p role="alert" style={{ color: '#a12323' }}>{progressError}</p>}
+          {progressError && <p role="alert" style={{ color: 'var(--danger)' }}>{progressError}</p>}
           </div>
         ) : (
-          <p style={{ fontSize: "1.1rem", color: "#666" }}>
+          <p style={{ fontSize: "1.1rem", color: "var(--muted)" }}>
             No credit plan found. Please complete the questionnaire.
           </p>
         )}
@@ -192,8 +190,8 @@ export default function Dashboard() {
             display: "inline-block",
             marginTop: "12px",
             padding: "10px 16px",
-            backgroundColor: "#0097A7",
-            color: "white",
+            backgroundColor: "var(--accent-strong)",
+            color: "#071d25",
             fontWeight: "bold",
             borderRadius: "8px",
             textDecoration: "none",
@@ -206,10 +204,10 @@ export default function Dashboard() {
       {/* Assessment answers */}
       <div
         style={{
-          backgroundColor: "white",
+          backgroundColor: "var(--surface)",
           padding: "20px",
           borderRadius: "12px",
-          boxShadow: "0px 4px 12px rgba(0, 0, 0, 0.1)",
+          border: "1px solid var(--line)",
           marginTop: "24px",
         }}
       >
@@ -217,7 +215,7 @@ export default function Dashboard() {
           style={{
             fontSize: "1.5rem",
             fontWeight: "bold",
-            color: "#006F7A",
+            color: "var(--accent)",
           }}
         >
           Your Credit Assessment
@@ -228,14 +226,14 @@ export default function Dashboard() {
             {Object.values(userData.selected_disputes).flat().map((answer, index) => (
               <li
                 key={index}
-                style={{ fontSize: "1.1rem", color: "#333", marginBottom: "8px" }}
+                style={{ fontSize: "1.1rem", color: "var(--text)", marginBottom: "8px" }}
               >
                 {answer}
               </li>
             ))}
           </ul>
         ) : (
-          <p style={{ fontSize: "1.1rem", color: "#666" }}>
+          <p style={{ fontSize: "1.1rem", color: "var(--muted)" }}>
             Complete the assessment to see your answers here.
           </p>
         )}
@@ -244,17 +242,17 @@ export default function Dashboard() {
       {/* Dispute Center Section */}
       <div
         style={{
-          backgroundColor: "white",
+          backgroundColor: "var(--surface)",
           padding: "20px",
           borderRadius: "12px",
-          boxShadow: "0px 4px 12px rgba(0, 0, 0, 0.1)",
+          border: "1px solid var(--line)",
           marginTop: "24px",
         }}
       >
-        <h2 style={{ fontSize: "1.5rem", fontWeight: "bold", color: "#006F7A" }}>
+        <h2 style={{ fontSize: "1.5rem", fontWeight: "bold", color: "var(--accent)" }}>
           Dispute Center
         </h2>
-        <p style={{ fontSize: "1.1rem", color: "#333" }}>
+        <p style={{ fontSize: "1.1rem", color: "var(--text)" }}>
           Review dispute templates for information you believe is inaccurate on your credit report.
         </p>
 
@@ -264,8 +262,8 @@ export default function Dashboard() {
             display: "inline-block",
             marginTop: "12px",
             padding: "10px 16px",
-            backgroundColor: "#0097A7",
-            color: "white",
+            backgroundColor: "var(--accent-strong)",
+            color: "#071d25",
             fontWeight: "bold",
             borderRadius: "8px",
             textDecoration: "none",
@@ -278,22 +276,21 @@ export default function Dashboard() {
       {/* Paid features are planned; no checkout is available yet. */}
       <div
         style={{
-          backgroundColor: "white",
+          backgroundColor: "var(--surface)",
           padding: "20px",
           borderRadius: "12px",
-          boxShadow: "0px 4px 12px rgba(0, 0, 0, 0.1)",
+          border: "1px solid var(--line)",
           marginTop: "24px",
-          opacity: planType === "paid" ? "1" : "0.5",
         }}
       >
-        <h2 style={{ fontSize: "1.5rem", fontWeight: "bold", color: "#006F7A" }}>
+        <h2 style={{ fontSize: "1.5rem", fontWeight: "bold", color: "var(--accent)" }}>
           Premium Tools
         </h2>
-        <p style={{ fontSize: "1.1rem", color: "#333" }}>
-          AI-driven insights, step-by-step repair strategies, and real-time credit tracking.
+        <p style={{ fontSize: "1.1rem", color: "var(--text)" }}>
+          Paid accounts can use unlimited template downloads and five AI letter generations per month. Billing and self-service upgrades are in development.
         </p>
 
-        <p style={{ color: "#006F7A" }}>More guided tools are in development.</p>
+        <p style={{ color: "var(--accent)" }}>More guided tools are in development.</p>
       </div>
     </div>
   );
