@@ -1,6 +1,7 @@
 import { auth } from '@clerk/nextjs/server';
 import { NextResponse } from 'next/server';
 import { billingAccount, stripeClient } from '@/lib/billing';
+import { isPersonalMonthlyPrice } from '@/lib/billingPrice';
 import { getServerSupabase } from '@/lib/serverSupabase';
 
 export async function GET() {
@@ -16,9 +17,7 @@ export async function GET() {
     let price: string | null = null;
     if (process.env.STRIPE_SECRET_KEY && process.env.STRIPE_PRICE_ID) {
       const item = await stripeClient().prices.retrieve(process.env.STRIPE_PRICE_ID);
-      if (item.active && item.type === 'recurring' && item.unit_amount != null && item.recurring?.interval === 'month') {
-        price = new Intl.NumberFormat('en-US', { style: 'currency', currency: item.currency }).format(item.unit_amount / 100);
-      }
+      if (isPersonalMonthlyPrice(item)) price = '$9.99';
     }
     return NextResponse.json({ accountGoal: plan?.account_goal ?? null, paid: plan?.plan_type === 'paid',
       status: account?.subscription_status ?? null, hasBillingAccount: !!account, price });

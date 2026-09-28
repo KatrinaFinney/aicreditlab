@@ -1,6 +1,7 @@
 import { auth, currentUser } from '@clerk/nextjs/server';
 import { NextResponse } from 'next/server';
 import { appUrl, billingAccount, getOrCreateCustomer, stripeClient } from '@/lib/billing';
+import { isPersonalMonthlyPrice } from '@/lib/billingPrice';
 import { getServerSupabase } from '@/lib/serverSupabase';
 
 export async function POST() {
@@ -18,8 +19,8 @@ export async function POST() {
       return NextResponse.json({ error: 'The paid letter plan is for personal credit only' }, { status: 403 });
     const stripe = stripeClient();
     const price = await stripe.prices.retrieve(process.env.STRIPE_PRICE_ID);
-    if (!price.active || price.type !== 'recurring' || price.recurring?.interval !== 'month')
-      throw new Error('Invalid monthly price');
+    if (!isPersonalMonthlyPrice(price))
+      return NextResponse.json({ error: 'The $9.99 monthly plan is not configured yet' }, { status: 503 });
     const account = await billingAccount(userId);
     const email = (await currentUser())?.primaryEmailAddress?.emailAddress;
     const customerId = account?.stripe_customer_id ?? await getOrCreateCustomer(userId, email);

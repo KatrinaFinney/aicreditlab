@@ -19,7 +19,7 @@ The free experience offers a rules-based plan, saved progress and focus preferen
 
 ## Self-service billing setup
 
-1. In Stripe, create a product and an **active monthly recurring** price. Put the Price ID in `STRIPE_PRICE_ID`; the app reads its amount from Stripe, so no price is hardcoded. Use test-mode keys and price for preview testing; use live-mode keys and a live price in production. Do not mix modes.
+1. In Stripe, create a product and an **active $9.99 USD monthly recurring** price. Put the Price ID in `STRIPE_PRICE_ID`; checkout rejects prices with a different currency, amount, or interval. Use test-mode keys and price for preview testing; use live-mode keys and a live price in production. Do not mix modes.
 2. Set `STRIPE_SECRET_KEY`, `STRIPE_PRICE_ID`, and `NEXT_PUBLIC_APP_URL` in Vercel. The app URL must be the canonical HTTPS origin, such as `https://www.aicreditlab.com`; use a preview origin for preview environments.
 3. Apply `supabase/migrations/20260928_z_billing.sql` to the intended project. Its `billing_accounts` table is server-only, and its RPC changes paid access atomically when a verified event arrives.
 4. In Stripe, create a webhook endpoint at `https://YOUR-DOMAIN/api/billing/webhook` and subscribe to `checkout.session.completed`, `customer.subscription.created`, `customer.subscription.updated`, and `customer.subscription.deleted`. Store that endpoint's signing secret in `STRIPE_WEBHOOK_SECRET` in the matching Vercel environment. Set up the Stripe customer portal so customers can update payment methods or cancel subscriptions. Redeploy after setting the environment variables.
