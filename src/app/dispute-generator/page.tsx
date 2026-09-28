@@ -1,44 +1,130 @@
 'use client';
-import { useState } from 'react';
+import { useEffect, useState, type FormEvent } from 'react';
+import Link from 'next/link';
+import { letterTemplateFor, letterTemplates } from '@/lib/letterTemplates';
+import { buildDisputeLetter } from '@/lib/disputeLetter';
 
-export default function GenerateLetterForm() {
-  const [userInput, setUserInput] = useState('');
+type Field = 'fullName' | 'address' | 'agency' | 'creditor' | 'accountReference' | 'errorDescription' | 'requestedCorrection' | 'templateId';
+type Allowance = { paid: boolean; used: number; limit: number; remaining: number; resetAt: string };
+const initial = { fullName: '', address: '', agency: 'Equifax', creditor: '', accountReference: '', errorDescription: '', requestedCorrection: '', templateId: 'wrong-balance' };
+
+export default function LetterEditor() {
+  const [values, setValues] = useState(initial);
   const [letter, setLetter] = useState('');
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    const res = await fetch('/api/generate-letter', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ userInput }),
-    });
-    const data = await res.json();
-    setLetter(data.letter);
+  const [source, setSource] = useState<'template' | 'ai'>('template');
+  const [allowance, setAllowance] = useState<Allowance | null>(null);
+  const [error, setError] = useState('');
+  const [busy, setBusy] = useState(false);
+  const [consent, setConsent] = useState(false);
+  const refreshAllowance = async () => {
+    const response = await fetch('/api/letter-usage');
+    if (!response.ok) throw new Error('Could not check your letter allowance');
+    setAllowance(await response.json());
   };
-
-  return (
-    <div style={{ maxWidth: '600px', margin: '2rem auto', textAlign: 'center', color: '#FAFAFA', backgroundColor: '#121212', padding: '2rem', borderRadius: '0.5rem' }}>
-      <h1 style={{ fontSize: '2.5rem', marginBottom: '1rem' }}>Generate Dispute Letter</h1>
-      <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          value={userInput}
-          onChange={(e) => setUserInput(e.target.value)}
-          placeholder="Enter account number or details"
-          style={{ padding: '0.75rem', width: '100%', marginBottom: '1rem', borderRadius: '0.5rem' }}
-        />
-        <button
-          type="submit"
-          style={{ padding: '0.75rem 1.5rem', borderRadius: '0.5rem', backgroundColor: '#00D9C0', color: 'white', fontWeight: '500', border: 'none', cursor: 'pointer' }}
-        >
-          Generate Dispute Letter
-        </button>
+  useEffect(() => {
+    const id = new URLSearchParams(window.location.search).get('template');
+    if (id && letterTemplateFor(id)) setValues((previous) => ({ ...previous, templateId: id }));
+    refreshAllowance().catch(() => setError('Could not check your letter allowance. Please try again later.'));
+  }, []);
+  const update = (field: Field, value: string) => {
+    setValues((previous) => ({ ...previous, [field]: value })); setLetter('');
+  };
+  const preview = (event: FormEvent) => {
+    event.preventDefault(); setError('');
+    setLetter(buildDisputeLetter(values, new Date().toLocaleDateString('en-US'))); setSource('template');
+  };
+  const aiDraft = async () => {
+    setBusy(true); setError('');
+    try {
+      const response = await fetch('/api/paid-letter', { method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...values, consent }) });
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.error ?? 'Could not generate a draft');
+      setLetter(result.letter); setSource('ai');
+      await refreshAllowance();
+    } catch (caught) { setError(caught instanceof Error ? caught.message : 'Could not generate a draft'); }
+    finally { setBusy(false); }
+  };
+  const saveFile = (content: string) => {
+    const url = URL.createObjectURL(new Blob([content], { type: 'text/plain' }));
+    const anchor = document.createElement('a'); anchor.href = url; anchor.download = 'credit-report-dispute-draft.txt';
+    anchor.click(); window.setTimeout(() => URL.revokeObjectURL(url), 1000);
+  };
+  const download = async () => {
+    if (!letter || !allowance) return;
+    setBusy(true); setError('');
+    try {
+      if (source === 'ai') saveFile(letter);
+      else {
+        const response = await fetch('/api/letter-download', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(values) });
+        if (!response.ok) {
+          const result = await response.json(); throw new Error(result.error ?? 'Could not download your draft');
+        }
+        saveFile(await response.text());
+        await refreshAllowance();
+      }
+    } catch (caught) { setError(caught instanceof Error ? caught.message : 'Could not download your draft'); }
+    finally { setBusy(false); }
+  };
+  const locked = !!allowance && !allowance.paid && allowance.remaining === 0;
+  const input = (field: Field, label: string, placeholder = '') => <label key={field} style={{ display: 'grid', gap: 6, marginBottom: 16, color: '#004E5A', fontWeight: 600 }}>
+    {label}<input required={field !== 'accountReference'} maxLength={field === 'accountReference' ? 30 : 1000}
+      value={values[field]} onChange={(event) => update(field, event.target.value)} placeholder={placeholder}
+      style={{ padding: 12, border: '1px solid #789', borderRadius: 8, color: '#1e1e1e' }} />
+  </label>;
+  return <main style={{ maxWidth: 720, margin: '2rem auto', padding: '1.5rem', color: '#1e1e1e' }}>
+    <Link href="/dispute-center">← Letter library</Link>
+    <h1 style={{ color: '#006F7A', margin: '24px 0 12px' }}>Customize a credit report dispute letter</h1>
+    <p>Use this only for information you believe is inaccurate. Explain the specific error and attach copies of supporting records when you send your reviewed draft.</p>
+    {error && <p role="alert" style={{ color: '#a12323' }}>{error}</p>}
+    {allowance && <p role="status" style={{ color: '#006F7A', fontWeight: 700 }}>
+      {allowance.paid ? `Unlimited template downloads · ${allowance.remaining} of 5 AI generations left this month` :
+        `${allowance.remaining} of 3 free downloads left this month`}
+      {' · '}Resets {new Date(allowance.resetAt).toLocaleDateString('en-US', { month: 'long', day: 'numeric', timeZone: 'UTC' })} (UTC)
+    </p>}
+    {locked ? <div style={{ background: '#ecfbfc', padding: 24, borderRadius: 12 }}>
+      <h2>The free letter library is locked for this month</h2>
+      <p>Your three download requests have been used. The library unlocks at the start of the next UTC month.</p>
+    </div> : !allowance ? <p>Checking letter access…</p> : <>
+      <form id="letter-form" onSubmit={preview} style={{ background: '#ecfbfc', padding: 24, borderRadius: 12, marginTop: 24 }}>
+        <label style={{ display: 'grid', gap: 6, marginBottom: 16, color: '#004E5A' }}>Letter topic
+          <select value={values.templateId} onChange={(event) => update('templateId', event.target.value)} style={{ padding: 12 }}>
+            {letterTemplates.map((template) => <option key={template.id} value={template.id}>{template.title}</option>)}
+          </select><small>{letterTemplateFor(values.templateId)?.guidance}</small>
+        </label>
+        {input('fullName', 'Your full name')}
+        {input('address', 'Your mailing address', 'Street, city, state, ZIP')}
+        <label style={{ display: 'grid', gap: 6, marginBottom: 16, color: '#004E5A' }}>Credit bureau
+          <select value={values.agency} onChange={(event) => update('agency', event.target.value)} style={{ padding: 12 }}>
+            <option>Equifax</option><option>Experian</option><option>TransUnion</option>
+          </select>
+        </label>
+        {input('creditor', letterTemplateFor(values.templateId)?.category === 'Identity' ? 'Report item or company name' : 'Company or account name')}
+        {input('accountReference', 'Account reference (optional)', 'Only the last four digits if helpful')}
+        <label style={{ display: 'grid', gap: 6, marginBottom: 16, color: '#004E5A' }}>What exactly is wrong?
+          <textarea required maxLength={1000} rows={4} value={values.errorDescription}
+            onChange={(event) => update('errorDescription', event.target.value)} style={{ padding: 12 }} />
+        </label>
+        {input('requestedCorrection', 'What correction are you requesting?', 'For example: correct the reported balance to $…')}
+        <button disabled={busy} style={{ padding: '12px 20px', background: '#0097A7', color: 'white', border: 0, borderRadius: 8 }}>Preview customized template</button>
+        {allowance.paid && <div style={{ marginTop: 20, borderTop: '1px solid #9cc', paddingTop: 18 }}>
+          <p><strong>Paid plan: AI draft ({allowance.remaining} remaining)</strong></p>
+          <p>Your entered details will be sent to OpenAI. Use only an account reference of up to eight characters. Review every fact before sending.</p>
+          <label style={{ display: 'flex', gap: 8, marginBottom: 12 }}>
+            <input type="checkbox" checked={consent} onChange={(event) => setConsent(event.target.checked)} />
+            I agree to send the details above to OpenAI for this draft.
+          </label>
+          <button type="button" disabled={busy || !consent || allowance.remaining === 0} onClick={() => {
+            const form = document.getElementById('letter-form') as HTMLFormElement;
+            if (form.reportValidity()) aiDraft();
+          }} style={{ padding: '12px 20px', background: '#006F7A', color: 'white', border: 0, borderRadius: 8 }}>Generate AI draft</button>
+        </div>}
       </form>
-      {letter && (
-        <div style={{ marginTop: '2rem', backgroundColor: '#1f1f1f', padding: '1rem', borderRadius: '0.5rem' }}>
-          <pre style={{ color: '#FAFAFA' }}>{letter}</pre>
-        </div>
-      )}
-    </div>
-  );
+      {letter && <section style={{ marginTop: 24 }}><h2>Review your draft</h2>
+        <p>Check every fact. Add the bureau’s current mailing address, your report confirmation number if available, and copies of supporting documents before sending.</p>
+        <pre style={{ whiteSpace: 'pre-wrap', background: '#f2f8f8', padding: 20, borderRadius: 8, fontFamily: 'inherit' }}>{letter}</pre>
+        <button disabled={busy} onClick={download} style={{ padding: '12px 20px', background: '#006F7A', color: 'white', border: 0, borderRadius: 8 }}>Download letter</button>
+      </section>}
+    </>}
+  </main>;
 }
