@@ -23,15 +23,15 @@ export default function DisputeCenter() {
     `${item.title} ${item.guidance}`.toLowerCase().includes(query.toLowerCase()));
   return <main style={{ padding: '40px 20px', background: 'var(--bg)', minHeight: '100vh', color: 'var(--text)' }}>
     <div style={{ maxWidth: 1000, margin: 'auto' }}>
-      <h1 style={{ color: 'var(--accent)', fontSize: 'clamp(2rem, 5vw, 3rem)' }}>Dispute letter library</h1>
-      {allowance?.accountGoal === "business" ? <div style={{ background: "var(--surface)", padding: 24, borderRadius: 12 }}><h2>Business report review</h2><p>These letters and dispute cases are designed for personal consumer reports. For an error on a business report, get the report from the business reporting company and follow its dispute process with supporting records.</p><Link href="/dashboard">Return to your business plan</Link></div> : <>
-      <p>Choose an issue that is genuinely inaccurate on your report. Customize the facts, review the draft, and keep copies of any supporting records you send.</p>
+      <h1 style={{ color: 'var(--accent)', fontSize: 'clamp(2rem, 5vw, 3rem)' }}>The Letter Lab</h1>
+      {allowance?.accountGoal === "business" ? <div style={{ background: "var(--surface)", padding: 24, borderRadius: 12 }}><h2>Business reports need a different playbook</h2><p>These letters and dispute cases are for personal credit reports. For a mistake on a business report, get the report from the business reporting company, follow its dispute process, and keep your supporting records.</p><Link href="/dashboard">Back to my business game plan</Link></div> : <>
+      <p>Found a real mistake on your personal credit report? Find a letter starting point, add your facts, and review it before you send. Keep copies of everything.</p>
       <p style={{ background: 'var(--surface-raised)', padding: 16, borderRadius: 10 }}>
-        <strong>Take a manageable approach:</strong> start with one or two well documented errors. This is an organizational suggestion, not a credit bureau rule. The CFPB recommends identifying each specific mistake, explaining why it is wrong, and including copies of supporting documents.
+        <strong>One thing at a time:</strong> start with one or two well-documented errors. That’s a way to stay organized, not a credit bureau rule. The CFPB recommends naming each specific mistake, explaining why it’s wrong, and including copies of supporting documents.
         {' '}<a href="https://www.consumerfinance.gov/ask-cfpb/how-do-i-dispute-an-error-on-my-credit-report-en-314/" target="_blank" rel="noopener noreferrer">Read CFPB guidance</a>.
       </p>
       <details style={{ background: 'var(--surface)', padding: 16, borderRadius: 10, marginBottom: 20 }}>
-        <summary style={{ cursor: 'pointer', fontWeight: 700 }}>Before you write a letter</summary>
+        <summary style={{ cursor: 'pointer', fontWeight: 700 }}>Quick check before you draft</summary>
         <ol style={{ lineHeight: 1.8 }}>
           <li>Review the report from the bureau showing the error. <a href="https://www.annualcreditreport.com/" target="_blank" rel="noopener noreferrer">AnnualCreditReport.com</a> provides free reports.</li>
           <li>Choose a specific inaccuracy and gather copies of records that explain it. Keep copies of the letter and anything you send.</li>
@@ -46,11 +46,11 @@ export default function DisputeCenter() {
         {' · '}Resets {new Date(allowance.resetAt).toLocaleDateString('en-US', { month: 'long', day: 'numeric', timeZone: 'UTC' })} (UTC)
       </p>}
       {locked ? <div style={{ background: 'var(--surface)', padding: 24, border: '1px solid var(--line)', borderRadius: 12 }}>
-        <h2>Letter library locked for this month</h2>
-        <p>You used your three free download requests. Your library unlocks at the start of the next UTC month. You can still review your saved dispute cases below.</p>
+        <h2>Your free downloads are tapped out for now</h2>
+        <p>You’ve used your three free downloads this month. They reset at the start of the next UTC month. Your saved cases are still here whenever you need them.</p>
       </div> : !allowance ? <p>Checking letter access…</p> : <>
-        <label style={{ display: 'block', margin: '24px 0 12px' }}>Search letter topics
-          <input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Balance, date, duplicate…"
+        <label style={{ display: 'block', margin: '24px 0 12px' }}>What’s looking off?
+          <input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Try balance, late payment, duplicate…"
             style={{ display: 'block', padding: 12, width: '100%', maxWidth: 440, marginTop: 6, borderRadius: 8, border: '1px solid #576b7e' }} />
         </label>
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginBottom: 24 }}>
@@ -58,11 +58,11 @@ export default function DisputeCenter() {
             type="button" onClick={() => setCategory(item)} aria-pressed={category === item}
             style={{ padding: '8px 12px', borderRadius: 20, border: '1px solid var(--accent)', background: category === item ? 'var(--accent-strong)' : 'var(--surface)', color: category === item ? '#071d25' : 'var(--accent)' }}>{item}</button>)}
         </div>
-        <p>{results.length} letter topics</p>
+        <p>{results.length} letter starting points</p>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 16 }}>
           {results.map((item) => <article key={item.id} style={{ background: 'var(--surface)', borderRadius: 12, padding: 20, border: '1px solid var(--line)' }}>
             <small style={{ color: 'var(--accent)' }}>{item.category}</small><h2 style={{ fontSize: 19 }}>{item.title}</h2>
-            <p>{item.guidance}</p><Link href={`/dispute-generator?template=${item.id}`}>Customize letter →</Link>
+            <p>{item.guidance}</p><Link href={`/dispute-generator?template=${item.id}`}>Make this letter mine →</Link>
           </article>)}
         </div>
       </>}

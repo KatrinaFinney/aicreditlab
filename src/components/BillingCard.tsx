@@ -29,10 +29,10 @@ export default function BillingCard() {
 
   return <section style={{ background: 'var(--surface)', padding: 20, borderRadius: 12,
     border: '1px solid var(--line)', marginTop: 24 }} aria-labelledby="billing-heading">
-    <h2 id="billing-heading" style={{ fontSize: '1.5rem', fontWeight: 'bold', color: 'var(--accent)' }}>Your plan & billing</h2>
+    <h2 id="billing-heading" style={{ fontSize: '1.5rem', fontWeight: 'bold', color: 'var(--accent)' }}>Your plan, your call</h2>
     {billing?.accountGoal === 'business' ? <p>The business action plan is free. Personal credit letter tools are only available with a personal credit plan.</p> : <>
-      <p>{billing?.paid ? 'You have the paid personal plan: unlimited template downloads and five AI drafts per UTC calendar month.' :
-        'The free personal plan includes three letter downloads per UTC calendar month. The paid plan adds unlimited template downloads and five AI drafts per UTC calendar month.'}</p>
+      <p>{billing?.paid ? 'The Letter Boost is yours: unlimited template downloads and five AI drafts per UTC calendar month.' :
+        'Start free with three letter downloads per UTC calendar month. The Letter Boost adds unlimited template downloads and five AI drafts per UTC calendar month.'}</p>
       {billing?.status && <p>Subscription status: {billing.status.replaceAll('_', ' ')}</p>}
       {billing?.hasBillingAccount && <button type="button" disabled={busy} onClick={() => goToBilling('portal')}>Manage subscription</button>}
       {!billing?.paid && billing?.accountGoal === 'personal' && billing?.price && !billing?.hasBillingAccount &&
@@ -40,7 +40,7 @@ export default function BillingCard() {
       {!billing?.paid && billing?.accountGoal === 'personal' && billing?.price &&
         !['active', 'trialing', 'past_due', 'unpaid', 'paused', 'incomplete'].includes(billing?.status ?? '') &&
         <button type="button" disabled={busy} onClick={() => goToBilling('checkout')} style={{ marginLeft: billing.hasBillingAccount ? 12 : 0 }}>
-          {busy ? 'Opening checkout…' : 'Upgrade to paid'}</button>}
+          {busy ? 'Opening checkout…' : 'Get the Letter Boost'}</button>}
       {billing?.accountGoal === 'personal' && !billing.price && !billing.paid &&
         <p>Subscription checkout is not available yet.</p>}
     </>}

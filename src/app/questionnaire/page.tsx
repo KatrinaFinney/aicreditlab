@@ -121,7 +121,7 @@ export default function Questionnaire() {
             textAlign: "center",
           }}
         >
-          {goal === "business" ? "Business Credit Assessment" : "Credit Assessment"}
+          {goal === "business" ? "Let's build your business credit game plan" : goal === "personal" ? "Let's build your credit game plan" : "Let's get a game plan together"}
         </h1>
         <p
           style={{
@@ -130,11 +130,11 @@ export default function Questionnaire() {
             marginBottom: "20px",
           }}
         >
-          First, choose the credit you want to work on. Then select up to <strong>3</strong> options per question.
+          First, tell us where you’re starting. Then pick up to <strong>3</strong> answers for each question. No perfect answers needed.
         </p>
 
         <fieldset style={{ border: "1px solid var(--line)", borderRadius: 10, marginBottom: 24, padding: 16 }}>
-          <legend style={{ color: "var(--accent)", fontWeight: 700 }}>Is this for your personal credit or to build business credit?</legend>
+          <legend style={{ color: "var(--accent)", fontWeight: 700 }}>What’s the move: work on your personal credit or build business credit?</legend>
           <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
             {(["personal", "business"] as const).map((choice) => <button type="button" key={choice} aria-pressed={goal === choice}
               onClick={() => { if (goal !== choice) { setGoal(choice); setAnswers({}); setError(false); } }}
@@ -143,7 +143,7 @@ export default function Questionnaire() {
             </button>)}
           </div>
         </fieldset>
-        {goal === "business" && <p style={{ color: "var(--muted)" }}>Business credit has different reporting and dispute processes. Your plan will focus on your business setup, payment history, and financing needs.</p>}
+        {goal === "business" && <p style={{ color: "var(--muted)" }}>Business credit plays by different reporting rules. We’ll focus on your business setup, payment history, and financing goals—not personal dispute letters.</p>}
         {goal && questions.map((q) => (
           <div key={q.id} style={{ marginBottom: "20px" }}>
             <h3 style={{ color: "var(--accent)", fontWeight: "bold" }}>{q.question}</h3>
@@ -198,7 +198,7 @@ export default function Questionnaire() {
             transition: "background-color 0.2s ease",
           }}
         >
-          {loading ? "Generating Plan..." : "Generate My Plan"}
+          {loading ? "Putting your plan together…" : "Show me my game plan"}
         </button>
       </div>
     </div>

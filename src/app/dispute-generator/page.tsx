@@ -67,16 +67,16 @@ export default function LetterEditor() {
     finally { setBusy(false); }
   };
   const locked = !!allowance && !allowance.paid && allowance.remaining === 0;
-  if (allowance?.accountGoal === "business") return <main style={{ maxWidth: 720, margin: "2rem auto", padding: 24 }}><h1>Business report review</h1><p>This editor is for personal credit reports. Follow the reporting company’s process for a business report error.</p><Link href="/dashboard">Return to your business plan</Link></main>;
+  if (allowance?.accountGoal === "business") return <main style={{ maxWidth: 720, margin: "2rem auto", padding: 24 }}><h1>Business reports need a different playbook</h1><p>This editor is for personal credit reports. For a business report mistake, follow the reporting company’s dispute process.</p><Link href="/dashboard">Back to my business game plan</Link></main>;
   const input = (field: Field, label: string, placeholder = '') => <label key={field} style={{ display: 'grid', gap: 6, marginBottom: 16, color: 'var(--text)', fontWeight: 600 }}>
     {label}<input required={field !== 'accountReference'} maxLength={field === 'accountReference' ? 30 : 1000}
       value={values[field]} onChange={(event) => update(field, event.target.value)} placeholder={placeholder}
       style={{ padding: 12, border: '1px solid #789', borderRadius: 8, color: 'var(--text)' }} />
   </label>;
   return <main style={{ maxWidth: 720, margin: '2rem auto', padding: '1.5rem', color: 'var(--text)' }}>
-    <Link href="/dispute-center">← Letter library</Link>
-    <h1 style={{ color: 'var(--accent)', margin: '24px 0 12px' }}>Customize a credit report dispute letter</h1>
-    <p>Use this only for information you believe is inaccurate. Explain the specific error and attach copies of supporting records when you send your reviewed draft.</p>
+    <Link href="/dispute-center">← Back to the Letter Lab</Link>
+    <h1 style={{ color: 'var(--accent)', margin: '24px 0 12px' }}>Make this letter yours.</h1>
+    <p>Start with a real error on your personal credit report. Tell us what looks wrong and what your records show. You review the draft and include supporting copies when you send it.</p>
     {error && <p role="alert" style={{ color: 'var(--danger)' }}>{error}</p>}
     {allowance && <p role="status" style={{ color: 'var(--accent)', fontWeight: 700 }}>
       {allowance.paid ? `Unlimited template downloads · ${allowance.remaining} of 5 AI generations left this month` :
@@ -84,8 +84,8 @@ export default function LetterEditor() {
       {' · '}Resets {new Date(allowance.resetAt).toLocaleDateString('en-US', { month: 'long', day: 'numeric', timeZone: 'UTC' })} (UTC)
     </p>}
     {locked ? <div style={{ background: 'var(--surface)', padding: 24, borderRadius: 12 }}>
-      <h2>The free letter library is locked for this month</h2>
-      <p>Your three download requests have been used. The library unlocks at the start of the next UTC month.</p>
+      <h2>Your free downloads are tapped out for now</h2>
+      <p>You’ve used your three free downloads. They reset at the start of the next UTC month.</p>
     </div> : !allowance ? <p>Checking letter access…</p> : <>
       <form id="letter-form" onSubmit={preview} style={{ background: 'var(--surface)', padding: 24, borderRadius: 12, marginTop: 24 }}>
         <label style={{ display: 'grid', gap: 6, marginBottom: 16, color: 'var(--text)' }}>Letter topic
@@ -107,9 +107,9 @@ export default function LetterEditor() {
             onChange={(event) => update('errorDescription', event.target.value)} style={{ padding: 12 }} />
         </label>
         {input('requestedCorrection', 'What correction are you requesting?', 'For example: correct the reported balance to $…')}
-        <button disabled={busy} style={{ padding: '12px 20px', background: 'var(--accent-strong)', color: '#071d25', border: 0, borderRadius: 8 }}>Preview customized template</button>
+        <button disabled={busy} style={{ padding: '12px 20px', background: 'var(--accent-strong)', color: '#071d25', border: 0, borderRadius: 8 }}>Preview my letter</button>
         {allowance.paid && <div style={{ marginTop: 20, borderTop: '1px solid var(--line)', paddingTop: 18 }}>
-          <p><strong>Paid plan: AI draft ({allowance.remaining} remaining)</strong></p>
+          <p><strong>Want an AI-assisted first draft? ({allowance.remaining} left this month)</strong></p>
           <p>Your entered details will be sent to OpenAI. Use only an account reference of up to eight characters. Review every fact before sending.</p>
           <label style={{ display: 'flex', gap: 8, marginBottom: 12 }}>
             <input type="checkbox" checked={consent} onChange={(event) => setConsent(event.target.checked)} />
@@ -118,10 +118,10 @@ export default function LetterEditor() {
           <button type="button" disabled={busy || !consent || allowance.remaining === 0} onClick={() => {
             const form = document.getElementById('letter-form') as HTMLFormElement;
             if (form.reportValidity()) aiDraft();
-          }} style={{ padding: '12px 20px', background: 'var(--accent)', color: '#071d25', border: 0, borderRadius: 8 }}>Generate AI draft</button>
+          }} style={{ padding: '12px 20px', background: 'var(--accent)', color: '#071d25', border: 0, borderRadius: 8 }}>Draft with AI</button>
         </div>}
       </form>
-      {letter && <section style={{ marginTop: 24 }}><h2>Review your draft</h2>
+      {letter && <section style={{ marginTop: 24 }}><h2>One last look before you send</h2>
         <p>Check every fact. Add the bureau’s current mailing address, your report confirmation number if available, and copies of supporting documents before sending.</p>
         <pre style={{ whiteSpace: 'pre-wrap', background: 'var(--surface-raised)', padding: 20, borderRadius: 8, fontFamily: 'inherit', color: 'var(--text)'  }}>{letter}</pre>
         <button disabled={busy} onClick={download} style={{ padding: '12px 20px', background: 'var(--accent)', color: '#071d25', border: 0, borderRadius: 8 }}>Download letter</button>
