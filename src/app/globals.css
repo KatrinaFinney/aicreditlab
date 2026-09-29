@@ -92,3 +92,21 @@ pre { max-width: 100%; overflow-wrap: anywhere; }
 .app-dashboard li { padding-block: 4px; }
 .ml-embedded form input[type="email"] { padding: 12px 16px; width: 100%; box-sizing: border-box; }
 .ml-embedded form button[type="submit"] { background: var(--accent-strong); color: #071d25; border: 0; padding: 12px 24px; border-radius: 8px; font-weight: 700; }
+
+/* Account pages share the same dark palette as the main app. */
+.auth-page { min-height: calc(100svh - 74px); display: grid; align-items: center; padding: clamp(36px, 6vw, 88px) 24px; background: radial-gradient(ellipse at 12% 8%, #53387066, transparent 35%), radial-gradient(ellipse at 86% 18%, #164b5299, transparent 42%), var(--bg); }
+.auth-layout { width: min(1060px, 100%); margin: auto; display: grid; grid-template-columns: minmax(0, 1fr) minmax(340px, 460px); align-items: center; gap: clamp(32px, 7vw, 100px); }
+.auth-intro h1 { font-size: clamp(2.8rem, 5.4vw, 4.7rem); line-height: 1.07; letter-spacing: -.055em; margin: 18px 0 22px; }
+.auth-intro h1 span { color: var(--accent); }
+.auth-intro > p:not(.eyebrow) { color: var(--muted); font-size: 1.12rem; line-height: 1.7; max-width: 520px; }
+.auth-promise { margin: 30px 0; padding: 16px 18px; border: 1px solid #50737b; border-radius: 12px; background: #223249aa; color: var(--text); font-weight: 600; width: fit-content; }
+.auth-promise span { color: var(--accent); margin-right: 10px; }
+.auth-home-link { color: var(--accent); font-weight: 700; text-decoration: none; }
+.auth-home-link:hover { text-decoration: underline; }
+.auth-card { min-width: 0; border: 1px solid #50737b; border-radius: 22px; padding: clamp(22px, 4vw, 36px); background: linear-gradient(145deg, #25364b, #1b2638 80%); box-shadow: 0 24px 80px #040c1999, 0 0 70px #2dd4bf12; }
+.auth-card-top { display: flex; align-items: center; gap: 10px; padding-bottom: 25px; color: var(--muted); font-size: .72rem; font-weight: 800; letter-spacing: .16em; }
+.auth-card-icon { display: grid; place-items: center; width: 30px; height: 30px; border-radius: 9px; background: #274f59; color: var(--accent); font-size: 1.3rem; }
+.auth-clerk input:not([type=checkbox]) { background: #131e2d; color: var(--text); border-color: #576b7e; }
+.auth-clerk input::placeholder { color: #a5b7c7; }
+@media (max-width: 800px) { .auth-layout { grid-template-columns: 1fr; max-width: 540px; gap: 30px; } .auth-intro h1 { font-size: clamp(2.5rem, 8vw, 3.8rem); } .auth-promise { margin: 20px 0; } }
+@media (max-width: 600px) { .auth-page { padding: 34px 16px 64px; } .auth-intro h1 { font-size: clamp(2.35rem, 10vw, 3.25rem); } .auth-intro > p:not(.eyebrow) { font-size: 1rem; } .auth-card { padding: 20px 16px; } .auth-card-top { padding-bottom: 16px; } }
