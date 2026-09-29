@@ -21,6 +21,9 @@ export default function Dashboard() {
   const [userData, setUserData] = useState<UserData | null>(null);
   const [savedPlans, setSavedPlans] = useState<SavedPlan[]>([]);
   const [planError, setPlanError] = useState('');
+  const [billingError, setBillingError] = useState('');
+  const [billingBusy, setBillingBusy] = useState(false);
+  const [checkoutReturned, setCheckoutReturned] = useState(false);
   const [completedSteps, setCompletedSteps] = useState<string[]>([]);
   const [progressError, setProgressError] = useState('');
   const [focusMode, setFocusMode] = useState(false);
@@ -29,6 +32,7 @@ export default function Dashboard() {
   const [timerRunning, setTimerRunning] = useState(false);
 
   useEffect(() => {
+    setCheckoutReturned(new URLSearchParams(window.location.search).get('checkout') === 'success');
     
     if (!user) return;
 
@@ -66,6 +70,19 @@ export default function Dashboard() {
       // Reload the active plan and its saved progress together.
       window.location.reload();
     } catch { setPlanError('Could not open that plan. Please try again.'); }
+  };
+
+  const openBilling = async (action: 'checkout' | 'portal') => {
+    setBillingError(''); setBillingBusy(true);
+    try {
+      const response = await fetch(`/api/billing/${action}`, { method: 'POST' });
+      const result = await response.json();
+      if (!response.ok || !result.url) throw new Error(result.error || 'Billing is unavailable');
+      window.location.assign(result.url);
+    } catch (error) {
+      setBillingError(error instanceof Error ? error.message : 'Billing is unavailable');
+      setBillingBusy(false);
+    }
   };
 
   useEffect(() => {
@@ -302,7 +319,6 @@ export default function Dashboard() {
         </Link>}
       </div>
 
-      {/* Paid features are planned; no checkout is available yet. */}
       <div
         style={{
           backgroundColor: "var(--surface)",
@@ -313,13 +329,18 @@ export default function Dashboard() {
         }}
       >
         <h2 style={{ fontSize: "1.5rem", fontWeight: "bold", color: "var(--accent)" }}>
-          Premium Tools
+          AI CreditLab Plus · $9.99/month
         </h2>
         <p style={{ fontSize: "1.1rem", color: "var(--text)" }}>
-          Paid accounts can save multiple plans, use unlimited template downloads, and generate five AI letters per month. Billing and self-service upgrades are in development.
+          Save multiple credit plans, download unlimited personal letter templates, and generate up to five AI drafts per calendar month. Cancel anytime in the billing portal.
         </p>
-
-        <p style={{ color: "var(--accent)" }}>More guided tools are in development.</p>
+        <button type="button" disabled={billingBusy} onClick={() => openBilling(userData?.plan_type === 'paid' ? 'portal' : 'checkout')}
+          style={{ padding: '12px 18px', borderRadius: 8, background: 'var(--accent-strong)', color: '#071d25', border: 0, fontWeight: 700 }}>
+          {billingBusy ? 'Opening billing…' : userData?.plan_type === 'paid' ? 'Manage billing' : 'Upgrade for $9.99/month'}
+        </button>
+        {billingError && <p role="alert" style={{ color: 'var(--danger)' }}>{billingError}</p>}
+        {checkoutReturned &&
+          <p role="status">Thanks! Your paid access will appear after payment confirmation. Refresh this page shortly.</p>}
       </div>
     </div>
   );
