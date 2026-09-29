@@ -7,16 +7,20 @@ import Link from "next/link";
 // Define a type for the user's credit plan data
 interface UserData {
   plan_type: "free" | "paid";
+  active_saved_plan_id?: string;
   account_goal?: "personal" | "business";
   full_name?: string;
   address?: string;
   selected_disputes?: Record<string, string[]>;
   credit_plan?: string[];
 }
+type SavedPlan = { id: string; account_goal: "personal" | "business"; created_at: string };
 
 export default function Dashboard() {
   const { user } = useUser();
   const [userData, setUserData] = useState<UserData | null>(null);
+  const [savedPlans, setSavedPlans] = useState<SavedPlan[]>([]);
+  const [planError, setPlanError] = useState('');
   const [completedSteps, setCompletedSteps] = useState<string[]>([]);
   const [progressError, setProgressError] = useState('');
   const [focusMode, setFocusMode] = useState(false);
@@ -32,12 +36,13 @@ export default function Dashboard() {
     const fetchUserPlan = async () => {
       const response = await fetch('/api/credit-plan');
       if (!response.ok) return;
-      const { plan: data } = await response.json();
+      const { plan: data, savedPlans: plans } = await response.json();
 
 
 
       if (data) {
         setUserData(data);
+        setSavedPlans(plans ?? []);
       }
     };
 
@@ -52,6 +57,16 @@ export default function Dashboard() {
       } else setProgressError('Could not load saved progress.');
     });
   }, [user]);
+
+  const openPlan = async (id: string) => {
+    setPlanError('');
+    try {
+      const response = await fetch('/api/credit-plan', { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id }) });
+      if (!response.ok) throw new Error('Switch failed');
+      // Reload the active plan and its saved progress together.
+      window.location.reload();
+    } catch { setPlanError('Could not open that plan. Please try again.'); }
+  };
 
   useEffect(() => {
     if (!timerRunning || secondsLeft === 0) return;
@@ -114,6 +129,19 @@ export default function Dashboard() {
       <p style={{ textAlign: "center", fontSize: "1.2rem", color: "var(--text)" }}>
         Pick one action to work on next. Your completed steps are saved here.
       </p>
+
+      {userData?.plan_type === 'paid' && <section style={{ background: 'var(--surface)', padding: 20, borderRadius: 12, border: '1px solid var(--line)' }}>
+        <h2 style={{ color: 'var(--accent)' }}>Your saved plans</h2>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10 }}>
+          {savedPlans.map((plan, index) => <button key={plan.id} type="button"
+            disabled={plan.id === userData.active_saved_plan_id} onClick={() => openPlan(plan.id)}
+            style={{ padding: '10px 14px', borderRadius: 8, border: '1px solid var(--accent)', background: 'var(--surface-raised)', color: 'var(--text)' }}>
+            {plan.account_goal === 'business' ? 'Business' : 'Personal'} plan {index + 1}{plan.id === userData.active_saved_plan_id ? ' · Current' : ''}
+          </button>)}
+          <Link href="/questionnaire?new=1" style={{ padding: '10px 14px', color: 'var(--accent)' }}>+ Create another plan</Link>
+        </div>
+        {planError && <p role="alert" style={{ color: 'var(--danger)' }}>{planError}</p>}
+      </section>}
 
       {/* Credit Plan Overview */}
       <div
@@ -198,7 +226,7 @@ export default function Dashboard() {
             textDecoration: "none",
           }}
         >
-          Update Your Plan
+          {userData?.plan_type === 'paid' ? 'Edit This Plan' : 'Update Your Plan'}
         </Link>
       </div>
 
@@ -288,7 +316,7 @@ export default function Dashboard() {
           Premium Tools
         </h2>
         <p style={{ fontSize: "1.1rem", color: "var(--text)" }}>
-          Paid accounts can use unlimited template downloads and five AI letter generations per month. Billing and self-service upgrades are in development.
+          Paid accounts can save multiple plans, use unlimited template downloads, and generate five AI letters per month. Billing and self-service upgrades are in development.
         </p>
 
         <p style={{ color: "var(--accent)" }}>More guided tools are in development.</p>
