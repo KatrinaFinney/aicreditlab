@@ -48,6 +48,7 @@ export async function PUT(request: Request) {
     if (saveError) return NextResponse.json({ error: 'Could not save your plan' }, { status: 500 });
     return NextResponse.json({ id, credit_plan: creditPlan });
   }
+  if (newPlan) return NextResponse.json({ error: 'Multiple saved plans require a paid account' }, { status: 403 });
   const { error } = await db.from('credit_plans').upsert({
     user_id: userId, account_goal: goal, selected_disputes: answers, questionnaire_completed: true,
     plan_type: existing?.plan_type ?? 'free', credit_plan: creditPlan,

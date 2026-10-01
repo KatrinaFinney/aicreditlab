@@ -12,6 +12,10 @@ const required = [
   ['Clerk server key', 'CLERK_SECRET_KEY', 'Add this server-only key to local and deployment settings.'],
   ['Supabase URL', 'NEXT_PUBLIC_SUPABASE_URL', 'Link the existing Supabase project.'],
   ['Supabase service role key', 'SUPABASE_SERVICE_ROLE_KEY', 'Add the server-only key; never prefix it NEXT_PUBLIC_.'],
+  ['Stripe secret key', 'STRIPE_SECRET_KEY', 'Configure the server-only Stripe key.'],
+  ['Stripe Price ID', 'STRIPE_PRICE_ID', 'Configure the $9.99 USD monthly recurring Price.'],
+  ['Stripe webhook secret', 'STRIPE_WEBHOOK_SECRET', 'Configure the signed webhook endpoint.'],
+  ['Canonical app URL', 'NEXT_PUBLIC_APP_URL', 'Configure the HTTPS return URL.'],
   ['OpenAI API key', 'OPENAI_API_KEY', 'Add the server-only key to enable paid AI drafts.'],
 ];
 for (const [label, name, instruction] of required) {
@@ -27,6 +31,8 @@ if (!process.argv.includes('--live')) {
     const tables = [
       ['credit_plans', 'user_id,plan_type,account_goal,selected_disputes,credit_plan'],
       ['credit_plan_progress', 'user_id,completed_steps,focus_mode,session_minutes'],
+      ['billing_subscriptions', 'user_id,stripe_customer_id,stripe_subscription_id,status'],
+      ['saved_credit_plans', 'id,user_id,account_goal,completed_steps'],
       ['disputes', 'id,user_id,creditor,agency,status'],
       ['letter_usage', 'id,user_id,kind,period_start,status'],
     ];

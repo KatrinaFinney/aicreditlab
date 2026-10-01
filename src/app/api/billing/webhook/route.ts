@@ -1,10 +1,12 @@
 import { NextResponse } from 'next/server';
 import Stripe from 'stripe';
 import { getServerSupabase } from '@/lib/serverSupabase';
-import { getStripe } from '@/lib/stripe';
+import { stripeClient, assertBillingMode } from '@/lib/billing';
+import { isPersonalMonthlyPrice } from '@/lib/billingPrice';
 
 export async function POST(request: Request) {
-  const stripe = getStripe();
+  let stripe: Stripe;
+  try { stripe = stripeClient(); } catch { return NextResponse.json({ error: 'Webhook unavailable' }, { status: 503 }); }
   const db = getServerSupabase();
   const secret = process.env.STRIPE_WEBHOOK_SECRET;
   const signature = request.headers.get('stripe-signature');
@@ -24,15 +26,20 @@ export async function POST(request: Request) {
     const object = event.data.object as Stripe.Checkout.Session | Stripe.Subscription | Stripe.Invoice;
     const customerId = typeof object.customer === 'string' ? object.customer : object.customer?.id;
     if (!customerId) throw new Error('Missing customer');
-    const customer = await stripe.customers.retrieve(customerId);
-    if (customer.deleted) throw new Error('Deleted customer');
-    const userId = customer.metadata.clerkUserId;
-    if (!userId) throw new Error('Missing Clerk identity');
+    assertBillingMode(event.livemode);
+    const { data: billing, error: lookupError } = await db.from('billing_subscriptions')
+      .select('user_id').eq('stripe_customer_id', customerId).maybeSingle();
+    if (lookupError || !billing) throw new Error('Unknown billing customer');
+    const userId = billing.user_id;
     // Reconcile current Stripe state, not event order. Replayed or delayed events stay safe.
     const subscriptions = await stripe.subscriptions.list({ customer: customerId, status: 'all', limit: 100 });
-    const current = subscriptions.data.find((item) => item.status === 'active') ||
-      subscriptions.data.find((item) => item.status === 'trialing') || subscriptions.data[0];
+    if (subscriptions.has_more) throw new Error('Subscription list is incomplete');
+    if (!process.env.STRIPE_PRICE_ID) throw new Error('Price is not configured');
+    const matching = subscriptions.data.filter((item) => item.items.data.some(({ price }) =>
+      price.id === process.env.STRIPE_PRICE_ID && isPersonalMonthlyPrice({ ...price, active: true })));
+    const current = matching.find((item) => item.status === 'active') || matching[0];
     if (!current) return NextResponse.json({ received: true });
+    assertBillingMode(current.livemode);
     const { error } = await db.rpc('set_subscription_entitlement', {
       p_user_id: userId, p_customer_id: customerId,
       p_subscription_id: current.id, p_status: current.status,

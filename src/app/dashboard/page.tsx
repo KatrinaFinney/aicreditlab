@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useUser } from "@clerk/nextjs";
 import Link from "next/link";
+import BillingCard from '@/components/BillingCard';
 
 // Define a type for the user's credit plan data
 interface UserData {
@@ -21,8 +22,6 @@ export default function Dashboard() {
   const [userData, setUserData] = useState<UserData | null>(null);
   const [savedPlans, setSavedPlans] = useState<SavedPlan[]>([]);
   const [planError, setPlanError] = useState('');
-  const [billingError, setBillingError] = useState('');
-  const [billingBusy, setBillingBusy] = useState(false);
   const [checkoutReturned, setCheckoutReturned] = useState(false);
   const [completedSteps, setCompletedSteps] = useState<string[]>([]);
   const [progressError, setProgressError] = useState('');
@@ -70,19 +69,6 @@ export default function Dashboard() {
       // Reload the active plan and its saved progress together.
       window.location.reload();
     } catch { setPlanError('Could not open that plan. Please try again.'); }
-  };
-
-  const openBilling = async (action: 'checkout' | 'portal') => {
-    setBillingError(''); setBillingBusy(true);
-    try {
-      const response = await fetch(`/api/billing/${action}`, { method: 'POST' });
-      const result = await response.json();
-      if (!response.ok || !result.url) throw new Error(result.error || 'Billing is unavailable');
-      window.location.assign(result.url);
-    } catch (error) {
-      setBillingError(error instanceof Error ? error.message : 'Billing is unavailable');
-      setBillingBusy(false);
-    }
   };
 
   useEffect(() => {
@@ -319,29 +305,8 @@ export default function Dashboard() {
         </Link>}
       </div>
 
-      <div
-        style={{
-          backgroundColor: "var(--surface)",
-          padding: "20px",
-          borderRadius: "12px",
-          border: "1px solid var(--line)",
-          marginTop: "24px",
-        }}
-      >
-        <h2 style={{ fontSize: "1.5rem", fontWeight: "bold", color: "var(--accent)" }}>
-          AI CreditLab Plus · $9.99/month
-        </h2>
-        <p style={{ fontSize: "1.1rem", color: "var(--text)" }}>
-          Save multiple credit plans, download unlimited personal letter templates, and generate up to five AI drafts per calendar month. Cancel anytime in the billing portal.
-        </p>
-        <button type="button" disabled={billingBusy} onClick={() => openBilling(userData?.plan_type === 'paid' ? 'portal' : 'checkout')}
-          style={{ padding: '12px 18px', borderRadius: 8, background: 'var(--accent-strong)', color: '#071d25', border: 0, fontWeight: 700 }}>
-          {billingBusy ? 'Opening billing…' : userData?.plan_type === 'paid' ? 'Manage billing' : 'Upgrade for $9.99/month'}
-        </button>
-        {billingError && <p role="alert" style={{ color: 'var(--danger)' }}>{billingError}</p>}
-        {checkoutReturned &&
-          <p role="status">Thanks! Your paid access will appear after payment confirmation. Refresh this page shortly.</p>}
-      </div>
+      <BillingCard />
+      {checkoutReturned && <p role="status">Payment confirmation is pending. Refresh shortly to check your access.</p>}
     </div>
   );
 }

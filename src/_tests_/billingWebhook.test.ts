@@ -1,49 +1,59 @@
 import { POST } from '../app/api/billing/webhook/route';
-import { getStripe } from '../lib/stripe';
+import { stripeClient, assertBillingMode } from '../lib/billing';
 import { getServerSupabase } from '../lib/serverSupabase';
-
-jest.mock('../lib/stripe', () => ({ getStripe: jest.fn() }));
+jest.mock('../lib/billing', () => ({ stripeClient: jest.fn(), assertBillingMode: jest.fn() }));
 jest.mock('../lib/serverSupabase', () => ({ getServerSupabase: jest.fn() }));
-
-const rpc = jest.fn();
-const constructEvent = jest.fn();
-const retrieve = jest.fn();
-const list = jest.fn();
-const request = (signature = 'valid') => new Request('http://localhost/api/billing/webhook', {
+const rpc = jest.fn(); const constructEvent = jest.fn(); const list = jest.fn();
+const price = { id: 'price_monthly', active: true, type: 'recurring', currency: 'usd', unit_amount: 999,
+  recurring: { interval: 'month', interval_count: 1 } };
+const subscription = (id: string, status: string, priceId = price.id) => ({ id, status, livemode: true, items: { data: [{ price: { ...price, id: priceId } }] } });
+const request = (signature = 'valid') => new Request('https://example.com/api/billing/webhook', {
   method: 'POST', headers: { 'stripe-signature': signature }, body: '{"event":"payload"}',
 });
-
 beforeEach(() => {
-  jest.clearAllMocks();
-  process.env.STRIPE_WEBHOOK_SECRET = 'test-secret';
-  (getStripe as jest.Mock).mockReturnValue({ webhooks: { constructEvent },
-    customers: { retrieve }, subscriptions: { list } });
-  (getServerSupabase as jest.Mock).mockReturnValue({ rpc });
-  retrieve.mockResolvedValue({ id: 'cus_test', metadata: { clerkUserId: 'user_test' } });
+  jest.resetAllMocks(); process.env.STRIPE_WEBHOOK_SECRET = 'test-secret'; process.env.STRIPE_PRICE_ID = price.id;
+  (stripeClient as jest.Mock).mockReturnValue({ webhooks: { constructEvent }, subscriptions: { list } });
+  (getServerSupabase as jest.Mock).mockReturnValue({ rpc, from: () => ({ select: () => ({ eq: () => ({ maybeSingle: async () => ({ data: { user_id: 'user_test' }, error: null }) }) }) }) });
   rpc.mockResolvedValue({ error: null });
-  constructEvent.mockReturnValue({ type: 'customer.subscription.updated', data: { object: { customer: 'cus_test' } } });
+  constructEvent.mockReturnValue({ livemode: true, type: 'customer.subscription.updated', data: { object: { customer: 'cus_test' } } });
+  list.mockResolvedValue({ data: [subscription('sub_current','active')], has_more: false });
 });
-
-it('rejects an invalid signature without updating access', async () => {
+it('rejects invalid signatures without updating access', async () => {
   constructEvent.mockImplementation(() => { throw new Error('Invalid signature'); });
-  const response = await POST(request('tampered'));
-  expect(response.status).toBe(400);
-  expect(rpc).not.toHaveBeenCalled();
+  expect((await POST(request('tampered'))).status).toBe(400); expect(rpc).not.toHaveBeenCalled();
 });
-
-it('reconciles the current active subscription after a signed event', async () => {
-  list.mockResolvedValue({ data: [{ id: 'sub_old', status: 'canceled' }, { id: 'sub_current', status: 'active' }] });
-  const response = await POST(request());
-  expect(response.status).toBe(200);
+it('reconciles current matching subscriptions rather than stale event state', async () => {
+  list.mockResolvedValue({ data: [subscription('sub_unrelated','active','other_price'), subscription('sub_old','canceled'), subscription('sub_current','active')], has_more: false });
+  expect((await POST(request())).status).toBe(200);
   expect(constructEvent).toHaveBeenCalledWith('{"event":"payload"}', 'valid', 'test-secret');
   expect(rpc).toHaveBeenCalledWith('set_subscription_entitlement', {
     p_user_id: 'user_test', p_customer_id: 'cus_test', p_subscription_id: 'sub_current', p_status: 'active',
   });
 });
-
-it('reconciles cancellation and retries failed database writes', async () => {
-  list.mockResolvedValue({ data: [{ id: 'sub_current', status: 'canceled' }] });
+it.each(['invoice.paid','invoice.payment_failed','customer.subscription.deleted'])('reconciles %s and preserves retryable database errors', async (type) => {
+  constructEvent.mockReturnValue({ livemode: true, type, data: { object: { customer: 'cus_test' } } });
+  list.mockResolvedValue({ data: [subscription('sub_current','canceled')], has_more: false });
   rpc.mockResolvedValue({ error: new Error('Database unavailable') });
   expect((await POST(request())).status).toBe(500);
+  expect(rpc).toHaveBeenCalledWith('set_subscription_entitlement', expect.objectContaining({ p_status: 'canceled' }));
+});
+it('ignores unrelated products', async () => {
+  list.mockResolvedValue({ data: [subscription('sub_other','active','other_price')], has_more: false });
+  expect((await POST(request())).status).toBe(200); expect(rpc).not.toHaveBeenCalled();
+});
+it('does not write test events into a shared database', async () => {
+  (assertBillingMode as jest.Mock).mockImplementation(() => { throw new Error('Isolated database required'); });
+  expect((await POST(request())).status).toBe(500); expect(rpc).not.toHaveBeenCalled();
+});
+it('does not reconcile an incomplete subscription list', async () => {
+  list.mockResolvedValue({ data: [], has_more: true });
+  expect((await POST(request())).status).toBe(500); expect(rpc).not.toHaveBeenCalled();
+});
+
+it('revokes a canceled subscription even if its price has since been archived', async () => {
+  const canceled = subscription('sub_current','canceled');
+  canceled.items.data[0].price.active = false;
+  list.mockResolvedValue({ data: [canceled], has_more: false });
+  expect((await POST(request())).status).toBe(200);
   expect(rpc).toHaveBeenCalledWith('set_subscription_entitlement', expect.objectContaining({ p_status: 'canceled' }));
 });
