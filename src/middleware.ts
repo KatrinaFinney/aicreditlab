@@ -5,7 +5,7 @@ const isPublicRoute = createRouteMatcher([
   "/waitlist",  // Email collection page
   "/sign-in",
   "/sign-up",
-  "/api/billing/webhook", // Stripe signs webhook payloads; Clerk sessions are not present.
+  "/api/billing/webhook", // Stripe signs each event; no Clerk session is present.
 ]);
 
 export default clerkMiddleware(async (auth, req) => {

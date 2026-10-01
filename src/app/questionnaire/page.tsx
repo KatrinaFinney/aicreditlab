@@ -16,6 +16,9 @@ export default function Questionnaire() {
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(false);
   const [saveError, setSaveError] = useState("");
+  const [newPlan, setNewPlan] = useState(false);
+
+  useEffect(() => { setNewPlan(new URLSearchParams(window.location.search).get('new') === '1'); }, []);
 
   // 🔹 Redirect to sign-up if not logged in
   useEffect(() => {
@@ -32,6 +35,7 @@ export default function Questionnaire() {
       const response = await fetch('/api/credit-plan');
       if (!response.ok) return;
       const { plan } = await response.json();
+      if (new URLSearchParams(window.location.search).get('new') === '1' && plan?.plan_type === 'paid') return;
       if (plan?.selected_disputes) setAnswers(plan.selected_disputes);
       if (plan?.account_goal === "business" || plan?.account_goal === "personal") setGoal(plan.account_goal);
     };
@@ -74,7 +78,7 @@ export default function Questionnaire() {
         const response = await fetch('/api/credit-plan', {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ answers, goal }),
+          body: JSON.stringify({ answers, goal, newPlan }),
         });
         if (!response.ok) {
           setSaveError("We couldn't save your plan. Please try again.");
@@ -121,7 +125,7 @@ export default function Questionnaire() {
             textAlign: "center",
           }}
         >
-          {goal === "business" ? "Let's build your business credit game plan" : goal === "personal" ? "Let's build your credit game plan" : "Let's get a game plan together"}
+          {newPlan ? "Make another game plan" : goal === "business" ? "Let’s build your business credit game plan" : goal === "personal" ? "Let’s build your credit game plan" : "Let’s get a game plan together"}
         </h1>
         <p
           style={{
@@ -198,7 +202,7 @@ export default function Questionnaire() {
             transition: "background-color 0.2s ease",
           }}
         >
-          {loading ? "Putting your plan together…" : "Show me my game plan"}
+          {loading ? "Saving your game plan…" : newPlan ? "Save my new game plan" : "Save my game plan"}
         </button>
       </div>
     </div>

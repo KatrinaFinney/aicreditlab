@@ -1,9 +1,9 @@
-import 'server-only';
 import Stripe from 'stripe';
 import { getServerSupabase } from './serverSupabase';
 
 export function stripeClient() {
   const key = process.env.STRIPE_SECRET_KEY;
+  assertBillingMode(key?.startsWith('sk_live_') ?? false);
   if (!key) throw new Error('Stripe is not configured');
   return new Stripe(key);
 }
@@ -20,8 +20,8 @@ export function appUrl() {
 export async function billingAccount(userId: string) {
   const db = getServerSupabase();
   if (!db) throw new Error('Database unavailable');
-  const { data, error } = await db.from('billing_accounts')
-    .select('stripe_customer_id, stripe_subscription_id, subscription_status')
+  const { data, error } = await db.from('billing_subscriptions')
+    .select('stripe_customer_id, stripe_subscription_id, status')
     .eq('user_id', userId).maybeSingle();
   if (error) throw error;
   return data;
@@ -31,11 +31,11 @@ export async function getOrCreateCustomer(userId: string, email?: string) {
   const existing = await billingAccount(userId);
   if (existing) return existing.stripe_customer_id as string;
   const customer = await stripeClient().customers.create({
-    ...(email ? { email } : {}), metadata: { clerk_user_id: userId },
+    ...(email ? { email } : {}), metadata: { clerkUserId: userId },
   }, { idempotencyKey: `aicreditlab-customer-${userId}` });
   const db = getServerSupabase();
   if (!db) throw new Error('Database unavailable');
-  const { error } = await db.from('billing_accounts').insert({ user_id: userId, stripe_customer_id: customer.id });
+  const { error } = await db.from('billing_subscriptions').insert({ user_id: userId, stripe_customer_id: customer.id });
   if (error) {
     // Concurrent checkout requests may have inserted the same account.
     const concurrent = await billingAccount(userId);
@@ -45,17 +45,13 @@ export async function getOrCreateCustomer(userId: string, email?: string) {
   return customer.id;
 }
 
-export async function syncSubscription(subscription: Stripe.Subscription, eventCreated: number) {
-  if (process.env.VERCEL_ENV === 'production' && !subscription.livemode)
-    throw new Error('Test subscription cannot grant production access');
-  const configuredPrice = process.env.STRIPE_PRICE_ID;
-  if (!configuredPrice || !subscription.items.data.some((item) => item.price.id === configuredPrice)) return;
-  const db = getServerSupabase();
-  if (!db) throw new Error('Database unavailable');
-  const customerId = typeof subscription.customer === 'string' ? subscription.customer : subscription.customer.id;
-  const { error } = await db.rpc('sync_billing_subscription', {
-    p_customer_id: customerId, p_subscription_id: subscription.id,
-    p_status: subscription.status, p_event_created: eventCreated,
-  });
-  if (error) throw error;
+// Fail closed: test billing must explicitly target a separate database, even in previews.
+export function assertBillingMode(livemode: boolean) {
+  if (livemode) return;
+  const database = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const isolated = process.env.BILLING_TEST_DATABASE_URL;
+  if (process.env.VERCEL_ENV === 'production' || !database || !isolated ||
+      new URL(database).origin !== new URL(isolated).origin ||
+      new URL(database).hostname === 'wsnnriiqkcvazkvhrwdm.supabase.co')
+    throw new Error('Test billing requires an explicitly isolated Supabase database');
 }

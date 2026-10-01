@@ -54,7 +54,7 @@ export default function Home() {
       <div className="plans-grid"><div className="feature-card plan-card plan-featured"><span className="plan-tag">FREE TO START</span><h3>The Starter Plan</h3><p>A little clarity goes a long way. Start here, then take it one move at a time.</p>
         <ul><li>Separate personal and business credit action plans</li><li>Saved progress, focus mode, and short work sessions</li><li>Personal credit: 30 customizable letter topics; three downloads per month</li><li>Manual dispute status tracking</li></ul>
         <Link className="action-button" href="/questionnaire">Let’s get started <span aria-hidden="true">↗</span></Link>
-      </div><div className="feature-card plan-card"><span className="plan-tag">PERSONAL CREDIT</span><h3>The Letter Boost</h3><p>$9.99 per month gets you unlimited template downloads and up to five AI letter drafts each calendar month. Check your dashboard for checkout availability.</p></div></div>
+      </div><div className="feature-card plan-card"><span className="plan-tag">PERSONAL CREDIT</span><h3>The Letter Boost</h3><p>$9.99 per month gets you multiple saved plans, unlimited personal template downloads, and up to five AI letter drafts each UTC calendar month. Check your dashboard for checkout availability.</p></div></div>
     </section>
     <footer className="home-footer"><div className="home-container"><strong>AI CreditLab<span className="brand-mark">.</span></strong><p>Educational tools for your next credit move. Review your own information and seek qualified help when you need it.</p><small>© {new Date().getFullYear()} AI CreditLab</small></div></footer>
   </div>;

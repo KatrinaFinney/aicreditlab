@@ -30,12 +30,13 @@ export default function BillingCard() {
   return <section style={{ background: 'var(--surface)', padding: 20, borderRadius: 12,
     border: '1px solid var(--line)', marginTop: 24 }} aria-labelledby="billing-heading">
     <h2 id="billing-heading" style={{ fontSize: '1.5rem', fontWeight: 'bold', color: 'var(--accent)' }}>Your plan, your call</h2>
-    {billing?.accountGoal === 'business' ? <p>The business action plan is free. Personal credit letter tools are only available with a personal credit plan.</p> : <>
-      <p>{billing?.paid ? 'The Letter Boost is yours: unlimited template downloads and five AI drafts per UTC calendar month.' :
-        'Start free with three letter downloads per UTC calendar month. The Letter Boost adds unlimited template downloads and five AI drafts per UTC calendar month.'}</p>
+    {!billing && !error && <p role="status">Loading billing options…</p>}
+    {billing?.hasBillingAccount && <button type="button" disabled={busy} onClick={() => goToBilling('portal')}>Manage subscription</button>}
+    {billing?.accountGoal === 'business' ? <p>Business plans do not include personal letter tools. A paid account can save multiple personal or business plans.</p> : <>
+      <p>{billing?.paid ? 'The Letter Boost is yours: unlimited template downloads and five AI drafts per UTC calendar month, plus multiple saved plans.' :
+        'Start free with three letter downloads per UTC calendar month. The Letter Boost adds unlimited template downloads and five AI drafts per UTC calendar month, plus multiple saved plans.'}</p>
       {billing?.status && <p>Subscription status: {billing.status.replaceAll('_', ' ')}</p>}
-      {billing?.hasBillingAccount && <button type="button" disabled={busy} onClick={() => goToBilling('portal')}>Manage subscription</button>}
-      {!billing?.paid && billing?.accountGoal === 'personal' && billing?.price && !billing?.hasBillingAccount &&
+      {!billing?.paid && billing?.accountGoal === 'personal' && billing?.price &&
         <p>{billing.price} per month. Stripe will show the full price and terms before you pay.</p>}
       {!billing?.paid && billing?.accountGoal === 'personal' && billing?.price &&
         !['active', 'trialing', 'past_due', 'unpaid', 'paused', 'incomplete'].includes(billing?.status ?? '') &&

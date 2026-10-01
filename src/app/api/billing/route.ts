@@ -20,6 +20,6 @@ export async function GET() {
       if (isPersonalMonthlyPrice(item)) price = '$9.99';
     }
     return NextResponse.json({ accountGoal: plan?.account_goal ?? null, paid: plan?.plan_type === 'paid',
-      status: account?.subscription_status ?? null, hasBillingAccount: !!account, price });
+      status: account?.stripe_subscription_id ? account.status : null, hasBillingAccount: !!account, price });
   } catch { return NextResponse.json({ error: 'Billing is unavailable' }, { status: 503 }); }
 }
