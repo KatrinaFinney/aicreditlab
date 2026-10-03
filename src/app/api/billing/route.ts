@@ -13,13 +13,14 @@ export async function GET() {
     const { data: plan, error } = await db.from('credit_plans')
       .select('account_goal, plan_type').eq('user_id', userId).maybeSingle();
     if (error) throw error;
-    const account = await billingAccount(userId);
+    const checkoutEnabled = process.env.BILLING_CHECKOUT_ENABLED === 'true';
+    const account = checkoutEnabled || plan?.plan_type === 'paid' ? await billingAccount(userId) : null;
     let price: string | null = null;
-    if (process.env.STRIPE_SECRET_KEY && process.env.STRIPE_PRICE_ID) {
+    if (checkoutEnabled && process.env.STRIPE_SECRET_KEY && process.env.STRIPE_PRICE_ID) {
       const item = await stripeClient().prices.retrieve(process.env.STRIPE_PRICE_ID);
       if (isPersonalMonthlyPrice(item)) price = '$9.99';
     }
     return NextResponse.json({ accountGoal: plan?.account_goal ?? null, paid: plan?.plan_type === 'paid',
-      status: account?.stripe_subscription_id ? account.status : null, hasBillingAccount: !!account, price });
+      status: account?.stripe_subscription_id ? account.status : null, hasBillingAccount: !!account, checkoutEnabled, price });
   } catch { return NextResponse.json({ error: 'Billing is unavailable' }, { status: 503 }); }
 }
