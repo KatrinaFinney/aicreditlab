@@ -1,5 +1,9 @@
 -- Run after all migrations in an isolated database. Fixtures always roll back.
 begin;
+insert into public.letter_usage(user_id,kind,period_start,status)
+  select 'qa_quota_previous_month', 'free_download',
+    (date_trunc('month', now() at time zone 'UTC') - interval '1 month')::date, 'complete'
+  from generate_series(1,3);
 set local role service_role;
 do $$
 declare v_id uuid; v_count integer; v_index integer;
@@ -31,6 +35,9 @@ begin
     and kind='free_download' and status='complete'
     and period_start=date_trunc('month', now() at time zone 'UTC')::date;
   if v_count <> 3 then raise exception 'Usage count incorrect'; end if;
+  if public.reserve_letter_slot('qa_quota_previous_month', 'free_download', 3) is null then
+    raise exception 'Previous month consumed current allowance';
+  end if;
   v_id := public.reserve_letter_slot('qa_quota_personal_b', 'free_download', 3);
   if v_id is null then raise exception 'Another account inherited the cap'; end if;
   perform public.release_letter_slot('qa_quota_personal_b', v_id);
