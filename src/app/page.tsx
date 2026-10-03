@@ -11,9 +11,9 @@ export default function Home() {
     <section className="home-hero">
       <div className="home-container home-hero-grid">
         <div>
-          <p className="eyebrow">Your next credit move starts here</p>
-          <h1>Less credit stress. <span>A clear next step.</span></h1>
-          <p className="hero-copy">You don’t have to figure it all out today. Answer a few questions and turn your personal or business credit goals into a manageable plan. Know what to focus on, what to do next, and where you left off.</p>
+          <p className="eyebrow">DIY credit tools</p>
+          <h1>Credit repair, simplified. <span>Disputes made easy.</span></h1>
+          <p className="hero-copy">Create your credit action plan, customize dispute letters, and track your progress—all in one place.</p>
           <div className="home-actions">
             <Link className="action-button" href="/questionnaire">Build my free plan</Link>
             <Link className="action-button action-button-outline" href="#how-it-works">How it works</Link>
@@ -22,25 +22,25 @@ export default function Home() {
         </div>
         <aside className="hero-panel" aria-label="Your next steps">
           <div className="panel-top"><span className="panel-orbit" aria-hidden="true">✦</span><span>YOUR CREDIT WORKSPACE</span><span className="panel-dot" aria-hidden="true" /></div>
-          <p className="panel-label">One step is enough to start.</p>
-          <h2>Less overwhelm.<br />More direction.</h2>
+          <p className="panel-label">Your tools. One place.</p>
+          <h2>Plan. Dispute.<br />Track progress.</h2>
           <div className="mini-step"><span>01</span><p>Choose your next priority</p><span aria-hidden="true">↗</span></div>
           <div className="mini-step"><span>02</span><p>Work at your own pace</p><span aria-hidden="true">↗</span></div>
           <div className="mini-step"><span>03</span><p>Save progress as you go</p><span aria-hidden="true">↗</span></div>
-          <div className="panel-bottom">Made for real life, not a perfect schedule.</div>
+          <div className="panel-bottom">Simple steps. At your pace.</div>
         </aside>
       </div>
     </section>
     <section id="how-it-works" className="home-section home-container">
       <p className="eyebrow">How it works</p>
-      <h2 className="section-title">From “where do I start?” <span>to “I can do this.”</span></h2>
+      <h2 className="section-title">Your credit plan. <span>Three simple steps.</span></h2>
       <div className="steps-grid">{steps.map(([number, title, description]) => <article className="feature-card" key={number}>
         <span className="step-number">{number}</span><h3>{title}</h3><p>{description}</p>
       </article>)}</div>
     </section>
     <section className="home-band"><div className="home-container split-grid">
       <div><p className="eyebrow">For mistakes on personal reports</p>
-        <h2 className="section-title">Found a report error? <span>Find the words.</span></h2>
+        <h2 className="section-title">Dispute letters, <span>without the guesswork.</span></h2>
         <p>A blank page shouldn’t hold you up. Choose from 30 letter templates for personal credit report errors, add your facts, and download a draft to review and send yourself.</p>
         <Link className="action-button" href="/dispute-center">Find my letter template</Link>
       </div>

@@ -7,7 +7,7 @@ export const authAppearance = {
     colorInputBackground: '#101a32',
     colorInputText: '#f5f8ff',
     borderRadius: '10px',
-    fontFamily: "'Space Grotesk', Arial, Helvetica, sans-serif",
+    fontFamily: "'Inter', Arial, Helvetica, sans-serif",
   },
   elements: {
     rootBox: { width: '100%' },

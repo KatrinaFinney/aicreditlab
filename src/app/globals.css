@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
 :root {
   color-scheme: dark;
@@ -16,7 +16,7 @@
 }
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; }
-body { margin: 0; min-height: 100svh; background: radial-gradient(ellipse at 12% 8%, rgba(90, 141, 238, .16), transparent 42%), radial-gradient(ellipse at 92% 52%, rgba(79, 209, 197, .08), transparent 40%), var(--bg); background-attachment: fixed; color: var(--text); font-family: 'Space Grotesk', Arial, Helvetica, sans-serif; line-height: 1.6; }
+body { margin: 0; min-height: 100svh; background: radial-gradient(ellipse at 12% 8%, rgba(90, 141, 238, .16), transparent 42%), radial-gradient(ellipse at 92% 52%, rgba(79, 209, 197, .08), transparent 40%), var(--bg); background-attachment: fixed; color: var(--text); font-family: 'Inter', Arial, Helvetica, sans-serif; line-height: 1.6; }
 button, input, select, textarea { font: inherit; }
 button { cursor: pointer; padding: 10px 16px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface-raised); color: var(--text); transition: border-color .2s, box-shadow .2s, background .2s; }
 button:hover:not(:disabled) { border-color: rgba(138, 180, 255, .65); box-shadow: 0 0 18px rgba(90, 141, 238, .15); }
@@ -176,3 +176,14 @@ pre { max-width: 100%; overflow-wrap: anywhere; }
 }
 @media (min-width: 801px) { .mobile-navigation { display: none; } }
 @media (max-width: 360px) { .nav-inner { gap: 6px; padding-inline: 12px; } .site-brand { font-size: 1.05rem; } .nav-actions { gap: 2px; } }
+
+/* Clear, compact typography for the credit tools introduction. */
+.home h1 { letter-spacing: -.04em; font-weight: 700; }
+.home h1 span { display: block; }
+.hero-copy { line-height: 1.6; }
+@media (max-width: 600px) {
+  .home h1 { font-size: clamp(2rem, 8.5vw, 3rem); line-height: 1.15; margin: 16px 0 20px; }
+  .hero-copy { font-size: 1rem; }
+  .home-hero { padding-block: 36px 48px; }
+  .home-hero .eyebrow { letter-spacing: .1em; }
+}
