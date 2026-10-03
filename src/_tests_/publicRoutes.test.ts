@@ -1,12 +1,12 @@
 const mockAuth = jest.fn();
 jest.mock('@clerk/nextjs/server', () => ({
   clerkMiddleware: (handler: unknown) => handler,
-  createRouteMatcher: (routes: string[]) => (request: Request) => routes.includes(new URL(request.url).pathname),
+  createRouteMatcher: (routes: string[]) => (request: Request) => routes.some(route => route.endsWith('(.*)') ? new URL(request.url).pathname.startsWith(route.slice(0, -4)) : route === new URL(request.url).pathname),
 }));
 import middleware from '../middleware';
 const run = middleware as unknown as (auth: typeof mockAuth, request: Request) => Promise<Response | undefined>;
 beforeEach(() => mockAuth.mockResolvedValue({ userId: null }));
-it.each(['/questionnaire', '/preview', '/privacy', '/terms', '/help', '/sign-up', '/sign-in'])('keeps %s public', async path => {
+it.each(['/questionnaire', '/preview', '/privacy', '/terms', '/help', '/sign-up', '/sign-in', '/sign-up/verify-email-address', '/sign-in/factor-one'])('keeps %s public', async path => {
   expect(await run(mockAuth, new Request(`https://www.aicreditlab.com${path}`))).toBeUndefined();
 });
 it.each(['/dashboard', '/api/credit-plan', '/api/letter-download', '/api/paid-letter'])('keeps %s protected with branded sign-in', async path => {
