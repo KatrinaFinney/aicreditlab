@@ -5,14 +5,24 @@ jest.mock('react', () => ({ ...jest.requireActual('react'), useState: jest.fn() 
 afterEach(() => jest.resetAllMocks());
 it.each(['personal', 'business'])('keeps subscription management available on a paid %s plan', (accountGoal) => {
   (useState as jest.Mock).mockImplementation((initial) => [initial, jest.fn()]);
-  (useState as jest.Mock).mockImplementationOnce(() => [{ accountGoal, paid: true, status: 'active', hasBillingAccount: true, price: '$9.99' }, jest.fn()]);
+  (useState as jest.Mock).mockImplementationOnce(() => [{ accountGoal, paid: true, status: 'active', hasBillingAccount: true, price: '$9.99', checkoutEnabled: true }, jest.fn()]);
   const html = renderToStaticMarkup(<BillingCard />);
   expect(html).toContain('Manage subscription');
   expect(html).not.toContain('Get the Letter Boost');
 });
 it('lets a customer retry an abandoned checkout when no subscription exists', () => {
   (useState as jest.Mock).mockImplementation((initial) => [initial, jest.fn()]);
-  (useState as jest.Mock).mockImplementationOnce(() => [{ accountGoal: 'personal', paid: false, status: null, hasBillingAccount: true, price: '$9.99' }, jest.fn()]);
+  (useState as jest.Mock).mockImplementationOnce(() => [{ accountGoal: 'personal', paid: false, status: null, hasBillingAccount: true, price: '$9.99', checkoutEnabled: true }, jest.fn()]);
   const html = renderToStaticMarkup(<BillingCard />);
   expect(html).toContain('Get the Letter Boost'); expect(html).toContain('$9.99');
+});
+
+it('shows coming soon without checkout or a portal for a free customer while billing is disabled', () => {
+  (useState as jest.Mock).mockImplementation((initial) => [initial, jest.fn()]);
+  (useState as jest.Mock).mockImplementationOnce(() => [{ accountGoal: 'personal', paid: false, status: null,
+    hasBillingAccount: false, price: null, checkoutEnabled: false }, jest.fn()]);
+  const html = renderToStaticMarkup(<BillingCard />);
+  expect(html).toContain('The Letter Boost is coming soon');
+  expect(html).not.toContain('Get the Letter Boost');
+  expect(html).not.toContain('Manage subscription');
 });
