@@ -145,3 +145,34 @@ pre { max-width: 100%; overflow-wrap: anywhere; }
   button, .action-button, .feature-card, .letter-card { transition: none; }
   .action-button:hover, .feature-card:hover, .letter-card:hover { transform: none; }
 }
+
+/* A single quiet header; mobile destinations live in a disclosure menu. */
+.nav-inner { min-height: 80px; gap: 32px; }
+.nav-links { margin-left: auto; gap: 26px; }
+.nav-links a { font-weight: 500; padding-block: 10px; }
+.nav-links a[aria-current="page"], .mobile-navigation a[aria-current="page"] { color: var(--text); }
+.nav-actions { display: flex; align-items: center; gap: 20px; }
+.nav-signin { color: var(--muted); text-decoration: none; font-size: .93rem; white-space: nowrap; }
+.nav-start { background: var(--text); color: #101a32; padding: 10px 18px; border-radius: 999px; text-decoration: none; font-size: .93rem; font-weight: 700; white-space: nowrap; }
+.nav-start:hover { color: #101a32; background: #d8e7ff; }
+.nav-text-button { padding: 8px 0; border: 0; background: transparent; color: var(--muted); font-size: .93rem; }
+.nav-menu-toggle { display: none; width: 44px; height: 44px; padding: 0; align-items: center; justify-content: center; background: transparent; border-color: transparent; }
+.mobile-navigation { display: grid; padding: 8px 24px 20px; border-top: 1px solid var(--line); gap: 4px; }
+.mobile-navigation a, .mobile-navigation button { padding: 12px 14px; color: var(--muted); text-decoration: none; text-align: left; border: 0; background: transparent; border-radius: 10px; }
+.mobile-navigation a:hover { background: var(--surface-raised); color: var(--text); }
+#how-it-works, #plans { scroll-margin-top: 96px; }
+.home-hero { padding-block: 80px 88px; }
+.home h1 { font-size: clamp(3rem, 5.8vw, 5rem); line-height: 1.09; }
+.hero-copy { font-size: 1.125rem; line-height: 1.75; }
+.action-button { border-radius: 999px; }
+@media (max-width: 800px) {
+  .nav-inner { flex-wrap: nowrap; min-height: 72px; padding: 12px 16px; gap: 12px; }
+  .nav-links, .nav-signin, .desktop-account { display: none; }
+  .nav-actions { margin-left: auto; gap: 8px; }
+  .nav-menu-toggle { display: inline-flex; }
+  .site-brand { font-size: 1.2rem; }
+  .nav-start { padding: 9px 14px; font-size: .875rem; }
+  .home-hero { padding-block: 52px 64px; }
+}
+@media (min-width: 801px) { .mobile-navigation { display: none; } }
+@media (max-width: 360px) { .nav-inner { gap: 6px; padding-inline: 12px; } .site-brand { font-size: 1.05rem; } .nav-actions { gap: 2px; } }
