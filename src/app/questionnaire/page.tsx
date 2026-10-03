@@ -102,17 +102,15 @@ export default function Questionnaire() {
         justifyContent: "center",
         alignItems: "center",
         minHeight: "100vh",
-        background: "radial-gradient(circle at 85% 15%, #164b52, transparent 40%), var(--bg)",
-        fontFamily: "'Nunito', sans-serif",
+        background: "transparent",
+        fontFamily: "inherit",
         padding: "1rem",
       }}
     >
       <div
-        style={{
-          backgroundColor: "var(--surface)",
+        className="glass-card" style={{
           border: "1px solid var(--line)",
           padding: "30px",
-          borderRadius: "12px",
           maxWidth: "600px",
           width: "100%",
         }}
@@ -157,17 +155,17 @@ export default function Questionnaire() {
                 return (
                   <button
                     key={option}
+                    aria-pressed={!!isSelected}
                     onClick={() => handleSelect(q.id, option)}
                     style={{
                       padding: "10px 15px",
                       backgroundColor: isSelected ? "var(--accent-strong)" : "var(--surface-raised)",
-                      color: isSelected ? "white" : "var(--text)",
+                      color: isSelected ? "#071d25" : "var(--text)",
                       border: "none",
                       borderRadius: "8px",
                       cursor: "pointer",
                       fontSize: "1rem",
                       fontWeight: "500",
-                      transition: "background-color 0.2s ease",
                     }}
                   >
                     {option}
