@@ -27,8 +27,7 @@ export default function BillingCard() {
     }
   }
 
-  return <section style={{ background: 'var(--surface)', padding: 20, borderRadius: 12,
-    border: '1px solid var(--line)', marginTop: 24 }} aria-labelledby="billing-heading">
+  return <section className="glass-card" style={{ padding: 20, border: '1px solid var(--line)', marginTop: 24 }} aria-labelledby="billing-heading">
     <h2 id="billing-heading" style={{ fontSize: '1.5rem', fontWeight: 'bold', color: 'var(--accent)' }}>Your plan, your call</h2>
     {!billing && !error && <p role="status">Loading billing options…</p>}
     {billing?.hasBillingAccount && billing.status && <button type="button" disabled={busy} onClick={() => goToBilling('portal')}>Manage subscription</button>}

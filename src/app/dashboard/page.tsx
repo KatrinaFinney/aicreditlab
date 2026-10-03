@@ -121,15 +121,15 @@ export default function Dashboard() {
         padding: "clamp(20px, 4vw, 48px)",
         maxWidth: "1100px",
         margin: "auto",
-        fontFamily: "'Nunito', 'Inter', sans-serif",
-        backgroundColor: "var(--bg)",
+        fontFamily: "inherit",
+        backgroundColor: "transparent",
         minHeight: "100vh",
       }}
     >
       {/* Welcome Section */}
       <h1
         style={{
-          fontSize: "2.5rem",
+          fontSize: "clamp(2rem, 5vw, 2.8rem)",
           fontWeight: "700",
           color: "var(--accent)",
           textAlign: "center",
@@ -143,7 +143,7 @@ export default function Dashboard() {
         You’ve got a plan. Pick one move for today—we’ll keep track of the rest.
       </p>
 
-      {userData?.plan_type === 'paid' && <section style={{ background: 'var(--surface)', padding: 20, borderRadius: 12, border: '1px solid var(--line)' }}>
+      {userData?.plan_type === 'paid' && <section className="glass-card" style={{ padding: 20, border: '1px solid var(--line)' }}>
         <h2 style={{ color: 'var(--accent)' }}>Your saved plans</h2>
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10 }}>
           {savedPlans.map((plan, index) => <button key={plan.id} type="button"
@@ -158,10 +158,8 @@ export default function Dashboard() {
 
       {/* Credit Plan Overview */}
       <div
-        style={{
-          backgroundColor: "var(--surface)",
+        className="glass-card" style={{
           padding: "20px",
-          borderRadius: "12px",
           border: "1px solid var(--line)",
           marginTop: "24px",
         }}
@@ -184,7 +182,7 @@ export default function Dashboard() {
             <p style={{ color: 'var(--text)', fontWeight: 600 }}>
               Up next: {userData.credit_plan.find((step) => !completedSteps.includes(step)) ?? 'You finished this plan. Check in on your credit situation and update your answers when things change.'}
             </p>
-            <div style={{ background: 'var(--surface-raised)', padding: 16, borderRadius: 10, marginBottom: 16 }}>
+            <div className="glass-inset" style={{ padding: 16, borderRadius: 10, marginBottom: 16 }}>
               <label style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                 <input type="checkbox" disabled={progressSaving} checked={focusMode} onChange={(event) => savePreferences(event.target.checked, sessionMinutes)} />
                 Just show me the next step
@@ -193,7 +191,7 @@ export default function Dashboard() {
               <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
                 {[5, 10, 20].map((minutes) => <button key={minutes} type="button"
                   disabled={progressSaving} onClick={() => savePreferences(focusMode, minutes)} aria-pressed={sessionMinutes === minutes}
-                  style={{ padding: '8px 12px', borderRadius: 8, border: '1px solid var(--accent-strong)', background: sessionMinutes === minutes ? 'var(--accent-strong)' : 'var(--surface)', color: sessionMinutes === minutes ? 'white' : 'var(--accent)' }}>
+                  style={{ padding: '8px 12px', borderRadius: 8, border: '1px solid var(--accent-strong)', background: sessionMinutes === minutes ? 'var(--accent-strong)' : 'var(--surface)', color: sessionMinutes === minutes ? '#071d25' : 'var(--accent)' }}>
                   {minutes} min
                 </button>)}
               </div>
@@ -245,10 +243,8 @@ export default function Dashboard() {
 
       {/* Assessment answers */}
       <div
-        style={{
-          backgroundColor: "var(--surface)",
+        className="glass-card" style={{
           padding: "20px",
-          borderRadius: "12px",
           border: "1px solid var(--line)",
           marginTop: "24px",
         }}
@@ -283,10 +279,8 @@ export default function Dashboard() {
 
       {/* Dispute Center Section */}
       <div
-        style={{
-          backgroundColor: "var(--surface)",
+        className="glass-card" style={{
           padding: "20px",
-          borderRadius: "12px",
           border: "1px solid var(--line)",
           marginTop: "24px",
         }}

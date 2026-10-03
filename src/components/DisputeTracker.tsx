@@ -32,7 +32,7 @@ export default function DisputeTracker() {
       setCases((current) => current.map((entry) => entry.id === item.id ? dispute : entry));
     } catch { setError('Could not update the dispute. Please try again.'); }
   };
-  return <section style={{ maxWidth: 900, margin: '40px auto', padding: 24, background: 'var(--surface)', borderRadius: 12 }}>
+  return <section className="glass-card" style={{ maxWidth: 900, margin: '40px auto', padding: 24, }}>
     <h2 style={{ color: 'var(--accent)' }}>Keep tabs on your disputes</h2>
     <p style={{ color: 'var(--text)' }}>A simple place to note where each dispute stands. Mark a case Sent only after you actually send it—we don’t contact credit bureaus for you.</p>
     <form onSubmit={add} style={{ display: 'flex', flexWrap: 'wrap', gap: 12, margin: '20px 0' }}>

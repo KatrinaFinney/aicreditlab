@@ -71,7 +71,7 @@ export default function LetterEditor() {
   const input = (field: Field, label: string, placeholder = '') => <label key={field} style={{ display: 'grid', gap: 6, marginBottom: 16, color: 'var(--text)', fontWeight: 600 }}>
     {label}<input required={field !== 'accountReference'} maxLength={field === 'accountReference' ? 30 : 1000}
       value={values[field]} onChange={(event) => update(field, event.target.value)} placeholder={placeholder}
-      style={{ padding: 12, border: '1px solid #789', borderRadius: 8, color: 'var(--text)' }} />
+      style={{ padding: 12, border: '1px solid var(--line)', borderRadius: 8, color: 'var(--text)' }} />
   </label>;
   return <main style={{ maxWidth: 720, margin: '2rem auto', padding: '1.5rem', color: 'var(--text)' }}>
     <Link href="/dispute-center">← Back to the Letter Lab</Link>
@@ -83,11 +83,11 @@ export default function LetterEditor() {
         `${allowance.remaining} of 3 free downloads left this month`}
       {' · '}Resets {new Date(allowance.resetAt).toLocaleDateString('en-US', { month: 'long', day: 'numeric', timeZone: 'UTC' })} (UTC)
     </p>}
-    {locked ? <div style={{ background: 'var(--surface)', padding: 24, borderRadius: 12 }}>
+    {locked ? <div className="glass-card" style={{ padding: 24, }}>
       <h2>Your free downloads are tapped out for now</h2>
       <p>You’ve used your three free downloads. They reset at the start of the next UTC month.</p>
     </div> : !allowance ? <p>Checking letter access…</p> : <>
-      <form id="letter-form" onSubmit={preview} style={{ background: 'var(--surface)', padding: 24, borderRadius: 12, marginTop: 24 }}>
+      <form id="letter-form" onSubmit={preview} className="glass-card" style={{ padding: 24, marginTop: 24 }}>
         <label style={{ display: 'grid', gap: 6, marginBottom: 16, color: 'var(--text)' }}>Letter topic
           <select value={values.templateId} onChange={(event) => update('templateId', event.target.value)} style={{ padding: 12 }}>
             {letterTemplates.map((template) => <option key={template.id} value={template.id}>{template.title}</option>)}
@@ -121,7 +121,7 @@ export default function LetterEditor() {
           }} style={{ padding: '12px 20px', background: 'var(--accent)', color: '#071d25', border: 0, borderRadius: 8 }}>Draft with AI</button>
         </div>}
       </form>
-      {letter && <section style={{ marginTop: 24 }}><h2>One last look before you send</h2>
+      {letter && <section className="glass-card" style={{ marginTop: 24, padding: 24 }}><h2>One last look before you send</h2>
         <p>Check every fact. Add the bureau’s current mailing address, your report confirmation number if available, and copies of supporting documents before sending.</p>
         <pre style={{ whiteSpace: 'pre-wrap', background: 'var(--surface-raised)', padding: 20, borderRadius: 8, fontFamily: 'inherit', color: 'var(--text)'  }}>{letter}</pre>
         <button disabled={busy} onClick={download} style={{ padding: '12px 20px', background: 'var(--accent)', color: '#071d25', border: 0, borderRadius: 8 }}>Download letter</button>
