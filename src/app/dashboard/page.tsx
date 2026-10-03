@@ -135,12 +135,12 @@ export default function Dashboard() {
           textAlign: "center",
         }}
       >
-       Welcome, {userData?.full_name || user?.fullName || user?.firstName}!
+       Hey, {userData?.full_name || user?.fullName || user?.firstName || 'there'}.
 
       </h1>
 
       <p style={{ textAlign: "center", fontSize: "1.2rem", color: "var(--text)" }}>
-        Pick one action to work on next. Your completed steps are saved here.
+        You’ve got a plan. Pick one move for today—we’ll keep track of the rest.
       </p>
 
       {userData?.plan_type === 'paid' && <section style={{ background: 'var(--surface)', padding: 20, borderRadius: 12, border: '1px solid var(--line)' }}>
@@ -173,23 +173,23 @@ export default function Dashboard() {
             color: "var(--accent)",
           }}
         >
-          Your {userData?.account_goal === "business" ? "Business" : "Personal"} Credit Action Plan
+          Your {userData?.account_goal === "business" ? "business" : "personal"} credit game plan
         </h2>
 
         {userData?.credit_plan && userData.credit_plan.length > 0 ? (
           <div>
             <p role="status" style={{ color: 'var(--accent)' }}>
-              Current progress: {completedSteps.filter((step) => userData.credit_plan?.includes(step)).length} of {userData.credit_plan.length} steps complete
+              You’ve made {completedSteps.filter((step) => userData.credit_plan?.includes(step)).length} of {userData.credit_plan.length} moves
             </p>
             <p style={{ color: 'var(--text)', fontWeight: 600 }}>
-              Next best step: {userData.credit_plan.find((step) => !completedSteps.includes(step)) ?? 'You completed this plan. Review your credit situation and update your answers when needed.'}
+              Up next: {userData.credit_plan.find((step) => !completedSteps.includes(step)) ?? 'You finished this plan. Check in on your credit situation and update your answers when things change.'}
             </p>
             <div style={{ background: 'var(--surface-raised)', padding: 16, borderRadius: 10, marginBottom: 16 }}>
               <label style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                 <input type="checkbox" disabled={progressSaving} checked={focusMode} onChange={(event) => savePreferences(event.target.checked, sessionMinutes)} />
-                Show one step at a time
+                Just show me the next step
               </label>
-              <p style={{ margin: '12px 0 6px' }}>How much time do you have right now?</p>
+              <p style={{ margin: '12px 0 6px' }}>Got a few minutes?</p>
               <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
                 {[5, 10, 20].map((minutes) => <button key={minutes} type="button"
                   disabled={progressSaving} onClick={() => savePreferences(focusMode, minutes)} aria-pressed={sessionMinutes === minutes}
@@ -201,7 +201,7 @@ export default function Dashboard() {
               <button type="button" onClick={() => { if (secondsLeft === 0) setSecondsLeft(sessionMinutes * 60); setTimerRunning(!timerRunning); }}
                 style={{ padding: '8px 12px', marginRight: 8 }}>{timerRunning ? 'Pause' : 'Start'}</button>
               <button type="button" onClick={() => { setTimerRunning(false); setSecondsLeft(sessionMinutes * 60); }} style={{ padding: '8px 12px' }}>Reset</button>
-              <p style={{ fontSize: 14, color: 'var(--muted)' }}>You can stop whenever you need to. Mark the step done when you have actually finished it.</p>
+              <p style={{ fontSize: 14, color: 'var(--muted)' }}>Stop whenever you need to. Check off a step only when it’s actually done.</p>
             </div>
           <ul style={{ paddingLeft: "20px", marginTop: "10px", listStyle: 'none' }}>
             {(focusMode ? userData.credit_plan.filter((step) => !completedSteps.includes(step)).slice(0, 1) : userData.credit_plan).map((step, index) => (
@@ -222,7 +222,7 @@ export default function Dashboard() {
           </div>
         ) : (
           <p style={{ fontSize: "1.1rem", color: "var(--muted)" }}>
-            No credit plan found. Please complete the questionnaire.
+            No game plan yet. Answer a few quick questions to make yours.
           </p>
         )}
 
@@ -260,7 +260,7 @@ export default function Dashboard() {
             color: "var(--accent)",
           }}
         >
-          Your {userData?.account_goal === "business" ? "Business" : "Personal"} Credit Assessment
+          Your {userData?.account_goal === "business" ? "business" : "personal"} credit snapshot
         </h2>
 
         {userData?.selected_disputes && Object.values(userData.selected_disputes).flat().length > 0 ? (
@@ -276,7 +276,7 @@ export default function Dashboard() {
           </ul>
         ) : (
           <p style={{ fontSize: "1.1rem", color: "var(--muted)" }}>
-            Complete the assessment to see your answers here.
+            Once you answer the quick questions, your starting point will show up here.
           </p>
         )}
       </div>
@@ -292,10 +292,10 @@ export default function Dashboard() {
         }}
       >
         <h2 style={{ fontSize: "1.5rem", fontWeight: "bold", color: "var(--accent)" }}>
-          {userData?.account_goal === "business" ? "Business report review" : "Dispute Center"}
+          {userData?.account_goal === "business" ? "Check your business reports" : "The Letter Lab"}
         </h2>
         <p style={{ fontSize: "1.1rem", color: "var(--text)" }}>
-          {userData?.account_goal === "business" ? "Request your business report from the reporting company. If you find a specific error, follow that company’s business dispute process and keep copies of your supporting records. The letter library below is designed for personal consumer reports." : "Review dispute templates for information you believe is inaccurate on your credit report."}
+          {userData?.account_goal === "business" ? "Get your business report from the reporting company. Spot a specific mistake? Follow that company's business dispute process and save copies of your records. Personal letter tools aren't built for business reports." : "Spot something wrong on a personal credit report? Find a letter starting point, add your facts, and review it before you send it."}
         </p>
 
         {userData?.account_goal !== "business" && <Link
@@ -311,7 +311,7 @@ export default function Dashboard() {
             textDecoration: "none",
           }}
         >
-          Access Dispute Templates
+          Open the Letter Lab
         </Link>}
       </div>
 

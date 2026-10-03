@@ -1,9 +1,9 @@
 import Link from 'next/link';
 
 const steps = [
-  ['01', 'Tell us what is going on', 'Start with personal or business credit, then choose the answers that fit your situation.'],
-  ['02', 'Get an action plan', 'See concrete steps based on your answers, with a clear next action.'],
-  ['03', 'Work through it', 'Mark steps complete and return when you are ready for the next one.'],
+  ['01', 'Tell us your goal', 'Personal credit or business credit? Start with the path that fits you.'],
+  ['02', 'Get your game plan', 'Turn your answers into clear next steps, without the 47 open tabs.'],
+  ['03', 'Make moves at your pace', 'Check off what you finish and pick up right where you left off.'],
 ];
 
 export default function Home() {
@@ -11,50 +11,50 @@ export default function Home() {
     <section className="home-hero">
       <div className="home-container home-hero-grid">
         <div>
-          <p className="eyebrow">A clearer way to work on your credit</p>
-          <h1>Know your next <span>credit move.</span></h1>
-          <p className="hero-copy">Choose a personal or business credit path, answer a few questions, and get an action plan you can track. If you find an error on a personal credit report, prepare a letter you can review and send yourself.</p>
+          <p className="eyebrow">Credit clarity, minus the chaos</p>
+          <h1>Get your credit together. <span>One move at a time.</span></h1>
+          <p className="hero-copy">No shame. No 47 open tabs. Pick personal or business credit, answer a few questions, and get a plan you can actually follow. Spot a mistake on a personal credit report? Draft a letter you can review and send yourself.</p>
           <div className="home-actions">
-            <Link className="action-button" href="/questionnaire">Build my free plan <span aria-hidden="true">↗</span></Link>
-            <Link className="action-button action-button-outline" href="#how-it-works">See how it works</Link>
+            <Link className="action-button" href="/questionnaire">Make my free game plan <span aria-hidden="true">↗</span></Link>
+            <Link className="action-button action-button-outline" href="#how-it-works">How it works</Link>
           </div>
           <p className="hero-note">Free to start <span aria-hidden="true">·</span> No credit report upload required</p>
         </div>
         <aside className="hero-panel" aria-label="Your next steps">
           <div className="panel-top"><span className="panel-orbit" aria-hidden="true">✦</span><span>YOUR CREDIT WORKSPACE</span><span className="panel-dot" aria-hidden="true" /></div>
-          <p className="panel-label">A little progress counts.</p>
-          <h2>One clear step<br />at a time.</h2>
-          <div className="mini-step"><span>01</span><p>Find your next action</p><span aria-hidden="true">↗</span></div>
-          <div className="mini-step"><span>02</span><p>Make time for it</p><span aria-hidden="true">↗</span></div>
-          <div className="mini-step"><span>03</span><p>Track what you finish</p><span aria-hidden="true">↗</span></div>
-          <div className="panel-bottom">Built for real life, including busy days.</div>
+          <p className="panel-label">Five minutes counts.</p>
+          <h2>Small moves.<br />Real momentum.</h2>
+          <div className="mini-step"><span>01</span><p>See what matters next</p><span aria-hidden="true">↗</span></div>
+          <div className="mini-step"><span>02</span><p>Make a little time</p><span aria-hidden="true">↗</span></div>
+          <div className="mini-step"><span>03</span><p>Keep track of your wins</p><span aria-hidden="true">↗</span></div>
+          <div className="panel-bottom">Made for real life, not a perfect schedule.</div>
         </aside>
       </div>
     </section>
     <section id="how-it-works" className="home-section home-container">
-      <p className="eyebrow">The process</p>
-      <h2 className="section-title">Three useful steps, <span>without the overwhelm.</span></h2>
+      <p className="eyebrow">How it works</p>
+      <h2 className="section-title">A plan, <span>not another homework assignment.</span></h2>
       <div className="steps-grid">{steps.map(([number, title, description]) => <article className="feature-card" key={number}>
         <span className="step-number">{number}</span><h3>{title}</h3><p>{description}</p>
       </article>)}</div>
     </section>
     <section className="home-band"><div className="home-container split-grid">
-      <div><p className="eyebrow">When you spot an error</p>
-        <h2 className="section-title">Get the facts down. <span>Make a clear request.</span></h2>
-        <p>For personal credit reports, choose from 30 issue-specific letter topics. Describe the information you believe is inaccurate and the correction you are requesting. Review and download a draft, then add supporting documents before sending it.</p>
-        <Link className="action-button" href="/dispute-center">Explore the letter library <span aria-hidden="true">↗</span></Link>
+      <div><p className="eyebrow">For mistakes on personal reports</p>
+        <h2 className="section-title">Spot an error? <span>Put it in writing.</span></h2>
+        <p>Meet the Letter Lab: 30 starting points for specific personal credit report errors. Add your facts, review your draft, and gather supporting records before you send it yourself.</p>
+        <Link className="action-button" href="/dispute-center">Explore the Letter Lab <span aria-hidden="true">↗</span></Link>
       </div>
-      <div className="feature-card checklist-card"><p className="eyebrow">Your draft, your decision</p><h3>What this tool does</h3>
-        <ul><li>Organizes the error you describe</li><li>Creates an editable text draft</li><li>Reminds you to include supporting records</li></ul>
-        <p>You review and send the letter. We do not submit disputes for you or promise a particular result.</p>
+      <div className="feature-card checklist-card"><p className="eyebrow">You’re in the driver’s seat</p><h3>Clear words. Your facts.</h3>
+        <ul><li>Start with the issue you actually found</li><li>Make the draft yours</li><li>Keep your supporting records close</li></ul>
+        <p>You review and send the letter. We don’t contact bureaus for you or promise a particular outcome.</p>
       </div>
     </div></section>
-    <section className="home-section home-container"><p className="eyebrow">Choose your pace</p>
-      <h2 className="section-title">Start with the <span>free plan.</span></h2>
-      <div className="plans-grid"><div className="feature-card plan-card plan-featured"><span className="plan-tag">AVAILABLE NOW</span><h3>Smart Credit Starter</h3><p>A practical place to start and a way to keep going.</p>
+    <section className="home-section home-container"><p className="eyebrow">Pick your starting point</p>
+      <h2 className="section-title">Start free. <span>Keep moving.</span></h2>
+      <div className="plans-grid"><div className="feature-card plan-card plan-featured"><span className="plan-tag">FREE TO START</span><h3>The Starter Plan</h3><p>A little clarity goes a long way. Start here, then take it one move at a time.</p>
         <ul><li>Separate personal and business credit action plans</li><li>Saved progress, focus mode, and short work sessions</li><li>Personal credit: 30 customizable letter topics; three downloads per month</li><li>Manual dispute status tracking</li></ul>
-        <Link className="action-button" href="/questionnaire">Get started free <span aria-hidden="true">↗</span></Link>
-      </div><div className="feature-card plan-card"><span className="plan-tag">{process.env.BILLING_CHECKOUT_ENABLED === 'true' ? '$9.99 PER MONTH' : 'COMING SOON'}</span><h3>AI CreditLab Plus</h3><p>Keep multiple personal or business action plans. For personal credit, download unlimited letter templates and generate up to five AI drafts each calendar month.</p><Link className="action-button" href="/dashboard">{process.env.BILLING_CHECKOUT_ENABLED === 'true' ? 'Explore Plus' : 'Start free'} <span aria-hidden="true">↗</span></Link></div></div>
+        <Link className="action-button" href="/questionnaire">Let’s get started <span aria-hidden="true">↗</span></Link>
+      </div><div className="feature-card plan-card"><span className="plan-tag">PERSONAL CREDIT</span><h3>The Letter Boost{process.env.BILLING_CHECKOUT_ENABLED !== 'true' ? ' · Coming soon' : ''}</h3><p>$9.99 per month gets you multiple saved plans, unlimited personal template downloads, and up to five AI letter drafts each UTC calendar month. {process.env.BILLING_CHECKOUT_ENABLED === 'true' ? 'Check your dashboard for checkout availability.' : 'Subscriptions are coming soon. Start with your free plan today.'}</p></div></div>
     </section>
     <footer className="home-footer"><div className="home-container"><strong>AI CreditLab<span className="brand-mark">.</span></strong><p>Educational tools for your next credit move. Review your own information and seek qualified help when you need it.</p><small>© {new Date().getFullYear()} AI CreditLab</small></div></footer>
   </div>;

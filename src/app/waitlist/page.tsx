@@ -41,7 +41,7 @@ export default function WaitlistPage() {
           marginBottom: "16px",
         }}
       >
-        Fix Your Credit Smarter—Not Harder
+        Your next credit move starts here.
       </h1>
 
       <p
@@ -57,7 +57,7 @@ export default function WaitlistPage() {
         }}
       >
         <strong>
-          Join thousands of others using AI to finally take control of their credit.
+          Less guesswork. More of a plan you can actually use.
         </strong>
       </p>
 
@@ -70,7 +70,7 @@ export default function WaitlistPage() {
           maxWidth: "500px",
         }}
       >
-        Get your free <strong>AI Credit Checklist</strong> with 5 high-impact moves that actually work—plus early access to <strong>AI CreditLab</strong> before we launch.
+        Get the free <strong>AI Credit Checklist</strong>: five practical moves to help you get organized and decide what to tackle next. We’ll also share occasional AI CreditLab updates.
       </span>
 
       <form
@@ -121,7 +121,7 @@ export default function WaitlistPage() {
             marginTop: "8px",
           }}
         >
-          Send Me the Free Checklist
+          Send me the checklist
         </button>
         <input type="hidden" name="anticsrf" value="true" />
       </form>
@@ -134,7 +134,7 @@ export default function WaitlistPage() {
           color: "#666",
         }}
       >
-        We respect your inbox. No spam—ever. Unsubscribe anytime.
+        Useful updates only. Unsubscribe anytime.
       </footer>
     </div>
   );

@@ -14,13 +14,11 @@ export default function LearnMorePage() {
         padding: '1rem',
       }}
     >
-      <h1 style={{ fontSize: '2.5rem', marginBottom: '1rem' }}>
-        
-      </h1>
+      <h1 style={{ fontSize: '2.5rem', marginBottom: '1rem' }}>Credit progress, without the pressure.</h1>
       <p style={{ fontSize: '1.25rem', textAlign: 'center', maxWidth: '600px' }}>
-        AI CreditLab is your innovative solution for DIY credit repair. We combine the power
-        of AI with user-friendly tools to simplify your credit repair journey. Stay tuned for
-        more updates and features!
+        AI CreditLab helps you make a plan for personal or business credit and stay on top of your next steps.
+        If you spot a specific mistake on a personal credit report, our Letter Lab helps you prepare a draft to review and send yourself.
+        No magic fixes. Just a clearer way forward.
       </p>
     </div>
   );
