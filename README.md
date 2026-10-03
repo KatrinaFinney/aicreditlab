@@ -30,3 +30,11 @@ Register `/api/billing/webhook` for `checkout.session.completed`, `customer.subs
 - Test signed-in checkout, duplicate subscriptions, renewal/failure, cancellation, free/paid limits, saved-plan switching and two-account isolation before release. Confirm the $9.99/month offer in Stripe before any live charge. Signed-in mobile review remains required; Google-to-Clerk cloud sign-in previously offered only a passkey, so Safari may be needed.
 
 Professional client management, email programs, and model-generated credit advice are not implemented.
+
+### Free release while billing setup is pending
+
+New subscription checkout is disabled by default. Leave `BILLING_CHECKOUT_ENABLED` unset or set it to `false` in Preview and Production for the free release. The dashboard and homepage show Letter Boost as coming soon; the checkout endpoint rejects requests before database or Stripe work. Free billing summaries do not require Stripe configuration. Existing paid subscriptions retain access to subscription management; webhooks remain available to reconcile their state.
+
+After business registration and Stripe setup are complete, enable `BILLING_CHECKOUT_ENABLED=true` only in the isolated test Preview and redeploy. Complete checkout, duplicate checkout, portal, signed webhooks, renewal/failure/cancellation, paid AI generation, monthly caps and saved-plan tests there. Enable the flag in Production only after those checks pass and live Stripe keys, price, portal and webhook are configured. Do not grant paid access manually to bypass billing.
+
+Free-release gates remain: database migrations, personal/business account isolation, saved progress, three free downloads and monthly cap, and signed-in mobile review. Deferring Stripe does not waive these checks.
