@@ -6,12 +6,12 @@ export default function AuthPageShell({ mode, children }: { mode: 'sign-in' | 's
   return <div className="auth-page">
     <div className="auth-layout">
       <div className="auth-intro">
-        <p className="eyebrow">Your credit, your next move</p>
-        <h1>{joining ? <>Let’s get a <span>game plan</span> together.</> : <>Pick up where you <span>left off.</span></>}</h1>
+        <p className="eyebrow">Your free credit workspace</p>
+        <h1>{joining ? <>Save your plan. <span>Start making progress.</span></> : <>Pick up where you <span>left off.</span></>}</h1>
         <p>{joining
-          ? 'A few quick questions. A clear starting point. Your personal or business credit plan is waiting.'
+          ? 'Create your free account to save your plan, track your steps, and access dispute letter templates.'
           : 'Your plan, progress, and next step are right where you left them.'}</p>
-        <div className="auth-promise"><span aria-hidden="true">✦</span> One move at a time. No 47 open tabs.</div>
+        <div className="auth-promise"><span aria-hidden="true">✦</span> Free to start. No credit card required.</div>
         <Link className="auth-home-link" href="/">← Back to AI CreditLab</Link>
       </div>
       <div className="auth-card">

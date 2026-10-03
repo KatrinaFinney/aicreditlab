@@ -1,61 +1,47 @@
 import Link from 'next/link';
+import PlanLink from '@/components/PlanLink';
 
 const steps = [
-  ['01', 'Tell us your goal', 'Choose personal or business credit. Answer a few questions about where you are and what you want to work on.'],
-  ['02', 'Get your game plan', 'Get focused next steps for your goals, so you can spend less time searching and more time getting started.'],
-  ['03', 'Make moves at your pace', 'Take on a manageable task, save your progress, and come back when life gives you room.'],
+  ['01', 'Tell us your goal', 'Choose personal or business credit and answer three short questions.'],
+  ['02', 'Preview your plan', 'See practical next steps before you create an account.'],
+  ['03', 'Save and take action', 'Track your progress. For personal report errors, customize a letter and download it to review and send.'],
 ];
-
+const faqs = [
+  ['What can I do for free?', 'Preview a credit action plan, create an account to save it, track your progress, and customize personal dispute letter templates. The free plan includes three template-letter downloads per UTC calendar month. After that, template access unlocks again next month.'],
+  ['Do you send dispute letters for me?', 'No. You customize and review each draft, add supporting records, and send it yourself. AI CreditLab does not contact credit bureaus or creditors on your behalf.'],
+  ['Do I need to upload my credit report?', 'No credit report upload is required. Start with your goals. If you prepare a dispute, enter the specific error and facts you want the recipient to review.'],
+  ['Can you guarantee a higher score or remove accurate information?', 'No. These tools help you organize your steps and prepare letters about information you believe is inaccurate. Outcomes depend on your situation; accurate negative information is not guaranteed to be removed.'],
+  ['What does the paid plan add?', 'The $9.99 monthly plan adds multiple saved plans, unlimited personal template downloads, and five AI-assisted letter drafts per UTC calendar month. Template letters use a structured format; AI drafts use your entered facts to suggest wording. You review every draft before sending.'],
+  ['Are business credit tools included?', 'Yes. You can create a business credit action plan focused on setup, banking, payment history, and financing preparation. The dispute letter tools are for personal credit reports.'],
+];
 export default function Home() {
+  const checkoutEnabled = process.env.BILLING_CHECKOUT_ENABLED === 'true';
   return <div className="home">
-    <section className="home-hero">
-      <div className="home-container home-hero-grid">
-        <div>
-          <p className="eyebrow">DIY credit tools</p>
-          <h1>Credit repair, simplified. <span>Disputes made easy.</span></h1>
-          <p className="hero-copy">Create your credit action plan, customize dispute letters, and track your progress—all in one place.</p>
-          <div className="home-actions">
-            <Link className="action-button" href="/questionnaire">Build my free plan</Link>
-            <Link className="action-button action-button-outline" href="#how-it-works">How it works</Link>
-          </div>
-          <p className="hero-note">Free to start. No card needed. No credit report upload.</p>
-        </div>
-        <aside className="hero-panel" aria-label="Your next steps">
-          <div className="panel-top"><span className="panel-orbit" aria-hidden="true">✦</span><span>YOUR CREDIT WORKSPACE</span><span className="panel-dot" aria-hidden="true" /></div>
-          <p className="panel-label">Your tools. One place.</p>
-          <h2>Plan. Dispute.<br />Track progress.</h2>
-          <div className="mini-step"><span>01</span><p>Choose your next priority</p><span aria-hidden="true">↗</span></div>
-          <div className="mini-step"><span>02</span><p>Work at your own pace</p><span aria-hidden="true">↗</span></div>
-          <div className="mini-step"><span>03</span><p>Save progress as you go</p><span aria-hidden="true">↗</span></div>
-          <div className="panel-bottom">Simple steps. At your pace.</div>
-        </aside>
+    <section className="home-hero"><div className="home-container home-hero-grid">
+      <div><p className="eyebrow">Your credit. Your next step.</p>
+        <h1>Credit repair, simplified. <span>Disputes made easy.</span></h1>
+        <p className="hero-copy">Create your credit action plan, customize letters to dispute report errors, and track your next steps.</p>
+        <div className="home-actions"><PlanLink className="action-button" source="hero">Create my free plan</PlanLink><Link className="preview-link" href="/preview">Preview a dispute letter</Link></div>
+        <p className="hero-note"><strong>Free plan + 3 template-letter downloads per month.</strong><br />No credit card required. No credit report upload.</p>
       </div>
-    </section>
-    <section id="how-it-works" className="home-section home-container">
-      <p className="eyebrow">How it works</p>
-      <h2 className="section-title">Your credit plan. <span>Three simple steps.</span></h2>
-      <div className="steps-grid">{steps.map(([number, title, description]) => <article className="feature-card" key={number}>
-        <span className="step-number">{number}</span><h3>{title}</h3><p>{description}</p>
-      </article>)}</div>
-    </section>
-    <section className="home-band"><div className="home-container split-grid">
-      <div><p className="eyebrow">For mistakes on personal reports</p>
-        <h2 className="section-title">Dispute letters, <span>without the guesswork.</span></h2>
-        <p>A blank page shouldn’t hold you up. Choose from 30 letter templates for personal credit report errors, add your facts, and download a draft to review and send yourself.</p>
-        <Link className="action-button" href="/dispute-center">Find my letter template</Link>
-      </div>
-      <div className="feature-card checklist-card"><p className="eyebrow">You’re in the driver’s seat</p><h3>Clear words. Your facts.</h3>
-        <ul><li>Start with the issue you actually found</li><li>Make the draft yours</li><li>Keep your supporting records close</li></ul>
-        <p>You review and send the letter. We don’t contact bureaus for you or promise a particular outcome.</p>
-      </div>
+      <aside className="hero-panel product-preview" aria-label="Example of your credit workspace">
+        <div className="panel-top">WORKSPACE PREVIEW <span className="sample-label">Example</span></div>
+        <h2>A place for every next step.</h2>
+        <div className="preview-task"><span aria-hidden="true">✓</span><div><strong>Review your credit reports</strong><small className="task-complete">Completed in this example</small></div></div>
+        <div className="preview-task"><span aria-hidden="true">2</span><div><strong>Prepare your dispute letter</strong><small>Add the error, your facts, and requested correction.</small></div></div>
+        <div className="preview-letter"><span className="sample-label">Letter draft</span><p>“I am writing to dispute the balance reported for this account…”</p><Link href="/preview">See how a template works</Link></div>
+        <div className="preview-status"><span>Dispute tracker</span><strong>Draft · Sent · Resolved</strong></div>
+        <p className="hero-note">An example of the tools—not a credit outcome.</p>
+      </aside>
     </div></section>
-    <section id="plans" className="home-section home-container"><p className="eyebrow">Pick your starting point</p>
-      <h2 className="section-title">Your first move <span>doesn’t need a subscription.</span></h2>
-      <div className="plans-grid"><div className="feature-card plan-card plan-featured"><span className="plan-tag">FREE TO START</span><h3>The Starter Plan</h3><p>Get a plan, a place to track progress, and letter tools you can use today.</p>
-        <ul><li>Separate personal and business credit action plans</li><li>Saved progress, focus mode, and short work sessions</li><li>Personal credit: 30 customizable letter topics; three downloads per month</li><li>Manual dispute status tracking</li></ul>
-        <Link className="action-button" href="/questionnaire">Build my free plan</Link>
-      </div><div className="feature-card plan-card"><span className="plan-tag">PERSONAL CREDIT</span><h3>The Letter Boost{process.env.BILLING_CHECKOUT_ENABLED !== 'true' ? ' · Coming soon' : ''}</h3><p>$9.99 per month gets you multiple saved plans, unlimited personal template downloads, and up to five AI letter drafts each UTC calendar month. {process.env.BILLING_CHECKOUT_ENABLED === 'true' ? 'Check your dashboard for checkout availability.' : 'Subscriptions are coming soon. Start with your free plan today.'}</p></div></div>
-    </section>
-    <footer className="home-footer"><div className="home-container"><strong>AI CreditLab<span className="brand-mark">.</span></strong><p>Educational tools for your next credit move. Review your own information and seek qualified help when you need it.</p><small>© {new Date().getFullYear()} AI CreditLab</small></div></footer>
+    <section id="how-it-works" className="home-section home-container"><p className="eyebrow">How it works</p><h2 className="section-title">Your credit plan. <span>Three simple steps.</span></h2><div className="steps-grid">{steps.map(([number, title, description]) => <article className="feature-card" key={number}><span className="step-number">{number}</span><h3>{title}</h3><p>{description}</p></article>)}</div></section>
+    <section className="home-band"><div className="home-container split-grid"><div><p className="eyebrow">For personal report errors</p><h2 className="section-title">Dispute letters, <span>without the blank page.</span></h2><p>Choose from 30 templates, add the facts about your report error, and download a draft to review and send yourself.</p><Link className="action-button action-button-outline" href="/preview">Try a letter preview</Link></div><div className="feature-card checklist-card"><p className="eyebrow">You stay in control</p><h3>Your facts. Your final review.</h3><ul><li>No credit report upload required</li><li>Review and send each letter yourself</li><li>Track dispute statuses in your workspace</li></ul><p>We don’t contact bureaus for you or guarantee removals or score increases. <Link href="/privacy">See how your information is used</Link>.</p></div></div></section>
+    <section id="plans" className="home-section home-container"><p className="eyebrow">Simple pricing</p><h2 className="section-title">Start free. <span>Choose more tools when you need them.</span></h2><div className="plans-grid">
+      <article className="feature-card plan-card plan-featured"><span className="plan-tag">START HERE</span><h3>Free</h3><p className="price">$0</p><p>Your starting point for personal or business credit.</p><ul><li>One saved plan with progress tracking</li><li>30 personal dispute letter templates</li><li>3 template downloads per month</li><li>Manual dispute status tracking</li></ul><PlanLink className="action-button" source="pricing">Create my free plan</PlanLink><p className="hero-note">No credit card required.</p></article>
+      <article className="feature-card plan-card"><span className="plan-tag">{checkoutEnabled ? 'MORE TOOLS' : 'COMING SOON'}</span><h3>Plus</h3><p className="price">$9.99 <span>/ month</span></p><p>More room to organize your plans and draft your letters.</p><ul><li>Multiple saved personal or business plans</li><li>Unlimited personal template downloads</li><li>5 AI-assisted personal letter drafts per month</li><li>Progress and dispute tracking</li></ul>{checkoutEnabled ? <Link className="action-button action-button-outline" href="/dashboard">View upgrade options</Link> : <p className="plan-availability">Paid subscriptions are coming soon. Your free tools are available now.</p>}</article>
+    </div><p className="hero-note">Download and AI allowances reset on the first day of each month at 00:00 UTC. AI drafts and dispute letter templates are for personal credit reports.</p></section>
+    <section className="home-container home-section faq-section"><p className="eyebrow">Before you start</p><h2 className="section-title">A few helpful answers.</h2><div className="faq-list">{faqs.map(([question, answer]) => <details key={question}><summary>{question}</summary><p>{answer}</p></details>)}</div></section>
+    <section className="home-container final-cta"><h2>Start with one clear next step.</h2><p>Preview your plan. Save it when you’re ready.</p><PlanLink className="action-button" source="footer">Create my free plan</PlanLink></section>
+    <footer className="home-footer"><div className="home-container"><strong>AI CreditLab<span className="brand-mark">.</span></strong><p>DIY educational tools for your credit action plan and personal dispute letters.</p><nav className="footer-links" aria-label="Information"><Link href="/privacy">Privacy</Link><Link href="/terms">Terms</Link><Link href="/help">Help</Link></nav><small>© {new Date().getFullYear()} AI CreditLab</small></div></footer>
   </div>;
 }

@@ -1,6 +1,7 @@
 'use client';
 import { useEffect, useState, type FormEvent } from 'react';
 import Link from 'next/link';
+import { trackFunnel } from '@/lib/funnel';
 import { letterTemplateFor, letterTemplates } from '@/lib/letterTemplates';
 import { buildDisputeLetter } from '@/lib/disputeLetter';
 
@@ -48,7 +49,7 @@ export default function LetterEditor() {
   const saveFile = (content: string) => {
     const url = URL.createObjectURL(new Blob([content], { type: 'text/plain' }));
     const anchor = document.createElement('a'); anchor.href = url; anchor.download = 'credit-report-dispute-draft.txt';
-    anchor.click(); window.setTimeout(() => URL.revokeObjectURL(url), 1000);
+    anchor.click(); trackFunnel('letter_download'); window.setTimeout(() => URL.revokeObjectURL(url), 1000);
   };
   const download = async () => {
     if (!letter || !allowance) return;

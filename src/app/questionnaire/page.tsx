@@ -1,208 +1,110 @@
-"use client";
-
-import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
-import { useUser } from "@clerk/nextjs";
-import { businessQuestions, creditQuestions, type CreditGoal } from "@/lib/creditPlan";
-
-
+'use client';
+import { useEffect, useRef, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { useUser } from '@clerk/nextjs';
+import Link from 'next/link';
+import { businessQuestions, creditQuestions, generateCreditPlan, isValidCreditAnswers, type CreditAnswers, type CreditGoal } from '@/lib/creditPlan';
+import { PLAN_DRAFT_KEY, readPlanDraft } from '@/lib/planDraft';
+import { trackFunnel } from '@/lib/funnel';
 
 export default function Questionnaire() {
   const router = useRouter();
   const { user, isLoaded } = useUser();
   const [goal, setGoal] = useState<CreditGoal | null>(null);
-  const questions = goal === "business" ? businessQuestions : creditQuestions;
-  const [answers, setAnswers] = useState<{ [key: number]: string[] }>({});
-  const [error, setError] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [saveError, setSaveError] = useState("");
+  const [answers, setAnswers] = useState<CreditAnswers>({});
+  const [step, setStep] = useState(0);
+  const [ready, setReady] = useState(false);
+  const [restoredOwner, setRestoredOwner] = useState<string | null | undefined>(undefined);
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState('');
   const [newPlan, setNewPlan] = useState(false);
+  const heading = useRef<HTMLHeadingElement>(null);
+  const questions = goal === 'business' ? businessQuestions : creditQuestions;
+  const question = questions[step - 1];
+  const userId = user?.id ?? null;
 
-  useEffect(() => { setNewPlan(new URLSearchParams(window.location.search).get('new') === '1'); }, []);
-
-  // 🔹 Redirect to sign-up if not logged in
   useEffect(() => {
-    if (isLoaded && !user) {
-      router.push("/sign-up?redirect=questionnaire");
-    }
-  }, [user, isLoaded, router]);
-
-  // 🔹 Fetch existing questionnaire data
-  useEffect(() => {
-    if (!user) return;
-
-    const fetchExistingData = async () => {
-      const response = await fetch('/api/credit-plan');
-      if (!response.ok) return;
-      const { plan } = await response.json();
-      if (new URLSearchParams(window.location.search).get('new') === '1' && plan?.plan_type === 'paid') return;
-      if (plan?.selected_disputes) setAnswers(plan.selected_disputes);
-      if (plan?.account_goal === "business" || plan?.account_goal === "personal") setGoal(plan.account_goal);
-    };
-
-    fetchExistingData();
-  }, [user, router]);
-
-  // 🔹 Handle selecting options (max 3 per question)
-  const handleSelect = (questionId: number, option: string) => {
-    setAnswers((prev) => {
-      const currentAnswers = prev[questionId] || [];
-      if (currentAnswers.includes(option)) {
-        return {
-          ...prev,
-          [questionId]: currentAnswers.filter((ans) => ans !== option),
-        };
-      } else if (currentAnswers.length < 3) {
-        return { ...prev, [questionId]: [...currentAnswers, option] };
-      }
-      return prev;
-    });
-
-    setError(false);
-  };
-
-  // 🔹 Submit questionnaire and save responses
-  const handleSubmit = async () => {
-    if (
-      !goal || Object.keys(answers).length !== questions.length ||
-      Object.values(answers).some((ans) => ans.length === 0)
-    ) {
-      setError(true);
-      return;
-    }
-
-    setLoading(true);
-    if (user) {
-      setSaveError("");
-      try {
-        const response = await fetch('/api/credit-plan', {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ answers, goal, newPlan }),
-        });
-        if (!response.ok) {
-          setSaveError("We couldn't save your plan. Please try again.");
-        } else {
-          router.push('/dashboard');
+    if (!isLoaded) return;
+    let cancelled = false;
+    setReady(false);
+    const creating = new URLSearchParams(window.location.search).get('new') === '1';
+    setNewPlan(creating);
+    async function restore() {
+      let draft = null;
+      try { draft = readPlanDraft(sessionStorage.getItem(PLAN_DRAFT_KEY), userId); } catch { /* Use the questionnaire without storage. */ }
+      if (draft && !!draft.newPlan === creating) {
+        setGoal(draft.goal); setAnswers(draft.answers); setStep(draft.step);
+      } else {
+        setGoal(null); setAnswers({}); setStep(0);
+        if (userId && !creating) {
+          try {
+            const response = await fetch('/api/credit-plan');
+            if (response.ok) {
+              const { plan } = await response.json();
+              if (!cancelled && ['personal', 'business'].includes(plan?.account_goal) && isValidCreditAnswers(plan?.selected_disputes, plan.account_goal)) {
+                setGoal(plan.account_goal); setAnswers(plan.selected_disputes); setStep(4);
+              }
+            }
+          } catch { /* A saved-plan fetch must not prevent starting a plan. */ }
         }
-      } catch {
-        setSaveError("We couldn't save your plan. Please try again.");
       }
+      if (!cancelled) { setRestoredOwner(userId); setReady(true); }
     }
-    setLoading(false);
-  };
+    void restore();
+    return () => { cancelled = true; };
+  }, [isLoaded, userId]);
 
-  // 🔹 Show loading state while Clerk loads
-  if (!isLoaded) return <p>Loading...</p>;
+  useEffect(() => {
+    if (!ready || restoredOwner !== userId || !goal) return;
+    try { sessionStorage.setItem(PLAN_DRAFT_KEY, JSON.stringify({ version: 1, owner: userId, goal, answers, step, newPlan, updatedAt: Date.now() })); } catch { /* Storage is optional. */ }
+  }, [ready, restoredOwner, goal, answers, step, newPlan, userId]);
 
-  return (
-    <div
-      style={{
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        minHeight: "100vh",
-        background: "transparent",
-        fontFamily: "inherit",
-        padding: "1rem",
-      }}
-    >
-      <div
-        className="glass-card" style={{
-          border: "1px solid var(--line)",
-          padding: "30px",
-          maxWidth: "600px",
-          width: "100%",
-        }}
-      >
-        <h1
-          style={{
-            fontSize: "2rem",
-            fontWeight: "bold",
-            color: "var(--accent)",
-            textAlign: "center",
-          }}
-        >
-          {newPlan ? "Make another game plan" : goal === "business" ? "Let’s build your business credit game plan" : goal === "personal" ? "Let’s build your credit game plan" : "Let’s get a game plan together"}
-        </h1>
-        <p
-          style={{
-            color: "var(--accent)",
-            textAlign: "center",
-            marginBottom: "20px",
-          }}
-        >
-          First, tell us where you’re starting. Then pick up to <strong>3</strong> answers for each question. No perfect answers needed.
-        </p>
-
-        <fieldset style={{ border: "1px solid var(--line)", borderRadius: 10, marginBottom: 24, padding: 16 }}>
-          <legend style={{ color: "var(--accent)", fontWeight: 700 }}>What’s the move: work on your personal credit or build business credit?</legend>
-          <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
-            {(["personal", "business"] as const).map((choice) => <button type="button" key={choice} aria-pressed={goal === choice}
-              onClick={() => { if (goal !== choice) { setGoal(choice); setAnswers({}); setError(false); } }}
-              style={{ padding: "12px 18px", borderRadius: 8, border: "1px solid var(--accent)", background: goal === choice ? "var(--accent-strong)" : "var(--surface-raised)", color: goal === choice ? "#071d25" : "var(--text)" }}>
-              {choice === "personal" ? "Personal credit" : "Business credit"}
-            </button>)}
-          </div>
-        </fieldset>
-        {goal === "business" && <p style={{ color: "var(--muted)" }}>Business credit plays by different reporting rules. We’ll focus on your business setup, payment history, and financing goals—not personal dispute letters.</p>}
-        {goal && questions.map((q) => (
-          <div key={q.id} style={{ marginBottom: "20px" }}>
-            <h3 style={{ color: "var(--accent)", fontWeight: "bold" }}>{q.question}</h3>
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 220px), 1fr))", gap: "10px" }}>
-              {q.options.map((option) => {
-                const isSelected = answers[q.id]?.includes(option);
-                return (
-                  <button
-                    key={option}
-                    aria-pressed={!!isSelected}
-                    onClick={() => handleSelect(q.id, option)}
-                    style={{
-                      padding: "10px 15px",
-                      backgroundColor: isSelected ? "var(--accent-strong)" : "var(--surface-raised)",
-                      color: isSelected ? "#071d25" : "var(--text)",
-                      border: "none",
-                      borderRadius: "8px",
-                      cursor: "pointer",
-                      fontSize: "1rem",
-                      fontWeight: "500",
-                    }}
-                  >
-                    {option}
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-        ))}
-
-        {error && (
-          <p style={{ color: "var(--danger)", fontWeight: "bold", textAlign: "center" }}>
-            Choose a credit path and at least one option per question.
-          </p>
-        )}
-        {saveError && <p role="alert" style={{ color: "var(--danger)" }}>{saveError}</p>}
-
-        <button
-          onClick={handleSubmit}
-          disabled={loading}
-          style={{
-            width: "100%",
-            marginTop: "20px",
-            padding: "12px 20px",
-            backgroundColor: loading ? "#A0A0A0" : "var(--accent-strong)",
-            color: "#071d25",
-            border: "none",
-            borderRadius: "8px",
-            fontSize: "1.2rem",
-            fontWeight: "bold",
-            cursor: loading ? "not-allowed" : "pointer",
-            transition: "background-color 0.2s ease",
-          }}
-        >
-          {loading ? "Saving your game plan…" : newPlan ? "Save my new game plan" : "Save my game plan"}
-        </button>
-      </div>
+  function go(next: number) {
+    setStep(next); setError('');
+    requestAnimationFrame(() => { heading.current?.focus(); heading.current?.scrollIntoView({ block: 'start', behavior: 'auto' }); });
+  }
+  function next() {
+    if (!goal || (step > 0 && !answers[question.id]?.length)) { setError('Choose at least one option to continue.'); return; }
+    if (step === 3) trackFunnel('plan_preview');
+    go(step + 1);
+  }
+  function choose(option: string) {
+    const selected = answers[question.id] ?? [];
+    if (!selected.includes(option) && selected.length >= 3) {
+      setError('Choose up to three options. Unselect one to choose another.'); return;
+    }
+    setError('');
+    setAnswers(previous => ({ ...previous, [question.id]: selected.includes(option) ? selected.filter(item => item !== option) : [...selected, option] }));
+  }
+  async function save() {
+    if (!goal || !isValidCreditAnswers(answers, goal)) { go(0); return; }
+    if (!user) {
+      try { sessionStorage.setItem('creditlab-signup-pending', '1'); } catch { /* Optional analytics marker. */ }
+      trackFunnel('signup_started');
+      router.push('/sign-up?redirect_url=%2Fquestionnaire'); return;
+    }
+    setBusy(true); setError('');
+    try {
+      const response = await fetch('/api/credit-plan', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ answers, goal, newPlan }) });
+      if (!response.ok) {
+        const result = await response.json().catch(() => ({}));
+        setError(result.error || 'We couldn’t save your plan. Please try again.'); return;
+      }
+      try { sessionStorage.removeItem(PLAN_DRAFT_KEY); } catch { /* Optional storage. */ }
+      trackFunnel('plan_saved'); router.push('/dashboard');
+    } catch { setError('We couldn’t save your plan. Your answers are still here—please try again.'); }
+    finally { setBusy(false); }
+  }
+  if (!isLoaded || !ready || restoredOwner !== userId) return <p className="loading-copy" role="status">Preparing your plan…</p>;
+  return <section className="plan-builder home-container">
+    <div className="glass-card wizard-card">
+      <p className="eyebrow">{step === 0 ? 'Start with your goal' : step === 4 ? 'Your plan preview' : `Question ${step} of 3`}</p>
+      <progress aria-label="Plan progress" max={4} value={step} />
+      <h1 tabIndex={-1} ref={heading}>{step === 0 ? 'What would you like to work on?' : step === 4 ? 'Your next steps, simplified.' : question.question}</h1>
+      {step === 0 ? <><p>Choose a path. Answer three short questions. Preview your plan before creating an account.</p><div className="goal-grid">{(['personal', 'business'] as const).map(choice => <button key={choice} type="button" aria-pressed={goal === choice} className="goal-choice" onClick={() => { if (choice !== goal) { setGoal(choice); setAnswers({}); } setError(''); }}><strong>{choice === 'personal' ? 'Personal credit' : 'Business credit'}</strong><span>{choice === 'personal' ? 'Address report errors, balances, and credit habits.' : 'Build business credit and organize your next steps.'}</span></button>)}</div><p className="hero-note">No credit card or credit report upload required.</p></> : step === 4 ? <><p>{goal === 'business' ? 'A starting point for building your business credit. Personal dispute letters follow a separate path.' : 'Based on your answers, here are practical steps to focus on first.'}</p><ol className="plan-preview-list">{generateCreditPlan(answers, goal ?? 'personal').map(item => <li key={item}>{item}</li>)}</ol><p className="hero-note">{user ? 'Save this plan to track your progress in your workspace.' : 'Create a free account to save this plan and track your progress.'}</p><button type="button" className="action-button" onClick={save} disabled={busy}>{busy ? 'Saving your plan…' : user ? 'Save my plan' : 'Create account & save my plan'}</button>{!user && <p>Already have an account? <Link href="/sign-in?redirect_url=%2Fquestionnaire">Sign in to save your plan</Link>.</p>}</> : <><p>Select up to three answers that fit. You can change them later.</p><div className="answer-grid">{question.options.map(option => <button key={option} type="button" aria-pressed={answers[question.id]?.includes(option) ?? false} onClick={() => choose(option)}>{option}</button>)}</div></>}
+      {error && <p role="alert" className="form-error">{error}</p>}
+      <div className="wizard-actions">{step > 0 && <button type="button" onClick={() => go(step - 1)} disabled={busy}>Back</button>}{step < 4 && <button type="button" className="action-button" onClick={next}>{step === 3 ? 'Preview my plan' : 'Continue'}</button>}</div>
+      <p className="hero-note">Your choices are used to create your plan. <Link href="/privacy">How your information is used</Link>.</p>
     </div>
-  );
+  </section>;
 }
