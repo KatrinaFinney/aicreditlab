@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useUser } from "@clerk/nextjs";
 import Link from "next/link";
 import BillingCard from '@/components/BillingCard';
@@ -29,6 +29,8 @@ export default function Dashboard() {
   const [sessionMinutes, setSessionMinutes] = useState(10);
   const [secondsLeft, setSecondsLeft] = useState(600);
   const [timerRunning, setTimerRunning] = useState(false);
+  const progressSaveInFlight = useRef(false);
+  const [progressSaving, setProgressSaving] = useState(false);
 
   useEffect(() => {
     setCheckoutReturned(new URLSearchParams(window.location.search).get('checkout') === 'success');
@@ -80,6 +82,9 @@ export default function Dashboard() {
   useEffect(() => { if (secondsLeft === 0) setTimerRunning(false); }, [secondsLeft]);
 
   const savePreferences = async (nextFocus: boolean, nextMinutes: number) => {
+    if (progressSaveInFlight.current) return;
+    progressSaveInFlight.current = true;
+    setProgressSaving(true);
     setProgressError('');
     try {
       const response = await fetch('/api/credit-progress', {
@@ -89,9 +94,13 @@ export default function Dashboard() {
       if (!response.ok) throw new Error('Save failed');
       setFocusMode(nextFocus); setSessionMinutes(nextMinutes); setSecondsLeft(nextMinutes * 60); setTimerRunning(false);
     } catch { setProgressError('Could not save your focus settings. Please try again.'); }
+    finally { progressSaveInFlight.current = false; setProgressSaving(false); }
   };
 
   const updateProgress = async (step: string, completed: boolean) => {
+    if (progressSaveInFlight.current) return;
+    progressSaveInFlight.current = true;
+    setProgressSaving(true);
     setProgressError('');
     try {
       const response = await fetch('/api/credit-progress', {
@@ -103,6 +112,7 @@ export default function Dashboard() {
     } catch {
       setProgressError('Could not save your progress. Please try again.');
     }
+    finally { progressSaveInFlight.current = false; setProgressSaving(false); }
   };
 
   return (
@@ -176,13 +186,13 @@ export default function Dashboard() {
             </p>
             <div style={{ background: 'var(--surface-raised)', padding: 16, borderRadius: 10, marginBottom: 16 }}>
               <label style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                <input type="checkbox" checked={focusMode} onChange={(event) => savePreferences(event.target.checked, sessionMinutes)} />
+                <input type="checkbox" disabled={progressSaving} checked={focusMode} onChange={(event) => savePreferences(event.target.checked, sessionMinutes)} />
                 Just show me the next step
               </label>
               <p style={{ margin: '12px 0 6px' }}>Got a few minutes?</p>
               <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
                 {[5, 10, 20].map((minutes) => <button key={minutes} type="button"
-                  onClick={() => savePreferences(focusMode, minutes)} aria-pressed={sessionMinutes === minutes}
+                  disabled={progressSaving} onClick={() => savePreferences(focusMode, minutes)} aria-pressed={sessionMinutes === minutes}
                   style={{ padding: '8px 12px', borderRadius: 8, border: '1px solid var(--accent-strong)', background: sessionMinutes === minutes ? 'var(--accent-strong)' : 'var(--surface)', color: sessionMinutes === minutes ? 'white' : 'var(--accent)' }}>
                   {minutes} min
                 </button>)}
@@ -200,7 +210,7 @@ export default function Dashboard() {
                 style={{ fontSize: "1.1rem", color: "var(--text)", marginBottom: "8px" }}
               >
                 <label style={{ display: 'flex', gap: '10px', alignItems: 'flex-start', cursor: 'pointer' }}>
-                  <input type="checkbox" checked={completedSteps.includes(step)}
+                  <input type="checkbox" disabled={progressSaving} checked={completedSteps.includes(step)}
                     onChange={(event) => updateProgress(step, event.target.checked)}
                     aria-label={`Mark step ${index + 1} complete`} />
                   <span style={{ textDecoration: completedSteps.includes(step) ? 'line-through' : 'none' }}>{step}</span>
