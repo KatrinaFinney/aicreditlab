@@ -21,6 +21,7 @@ export async function GET() {
     console.error('Letter allowance lookup failed', {
       code: typeof code === 'string' && knownCodes.includes(code) ? code : null,
     });
-    return NextResponse.json({ error: 'Could not load letter allowance' }, { status: 503 });
+    return NextResponse.json({ error: 'Could not load letter allowance',
+      errorCode: typeof code === 'string' && knownCodes.includes(code) ? code : 'unavailable' }, { status: 503 });
   }
 }
