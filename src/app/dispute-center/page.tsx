@@ -23,8 +23,8 @@ export default function DisputeCenter() {
     `${item.title} ${item.guidance}`.toLowerCase().includes(query.toLowerCase()));
   return <main style={{ padding: '40px 20px', background: 'transparent', minHeight: '100vh', color: 'var(--text)' }}>
     <div style={{ maxWidth: 1000, margin: 'auto' }}>
-      <h1 style={{ color: 'var(--accent)', fontSize: 'clamp(2rem, 5vw, 3rem)' }}>The Letter Lab</h1>
-      {allowance?.accountGoal === "business" ? <div className="glass-card" style={{ padding: 24, }}><h2>Business reports need a different playbook</h2><p>These letters and dispute cases are for personal credit reports. For a mistake on a business report, get the report from the business reporting company, follow its dispute process, and keep your supporting records.</p><Link href="/dashboard">Back to my business game plan</Link></div> : <>
+      <h1 style={{ color: 'var(--accent)', fontSize: 'clamp(2rem, 5vw, 3rem)' }}>Dispute letters</h1>
+      {allowance?.accountGoal === "business" ? <div className="glass-card" style={{ padding: 24, }}><h2>Business reports need a different playbook</h2><p>These letters and dispute cases are for personal credit reports. For a mistake on a business report, get the report from the business reporting company, follow its dispute process, and keep your supporting records.</p><Link href="/dashboard">Back to my business plan</Link></div> : <>
       <p>Found a real mistake on your personal credit report? Find a letter starting point, add your facts, and review it before you send. Keep copies of everything.</p>
       <p style={{ background: 'var(--surface-raised)', padding: 16, borderRadius: 10 }}>
         <strong>One thing at a time:</strong> start with one or two well-documented errors. That’s a way to stay organized, not a credit bureau rule. The CFPB recommends naming each specific mistake, explaining why it’s wrong, and including copies of supporting documents.

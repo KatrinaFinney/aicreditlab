@@ -6,6 +6,6 @@ import { authAppearance } from '@/lib/clerkAppearance';
 
 export default function SignInPage() {
   return <AuthPageShell mode="sign-in">
-    <SignIn routing="hash" signUpUrl="/sign-up" appearance={authAppearance} />
+    <SignIn routing="path" path="/sign-in" signUpUrl="/sign-up" appearance={authAppearance} />
   </AuthPageShell>;
 }

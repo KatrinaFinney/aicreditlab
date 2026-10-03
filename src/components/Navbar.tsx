@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import PlanLink from "./PlanLink";
 import { useUser, SignOutButton } from "@clerk/nextjs";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
@@ -19,14 +20,14 @@ export default function Navbar() {
     return () => { document.removeEventListener("pointerdown", dismiss); document.removeEventListener("keydown", escape); };
   }, []);
   const links = isSignedIn
-    ? [["/dashboard", "My workspace"], ["/questionnaire", "My plan"], ["/dispute-center", "Letter Lab"]]
-    : [["/#how-it-works", "How it works"], ["/dispute-center", "Letter Lab"], ["/#plans", "Plans"]];
+    ? [["/dashboard", "My workspace"], ["/questionnaire", "My plan"], ["/dispute-center", "Dispute letters"]]
+    : [["/#how-it-works", "How it works"], ["/preview", "Dispute letters"], ["/#plans", "Plans"]];
   return <nav ref={menu} className="site-nav" aria-label="Main navigation">
     <div className="nav-inner">
       <Link className="site-brand" href={isSignedIn ? "/dashboard" : "/"}>AI CreditLab<span className="brand-mark">.</span></Link>
       <div className="nav-links">{links.map(([href, label]) => <Link key={href} href={href} aria-current={pathname === href ? "page" : undefined}>{label}</Link>)}</div>
       <div className="nav-actions">
-        {isSignedIn ? <div className="desktop-account"><SignOutButton><button className="nav-text-button" type="button">Sign out</button></SignOutButton></div> : <><Link className="nav-signin" href="/sign-in">Sign in</Link><Link className="nav-start" href="/questionnaire">Start free</Link></>}
+        {isSignedIn ? <div className="desktop-account"><SignOutButton><button className="nav-text-button" type="button">Sign out</button></SignOutButton></div> : <><Link className="nav-signin" href="/sign-in">Sign in</Link><PlanLink className="nav-start" source="navigation">Start free</PlanLink></>}
         <button type="button" className="nav-menu-toggle" aria-expanded={menuOpen} aria-controls="mobile-navigation" aria-label={menuOpen ? "Close navigation" : "Open navigation"} onClick={() => setMenuOpen(!menuOpen)}><span aria-hidden="true">{menuOpen ? "✕" : "☰"}</span></button>
       </div>
     </div>
