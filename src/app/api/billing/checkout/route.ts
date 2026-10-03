@@ -50,10 +50,14 @@ export async function POST() {
     if (!session.url) throw new Error('Missing checkout URL');
     return NextResponse.json({ url: session.url });
   } catch (error) {
-    const failure = error as { statusCode?: unknown; code?: unknown } | null;
+    const failure = error as { statusCode?: unknown; code?: unknown; type?: unknown; message?: unknown } | null;
     const knownCodes = ['resource_missing', 'api_key_expired', 'parameter_missing', 'parameter_invalid_integer', 'idempotency_key_in_use'];
     console.error('Billing checkout failed', {
       stage,
+      detail: stage === 'create_session' && failure?.type === 'StripeInvalidRequestError' && typeof failure.message === 'string'
+        ? failure.message.replace(/(?:sk|rk|pk)_(?:test|live)_[^\\s]+|whsec_[^\\s]+/g, '[redacted]')
+          .replace(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,}/gi, '[email]').slice(0, 500)
+        : null,
       status: typeof failure?.statusCode === 'number' ? failure.statusCode : null,
       code: typeof failure?.code === 'string' && knownCodes.includes(failure.code) ? failure.code : null,
     });
