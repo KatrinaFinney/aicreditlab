@@ -18,3 +18,19 @@ describe('credit plan', () => {
     expect(isValidCreditAnswers({ 1: ['Collections', 'Collections'], 2: ['Increase credit score'], 3: ['I budget carefully'] })).toBe(false);
   });
 });
+
+
+describe('business credit path', () => {
+  const answers = { 1: ['Registered, no business bank account'], 2: ['Build a business credit history'], 3: ['Understanding personal guarantees'] };
+  it('accepts only business choices for business assessments', () => {
+    expect(isValidCreditAnswers(answers, 'business')).toBe(true);
+    expect(isValidCreditAnswers(answers, 'personal')).toBe(false);
+  });
+  it('recommends business banking, reporting, and guarantee checks without consumer disputes', () => {
+    const text = generateCreditPlan(answers, 'business').join(' ');
+    expect(text).toMatch(/business bank account/);
+    expect(text).toMatch(/business credit bureaus/);
+    expect(text).toMatch(/personal guarantee/);
+    expect(text).not.toMatch(/all three reports/);
+  });
+});

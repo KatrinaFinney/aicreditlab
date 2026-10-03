@@ -9,13 +9,19 @@ export async function GET() {
   try {
     const db = getServerSupabase();
     if (!db) throw new Error('Unavailable');
-    const { data: plan, error } = await db.from('credit_plans').select('plan_type').eq('user_id', userId).maybeSingle();
+    const { data: plan, error } = await db.from('credit_plans').select('plan_type, account_goal').eq('user_id', userId).maybeSingle();
     if (error) throw error;
     const paid = plan?.plan_type === 'paid';
     const usage = await usageFor(userId, paid ? 'paid_generation' : 'free_download');
-    return NextResponse.json({ paid, ...usage, remaining: Math.max(0, usage.limit - usage.used),
+    return NextResponse.json({ paid, accountGoal: plan?.account_goal ?? 'personal', ...usage, remaining: Math.max(0, usage.limit - usage.used),
       resetAt: new Date(Date.UTC(new Date().getUTCFullYear(), new Date().getUTCMonth() + 1, 1)).toISOString() });
-  } catch {
-    return NextResponse.json({ error: 'Could not load letter allowance' }, { status: 503 });
+  } catch (error) {
+    const code = (error as { code?: unknown } | null)?.code;
+    const knownCodes = ['42501', '42P01', '42703', 'PGRST204', 'PGRST205', 'PGRST301'];
+    console.error('Letter allowance lookup failed', {
+      code: typeof code === 'string' && knownCodes.includes(code) ? code : null,
+    });
+    return NextResponse.json({ error: 'Could not load letter allowance',
+      errorCode: typeof code === 'string' && knownCodes.includes(code) ? code : 'unavailable' }, { status: 503 });
   }
 }

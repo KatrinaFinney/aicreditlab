@@ -18,8 +18,9 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Complete the form and consent before generating a draft' }, { status: 400 });
   const db = getServerSupabase();
   if (!db) return NextResponse.json({ error: 'Letter service unavailable' }, { status: 503 });
-  const { data: plan, error } = await db.from('credit_plans').select('plan_type').eq('user_id', userId).maybeSingle();
+  const { data: plan, error } = await db.from('credit_plans').select('plan_type, account_goal').eq('user_id', userId).maybeSingle();
   if (error) return NextResponse.json({ error: 'Could not verify plan access' }, { status: 500 });
+  if (plan?.account_goal === 'business') return NextResponse.json({ error: 'These letters address personal credit reports. Business credit reporting uses a different dispute process.' }, { status: 403 });
   if (plan?.plan_type !== 'paid') return NextResponse.json({ error: 'Paid plan required' }, { status: 403 });
   if (!process.env.OPENAI_API_KEY) return NextResponse.json({ error: 'AI drafting is not configured yet' }, { status: 503 });
   let reservation: string | null;

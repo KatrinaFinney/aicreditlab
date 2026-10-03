@@ -15,8 +15,9 @@ export async function POST(request: Request) {
   if (!validLetterDetails(input)) return NextResponse.json({ error: 'Complete the letter details first' }, { status: 400 });
   const db = getServerSupabase();
   if (!db) return NextResponse.json({ error: 'Letter service unavailable' }, { status: 503 });
-  const { data: plan, error } = await db.from('credit_plans').select('plan_type').eq('user_id', userId).maybeSingle();
+  const { data: plan, error } = await db.from('credit_plans').select('plan_type, account_goal').eq('user_id', userId).maybeSingle();
   if (error) return NextResponse.json({ error: 'Could not verify plan' }, { status: 503 });
+  if (plan?.account_goal === 'business') return NextResponse.json({ error: 'These letters address personal credit reports. Business credit reporting uses a different dispute process.' }, { status: 403 });
   let reservation: string | null = null;
   if (plan?.plan_type !== 'paid') {
     try { reservation = await reserveSlot(userId, 'free_download'); } catch {

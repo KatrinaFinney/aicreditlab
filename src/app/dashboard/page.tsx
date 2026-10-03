@@ -1,29 +1,39 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useUser } from "@clerk/nextjs";
 import Link from "next/link";
+import BillingCard from '@/components/BillingCard';
 
 // Define a type for the user's credit plan data
 interface UserData {
   plan_type: "free" | "paid";
+  active_saved_plan_id?: string;
+  account_goal?: "personal" | "business";
   full_name?: string;
   address?: string;
   selected_disputes?: Record<string, string[]>;
   credit_plan?: string[];
 }
+type SavedPlan = { id: string; account_goal: "personal" | "business"; created_at: string };
 
 export default function Dashboard() {
   const { user } = useUser();
   const [userData, setUserData] = useState<UserData | null>(null);
+  const [savedPlans, setSavedPlans] = useState<SavedPlan[]>([]);
+  const [planError, setPlanError] = useState('');
+  const [checkoutReturned, setCheckoutReturned] = useState(false);
   const [completedSteps, setCompletedSteps] = useState<string[]>([]);
   const [progressError, setProgressError] = useState('');
   const [focusMode, setFocusMode] = useState(false);
   const [sessionMinutes, setSessionMinutes] = useState(10);
   const [secondsLeft, setSecondsLeft] = useState(600);
   const [timerRunning, setTimerRunning] = useState(false);
+  const progressSaveInFlight = useRef(false);
+  const [progressSaving, setProgressSaving] = useState(false);
 
   useEffect(() => {
+    setCheckoutReturned(new URLSearchParams(window.location.search).get('checkout') === 'success');
     
     if (!user) return;
 
@@ -31,12 +41,13 @@ export default function Dashboard() {
     const fetchUserPlan = async () => {
       const response = await fetch('/api/credit-plan');
       if (!response.ok) return;
-      const { plan: data } = await response.json();
+      const { plan: data, savedPlans: plans } = await response.json();
 
 
 
       if (data) {
         setUserData(data);
+        setSavedPlans(plans ?? []);
       }
     };
 
@@ -52,6 +63,16 @@ export default function Dashboard() {
     });
   }, [user]);
 
+  const openPlan = async (id: string) => {
+    setPlanError('');
+    try {
+      const response = await fetch('/api/credit-plan', { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id }) });
+      if (!response.ok) throw new Error('Switch failed');
+      // Reload the active plan and its saved progress together.
+      window.location.reload();
+    } catch { setPlanError('Could not open that plan. Please try again.'); }
+  };
+
   useEffect(() => {
     if (!timerRunning || secondsLeft === 0) return;
     const id = window.setInterval(() => setSecondsLeft((value) => Math.max(0, value - 1)), 1000);
@@ -61,6 +82,9 @@ export default function Dashboard() {
   useEffect(() => { if (secondsLeft === 0) setTimerRunning(false); }, [secondsLeft]);
 
   const savePreferences = async (nextFocus: boolean, nextMinutes: number) => {
+    if (progressSaveInFlight.current) return;
+    progressSaveInFlight.current = true;
+    setProgressSaving(true);
     setProgressError('');
     try {
       const response = await fetch('/api/credit-progress', {
@@ -70,9 +94,13 @@ export default function Dashboard() {
       if (!response.ok) throw new Error('Save failed');
       setFocusMode(nextFocus); setSessionMinutes(nextMinutes); setSecondsLeft(nextMinutes * 60); setTimerRunning(false);
     } catch { setProgressError('Could not save your focus settings. Please try again.'); }
+    finally { progressSaveInFlight.current = false; setProgressSaving(false); }
   };
 
   const updateProgress = async (step: string, completed: boolean) => {
+    if (progressSaveInFlight.current) return;
+    progressSaveInFlight.current = true;
+    setProgressSaving(true);
     setProgressError('');
     try {
       const response = await fetch('/api/credit-progress', {
@@ -84,6 +112,7 @@ export default function Dashboard() {
     } catch {
       setProgressError('Could not save your progress. Please try again.');
     }
+    finally { progressSaveInFlight.current = false; setProgressSaving(false); }
   };
 
   return (
@@ -114,6 +143,19 @@ export default function Dashboard() {
         Pick one action to work on next. Your completed steps are saved here.
       </p>
 
+      {userData?.plan_type === 'paid' && <section style={{ background: 'var(--surface)', padding: 20, borderRadius: 12, border: '1px solid var(--line)' }}>
+        <h2 style={{ color: 'var(--accent)' }}>Your saved plans</h2>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10 }}>
+          {savedPlans.map((plan, index) => <button key={plan.id} type="button"
+            disabled={plan.id === userData.active_saved_plan_id} onClick={() => openPlan(plan.id)}
+            style={{ padding: '10px 14px', borderRadius: 8, border: '1px solid var(--accent)', background: 'var(--surface-raised)', color: 'var(--text)' }}>
+            {plan.account_goal === 'business' ? 'Business' : 'Personal'} plan {index + 1}{plan.id === userData.active_saved_plan_id ? ' · Current' : ''}
+          </button>)}
+          <Link href="/questionnaire?new=1" style={{ padding: '10px 14px', color: 'var(--accent)' }}>+ Create another plan</Link>
+        </div>
+        {planError && <p role="alert" style={{ color: 'var(--danger)' }}>{planError}</p>}
+      </section>}
+
       {/* Credit Plan Overview */}
       <div
         style={{
@@ -131,7 +173,7 @@ export default function Dashboard() {
             color: "var(--accent)",
           }}
         >
-          Your Credit Action Plan
+          Your {userData?.account_goal === "business" ? "Business" : "Personal"} Credit Action Plan
         </h2>
 
         {userData?.credit_plan && userData.credit_plan.length > 0 ? (
@@ -144,13 +186,13 @@ export default function Dashboard() {
             </p>
             <div style={{ background: 'var(--surface-raised)', padding: 16, borderRadius: 10, marginBottom: 16 }}>
               <label style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                <input type="checkbox" checked={focusMode} onChange={(event) => savePreferences(event.target.checked, sessionMinutes)} />
+                <input type="checkbox" disabled={progressSaving} checked={focusMode} onChange={(event) => savePreferences(event.target.checked, sessionMinutes)} />
                 Show one step at a time
               </label>
               <p style={{ margin: '12px 0 6px' }}>How much time do you have right now?</p>
               <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
                 {[5, 10, 20].map((minutes) => <button key={minutes} type="button"
-                  onClick={() => savePreferences(focusMode, minutes)} aria-pressed={sessionMinutes === minutes}
+                  disabled={progressSaving} onClick={() => savePreferences(focusMode, minutes)} aria-pressed={sessionMinutes === minutes}
                   style={{ padding: '8px 12px', borderRadius: 8, border: '1px solid var(--accent-strong)', background: sessionMinutes === minutes ? 'var(--accent-strong)' : 'var(--surface)', color: sessionMinutes === minutes ? 'white' : 'var(--accent)' }}>
                   {minutes} min
                 </button>)}
@@ -168,7 +210,7 @@ export default function Dashboard() {
                 style={{ fontSize: "1.1rem", color: "var(--text)", marginBottom: "8px" }}
               >
                 <label style={{ display: 'flex', gap: '10px', alignItems: 'flex-start', cursor: 'pointer' }}>
-                  <input type="checkbox" checked={completedSteps.includes(step)}
+                  <input type="checkbox" disabled={progressSaving} checked={completedSteps.includes(step)}
                     onChange={(event) => updateProgress(step, event.target.checked)}
                     aria-label={`Mark step ${index + 1} complete`} />
                   <span style={{ textDecoration: completedSteps.includes(step) ? 'line-through' : 'none' }}>{step}</span>
@@ -197,7 +239,7 @@ export default function Dashboard() {
             textDecoration: "none",
           }}
         >
-          Update Your Plan
+          {userData?.plan_type === 'paid' ? 'Edit This Plan' : 'Update Your Plan'}
         </Link>
       </div>
 
@@ -218,7 +260,7 @@ export default function Dashboard() {
             color: "var(--accent)",
           }}
         >
-          Your Credit Assessment
+          Your {userData?.account_goal === "business" ? "Business" : "Personal"} Credit Assessment
         </h2>
 
         {userData?.selected_disputes && Object.values(userData.selected_disputes).flat().length > 0 ? (
@@ -250,13 +292,13 @@ export default function Dashboard() {
         }}
       >
         <h2 style={{ fontSize: "1.5rem", fontWeight: "bold", color: "var(--accent)" }}>
-          Dispute Center
+          {userData?.account_goal === "business" ? "Business report review" : "Dispute Center"}
         </h2>
         <p style={{ fontSize: "1.1rem", color: "var(--text)" }}>
-          Review dispute templates for information you believe is inaccurate on your credit report.
+          {userData?.account_goal === "business" ? "Request your business report from the reporting company. If you find a specific error, follow that company’s business dispute process and keep copies of your supporting records. The letter library below is designed for personal consumer reports." : "Review dispute templates for information you believe is inaccurate on your credit report."}
         </p>
 
-        <Link
+        {userData?.account_goal !== "business" && <Link
           href="/dispute-center"
           style={{
             display: "inline-block",
@@ -270,28 +312,11 @@ export default function Dashboard() {
           }}
         >
           Access Dispute Templates
-        </Link>
+        </Link>}
       </div>
 
-      {/* Paid features are planned; no checkout is available yet. */}
-      <div
-        style={{
-          backgroundColor: "var(--surface)",
-          padding: "20px",
-          borderRadius: "12px",
-          border: "1px solid var(--line)",
-          marginTop: "24px",
-        }}
-      >
-        <h2 style={{ fontSize: "1.5rem", fontWeight: "bold", color: "var(--accent)" }}>
-          Premium Tools
-        </h2>
-        <p style={{ fontSize: "1.1rem", color: "var(--text)" }}>
-          Paid accounts can use unlimited template downloads and five AI letter generations per month. Billing and self-service upgrades are in development.
-        </p>
-
-        <p style={{ color: "var(--accent)" }}>More guided tools are in development.</p>
-      </div>
+      <BillingCard />
+      {checkoutReturned && <p role="status">Payment confirmation is pending. Refresh shortly to check your access.</p>}
     </div>
   );
 }
