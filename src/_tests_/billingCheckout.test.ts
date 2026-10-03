@@ -12,6 +12,20 @@ const pending = jest.fn();
 const retrieve = jest.fn();
 const price = { id: 'price_monthly', active: true, type: 'recurring', currency: 'usd', unit_amount: 999,
   recurring: { interval: 'month', interval_count: 1 } };
+it('logs checkout rejection details without leaking keys or email addresses', async () => {
+  const log = jest.spyOn(console, 'error').mockImplementation(() => {});
+  create.mockRejectedValueOnce({ type: 'StripeInvalidRequestError', statusCode: 400,
+    message: 'Configure Checkout for test@example.com sk_test_sensitive rk_live_sensitive whsec_sensitive' });
+  try {
+    const response = await POST();
+    expect(response.status).toBe(503);
+    expect(await response.json()).toEqual({ error: 'Could not start checkout' });
+    expect(log).toHaveBeenCalledWith('Billing checkout failed', expect.objectContaining({
+      stage: 'create_session', status: 400,
+      detail: 'Configure Checkout for [email] [redacted] [redacted] [redacted]',
+    }));
+  } finally { log.mockRestore(); }
+});
 let goal: string | null;
 beforeEach(() => {
   jest.clearAllMocks(); goal = 'personal';
