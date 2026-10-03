@@ -21,6 +21,19 @@ beforeEach(() => {
   (auth as unknown as jest.Mock).mockResolvedValue({ userId: 'user_test' });
 });
 
+it('issues a free template download only after completing its reserved quota slot', async () => {
+  (getServerSupabase as jest.Mock).mockReturnValue(dbWithPlan('free'));
+  (reserveSlot as jest.Mock).mockResolvedValue('free_slot');
+  (finishSlot as jest.Mock).mockResolvedValue(undefined);
+  const response = await download(makeRequest(details));
+  expect(response.status).toBe(200);
+  expect(response.headers.get('content-disposition')).toContain('attachment');
+  expect(await response.text()).toContain('Alex Example');
+  expect(reserveSlot).toHaveBeenCalledWith('user_test', 'free_download');
+  expect(finishSlot).toHaveBeenCalledWith('user_test', 'free_slot');
+  expect(releaseSlot).not.toHaveBeenCalled();
+});
+
 it('locks a free account at three downloads without issuing another file', async () => {
   (getServerSupabase as jest.Mock).mockReturnValue(dbWithPlan('free'));
   (reserveSlot as jest.Mock).mockResolvedValue(null);
