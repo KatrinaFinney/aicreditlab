@@ -29,6 +29,7 @@ it('logs checkout rejection details without leaking keys or email addresses', as
 let goal: string | null;
 beforeEach(() => {
   jest.clearAllMocks(); goal = 'personal';
+  process.env.BILLING_CHECKOUT_ENABLED = 'true';
   process.env.STRIPE_SECRET_KEY = 'sk_test_example'; process.env.STRIPE_PRICE_ID = price.id;
   process.env.STRIPE_WEBHOOK_SECRET = 'test-secret';
   (auth as unknown as jest.Mock).mockResolvedValue({ userId: 'user_test' });
@@ -70,4 +71,14 @@ it('reuses an open checkout instead of creating another payment session', async 
   const response = await POST();
   expect(await response.json()).toEqual({ url: 'https://checkout.stripe.com/existing' });
   expect(create).not.toHaveBeenCalled();
+});
+
+it.each([undefined, 'false', 'TRUE'])('blocks checkout when the launch flag is %s, before database or Stripe calls', async (flag) => {
+  if (flag === undefined) delete process.env.BILLING_CHECKOUT_ENABLED;
+  else process.env.BILLING_CHECKOUT_ENABLED = flag;
+  const response = await POST();
+  expect(response.status).toBe(503);
+  expect(await response.json()).toEqual({ error: 'The Letter Boost is coming soon' });
+  expect(getServerSupabase).not.toHaveBeenCalled();
+  expect(stripeClient).not.toHaveBeenCalled();
 });
