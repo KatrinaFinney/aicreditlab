@@ -32,7 +32,7 @@ export async function GET(request: Request) {
     return Response.json({ error: 'Unauthorized' }, { status: 401, headers });
   const checks = await Promise.all([
     check('production', process.env.NEXT_PUBLIC_SUPABASE_URL,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY, 'wsnnriiqkcvazkvhrwdm'),
+      process.env.SUPABASE_HEALTH_ANON_KEY, 'wsnnriiqkcvazkvhrwdm'),
     check('testing', process.env.SUPABASE_TEST_URL,
       process.env.SUPABASE_TEST_ANON_KEY, 'aqriexmnarkkuhplylzw'),
   ]);

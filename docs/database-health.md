@@ -17,7 +17,7 @@ limited publishable/anon API key; it exposes no customer information.
 Production environment variables:
 
 - `CRON_SECRET`: random private token, never committed or put in a URL.
-- `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY`: existing production connection.
+- `NEXT_PUBLIC_SUPABASE_URL` and `SUPABASE_HEALTH_ANON_KEY`: production connection, using its limited publishable key.
 - `SUPABASE_TEST_URL` and `SUPABASE_TEST_ANON_KEY`: testing connection for this probe only.
 
 The endpoint fails closed with 401 if the token is missing or incorrect. It checks
