@@ -11,6 +11,7 @@ const isPublicRoute = createRouteMatcher([
   "/sign-in(.*)",
   "/sign-up(.*)",
   "/api/billing/webhook", // Stripe signs each event; no Clerk session is present.
+  "/api/cron/database-health", // Independently protected by CRON_SECRET.
 ]);
 
 export default clerkMiddleware(async (auth, req) => {
