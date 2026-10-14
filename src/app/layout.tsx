@@ -7,9 +7,9 @@ import FunnelAnalytics from '@/components/FunnelAnalytics';
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://www.aicreditlab.com'),
-  title: 'AI CreditLab | Credit repair, simplified',
-  description: 'Create your credit action plan, customize letters to dispute report errors, and track your progress. Free to start. No credit card required.',
-  openGraph: { title: 'AI CreditLab | Credit repair, simplified', description: 'Disputes made easy. Create a free credit action plan and customize dispute letters.', url: 'https://www.aicreditlab.com', type: 'website' },
+  title: 'AI CreditLab | DIY Credit Repair & Dispute Tools',
+  description: 'DIY credit repair with a clearer dispute strategy. Prepare personal dispute letters, track your next steps, and get AI-assisted drafts with Plus. Start free.',
+  openGraph: { title: 'AI CreditLab | DIY Credit Repair & Dispute Tools', description: 'Less guesswork. More game plan. Start free with personal dispute templates; Plus adds AI-assisted letter drafts.', url: 'https://www.aicreditlab.com', type: 'website' },
 };
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return <ClerkProvider signInUrl="/sign-in" signUpUrl="/sign-up" signInFallbackRedirectUrl="/dashboard" signUpFallbackRedirectUrl="/questionnaire">
